@@ -1,0 +1,2966 @@
+<html lang="id">
+  <script>
+    window[
+      Symbol.for("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}")
+    ] = new (class {
+      constructor(e, t) {
+        (this.name = e),
+          (this.destination = t),
+          (this.serverListeners = {}),
+          (this.bgRequestsListeners = {}),
+          (this.bgEventsListeners = {}),
+          window.addEventListener("message", (e) => {
+            const t = e.data,
+              s = !(t.destination && t.destination === this.name),
+              n = !t.event;
+            if (!s && !n)
+              if ("MARIO_POST_SERVER__BG_RESPONSE" === t.event) {
+                const e = t.args;
+                if (this.hasBgRequestListener(e.requestId)) {
+                  try {
+                    this.bgRequestsListeners[e.requestId](e.response);
+                  } catch (e) {}
+                  delete this.bgRequestsListeners[e.requestId];
+                }
+              } else if ("MARIO_POST_SERVER__BG_EVENT" === t.event) {
+                const e = t.args;
+                if (this.hasBgEventListener(e.event))
+                  try {
+                    this.bgEventsListeners[t.id](e.payload);
+                  } catch (e) {}
+              } else if (this.hasServerListener(t.event))
+                try {
+                  this.serverListeners[t.event](t.args);
+                } catch (e) {}
+          });
+      }
+      emitToServer(e, t) {
+        const s = this.generateUIID(),
+          n = { args: t, destination: this.destination, event: e, id: s };
+        return window.postMessage(n, location.origin), s;
+      }
+      emitToBg(e, t) {
+        const s = this.generateUIID(),
+          n = { bgEventName: e, requestId: s, args: t };
+        return this.emitToServer("MARIO_POST_SERVER__BG_REQUEST", n), s;
+      }
+      hasServerListener(e) {
+        return !!this.serverListeners[e];
+      }
+      hasBgRequestListener(e) {
+        return !!this.bgRequestsListeners[e];
+      }
+      hasBgEventListener(e) {
+        return !!this.bgEventsListeners[e];
+      }
+      fromServerEvent(e, t) {
+        this.serverListeners[e] = t;
+      }
+      fromBgEvent(e, t) {
+        this.bgEventsListeners[e] = t;
+      }
+      fromBgResponse(e, t) {
+        this.bgRequestsListeners[e] = t;
+      }
+      generateUIID() {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+          /[xy]/g,
+          function (e) {
+            const t = (16 * Math.random()) | 0;
+            return ("x" === e ? t : (3 & t) | 8).toString(16);
+          }
+        );
+      }
+    })(
+      "MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}",
+      "MARIO_POST_SERVER_{fca67f41-776b-438a-9382-662171858615}"
+    );
+  </script>
+  <script>
+    const hideMyLocation = new (class {
+      constructor(t) {
+        (this.clientKey = t),
+          (this.watchIDs = {}),
+          (this.client = window[Symbol.for(t)]);
+        const e = navigator.geolocation.getCurrentPosition,
+          o = navigator.geolocation.watchPosition,
+          n = navigator.geolocation.clearWatch,
+          i = this;
+        (navigator.geolocation.getCurrentPosition = function (t, o, n) {
+          i.handle(e, "GET", t, o, n);
+        }),
+          (navigator.geolocation.watchPosition = function (t, e, n) {
+            return i.handle(o, "WATCH", t, e, n);
+          }),
+          (navigator.geolocation.clearWatch = function (t) {
+            if (-1 === t) return;
+            const e = i.watchIDs[t];
+            return delete i.watchIDs[t], n.apply(this, [e]);
+          });
+      }
+      handle(t, e, o, n, i) {
+        const a = this.client.emitToBg("HIDE_MY_LOCATION__GET_LOCATION");
+        let r = this.getRandomInt(0, 1e5);
+        if (
+          (this.client.fromBgResponse(a, (a) => {
+            if (a.enabled)
+              if ("SUCCESS" === a.status) {
+                const t = this.map(a);
+                o(t);
+              } else {
+                const t = this.errorObj();
+                n(t), (r = -1);
+              }
+            else {
+              const a = [o, n, i],
+                c = t.apply(navigator.geolocation, a);
+              "WATCH" === e && (this.watchIDs[r] = c);
+            }
+          }),
+          "WATCH" === e)
+        )
+          return r;
+      }
+      map(t) {
+        return {
+          coords: {
+            accuracy: 20,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            latitude: t.latitude,
+            longitude: t.longitude,
+            speed: null,
+          },
+          timestamp: Date.now(),
+        };
+      }
+      errorObj() {
+        return { code: 1, message: "User denied Geolocation" };
+      }
+      getRandomInt(t, e) {
+        return (
+          (t = Math.ceil(t)),
+          (e = Math.floor(e)),
+          Math.floor(Math.random() * (e - t + 1)) + t
+        );
+      }
+    })("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}");
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NavaaBoarding - PPDB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script ecommerce-type="extend-native-history-api">
+      (() => {
+        const e = history.pushState,
+          t = history.replaceState,
+          a = history.back,
+          r = history.forward;
+        function n() {
+          window.postMessage({ _custom_type_: "CUSTOM_ON_URL_CHANGED" });
+        }
+        (history.pushState = function () {
+          e.apply(history, arguments), n();
+        }),
+          (history.replaceState = function () {
+            t.apply(history, arguments), n();
+          }),
+          (history.back = function () {
+            a.apply(history, arguments), n();
+          }),
+          (history.forward = function () {
+            r.apply(history, arguments), n();
+          });
+      })();
+    </script>
+    <script>
+      (function inject(e) {
+        function SendXHRCandidate(e, t, n, r, i) {
+          try {
+            var o = "detector",
+              s = {
+                posdMessageId: "PANELOS_MESSAGE",
+                posdHash: (
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15)
+                ).substring(0, 22),
+                type: "VIDEO_XHR_CANDIDATE",
+                from: o,
+                to: o.substring(0, 6),
+                content: { requestMethod: e, url: t, type: n, content: r },
+              };
+            i && i[0] && i[0].length && (s.content.encodedPostBody = i[0]),
+              window.postMessage(s, "*");
+          } catch (e) {}
+        }
+        var t = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function () {
+          (this.requestMethod = arguments[0]), t.apply(this, arguments);
+        };
+        var n = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function () {
+          var t = Object.assign(arguments, {}),
+            r = this.onreadystatechange;
+          return (
+            (this.onreadystatechange = function () {
+              if (
+                (4 !== this.readyState ||
+                  (function isFrameInBlackList(t) {
+                    return e.some(function (e) {
+                      return t.includes(e);
+                    });
+                  })(this.responseURL) ||
+                  setTimeout(
+                    SendXHRCandidate(
+                      this.requestMethod,
+                      this.responseURL,
+                      this.getResponseHeader("content-type"),
+                      this.response,
+                      t
+                    ),
+                    0
+                  ),
+                r)
+              )
+                return r.apply(this, arguments);
+            }),
+            n.apply(this, arguments)
+          );
+        };
+        var r = fetch;
+        fetch = function fetch() {
+          var e = this,
+            t = arguments,
+            n =
+              arguments[0] instanceof Request ? arguments[0].url : arguments[0],
+            i = arguments[0] instanceof Request ? arguments[0].method : "GET";
+          return new Promise(function (o, s) {
+            r.apply(e, t)
+              .then(function (e) {
+                if (e.body instanceof ReadableStream) {
+                  var t = e.json;
+                  e.json = function () {
+                    var r = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      t.apply(o, r)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              JSON.stringify(t)
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                  var r = e.text;
+                  e.text = function () {
+                    var t = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      r.apply(o, t)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              t
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                }
+                o.apply(this, arguments);
+              })
+              .catch(function () {
+                s.apply(this, arguments);
+              });
+          });
+        };
+      })([
+        "facebook.com/",
+        "twitter.com/",
+        "youtube-nocookie.com/embed/",
+        "//vk.com/",
+        "//www.vk.com/",
+        "//linkedin.com/",
+        "//www.linkedin.com/",
+        "//instagram.com/",
+        "//www.instagram.com/",
+        "//www.google.com/recaptcha/api2/",
+        "//hangouts.google.com/webchat/",
+        "//www.google.com/calendar/",
+        "//www.google.com/maps/embed",
+        "spotify.com/",
+        "soundcloud.com/",
+        "//player.vimeo.com/",
+        "//disqus.com/",
+        "//tgwidget.com/",
+        "//js.driftt.com/",
+        "friends2follow.com",
+        "/widget",
+        "login",
+        "//video.bigmir.net/",
+        "blogger.com",
+        "//smartlock.google.com/",
+        "//keep.google.com/",
+        "/web.tolstoycomments.com/",
+        "moz-extension://",
+        "chrome-extension://",
+        "/auth/",
+        "//analytics.google.com/",
+        "adclarity.com",
+        "paddle.com/checkout",
+        "hcaptcha.com",
+        "recaptcha.net",
+        "2captcha.com",
+        "accounts.google.com",
+        "www.google.com/shopping/customerreviews",
+        "buy.tinypass.com",
+        "gstatic.com",
+        "secureir.ebaystatic.com",
+        "docs.google.com",
+        "contacts.google.com",
+        "github.com",
+        "mail.google.com",
+        "chat.google.com",
+        "audio.xpleer.com",
+        "keepa.com",
+        "static.xx.fbcdn.net",
+      ]);
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gray-50 all-sidebar ppdb-page"
+    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6IntmY2E2N2Y0MS03NzZiLTQzOGEtOTM4Mi02NjIxNzE4NTg2MTV9IiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjEuOS4xNSIsInNjb3JlIjoxMDkxNX1d"
+  >
+    <div class="flex h-screen overflow-hidden" bis_skin_checked="1">
+      <!-- Sidebar -->
+      <div
+        id="sidebar"
+        class="sidebar w-64 h-full fixed left-0 top-0 text-white overflow-y-auto z-30"
+        bis_skin_checked="1"
+      >
+        <!-- Logo -->
+        <div
+          class="p-4 flex justify-center items-center border-b border-white/20"
+          bis_skin_checked="1"
+        >
+          <div
+            class="bg-white rounded-full h-12 w-12 flex items-center justify-center"
+            bis_skin_checked="1"
+          >
+            <span
+              class="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 text-transparent bg-clip-text"
+              >Na</span
+            >
+          </div>
+          <h1 class="ml-3 text-xl font-bold">NavaaBoarding</h1>
+        </div>
+
+        <!-- Menu Items -->
+        <nav class="mt-4">
+          <a href="dashboard.html">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-tachometer-alt w-6"></i>
+              <span class="ml-2">Dashboard</span>
+            </div></a
+          >
+
+          <!-- Pembayaran Menu -->
+          <div class="mt-2" bis_skin_checked="">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('pembayaran-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-money-bill-wave w-6"></i>
+                <span class="ml-2">Pembayaran</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs transition-transform"
+                id="pembayaran-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="pembayaran-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="datapembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-invoice-dollar w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Pembayaran</span>
+                </div></a
+              >
+              <a href="pembayarantertunggak.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-circle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pembayaran Tertunggak</span>
+                </div></a
+              >
+              <a href="pengaturanpembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Pembayaran</span>
+                </div></a
+              >
+              <a href="pengingatdannotifikasi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bell w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengingat &amp; Notifikasi</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Siswa Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('siswa-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-graduate w-6"></i>
+                <span class="ml-2">Data Siswa</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="siswa-icon"
+                style="transform: rotate(180deg)"
+              ></i>
+            </div>
+            <div
+              id="siswa-submenu"
+              class="submenu pl-4 active"
+              bis_skin_checked="1"
+            >
+              <a href="ppdb.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-user-plus w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">PPDB</span>
+                </div></a
+              >
+              <a href="datasiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-users w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa</span>
+                </div></a
+              >
+              <a href="datasiswasakit.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-procedures w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa Sakit</span>
+                </div></a
+              >
+              <a href="prestasisiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-trophy w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Prestasi Siswa</span>
+                </div></a
+              >
+              <a href="datakamar.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bed w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kamar</span>
+                </div></a
+              >
+              <a href="datakelaspondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Pondok</span>
+                </div></a
+              >
+              <a href="datakelassekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Absensi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('absensi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-clipboard-check w-6"></i>
+                <span class="ml-2">Absensi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                style="transform: rotate(0deg)"
+                id="absensi-icon"
+              ></i>
+            </div>
+            <div id="absensi-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="absensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm"> Absensi Pondok</span>
+                </div></a
+              ><a href="absensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Absensi Sekolah</span>
+                </div></a
+              ><a href="pengaturanabsensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Pondok</span>
+                </div></a
+              ><a href="pengaturanabsensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Keamanan Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('keamanan-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-shield-alt w-6"></i>
+                <span class="ml-2">Keamanan</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="keamanan-icon"></i>
+            </div>
+            <div
+              id="keamanan-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="perizinan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-door-open w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Perizinan</span>
+                </div></a
+              >
+              <a href="pelaporankejadian.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-triangle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pelaporan Kejadian</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Alumni Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('alumni-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-tie w-6"></i>
+                <span class="ml-2">Data Alumni</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="alumni-icon"></i>
+            </div>
+            <div id="alumni-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="daftaralumni.html"
+                ><div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-list w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Daftar Alumni</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Dokumen Center Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('dokumen-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="ml-2">Dokumen Center</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="dokumen-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div id="dokumen-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="dokumenumum.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-alt w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Umum</span>
+                </div></a
+              ><a href="dokumenterbatas.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-lock w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Terbatas</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Informasi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('informasi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-info-circle w-6"></i>
+                <span class="ml-2">Informasi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="informasi-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="informasi-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="suratresmi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-envelope w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Surat Resmi</span>
+                </div></a
+              ><a href="sorotan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bullhorn w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Sorotan</span>
+                </div></a
+              >
+            </div>
+          </div>
+        </nav>
+
+        <!-- Fixed Bottom Menu -->
+        <div
+          class="mt-auto border-t border-white/20 pt-4 pb-4 px-4 absolute bottom-0 w-full bg-gradient-to-r from-green-700 to-blue-700"
+          bis_skin_checked="1"
+        >
+          <a href="pengaturan.html">
+            <div
+              class="px-4 py-2 rounded-lg cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-cog w-6"></i>
+              <span class="ml-2">Pengaturan</span>
+            </div></a
+          >
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col ml-64 main-content" bis_skin_checked="1">
+        <!-- Header -->
+        <header
+          class="bg-white shadow-sm h-16 flex items-center justify-between px-6 sticky top-0 z-20"
+        >
+          <div class="flex items-center" bis_skin_checked="1">
+            <button id="sidebar-toggle" class="mr-4 md:hidden">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div bis_skin_checked="1">
+              <p class="text-green-700 font-medium">Assalamu'alaikum Wr. Wb.</p>
+              <p class="text-sm text-gray-600" id="current-datetime">
+                Sabtu, 17 Mei 2025 pukul 21.00
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4" bis_skin_checked="1">
+            <div class="relative" bis_skin_checked="1">
+              <button class="relative">
+                <i class="fas fa-bell text-gray-600"></i>
+                <span
+                  class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+                  >3</span
+                >
+              </button>
+            </div>
+
+            <div class="relative" bis_skin_checked="1">
+              <div
+                class="flex items-center cursor-pointer"
+                id="profile-menu-button"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-bold mr-2"
+                  bis_skin_checked="1"
+                >
+                  A
+                </div>
+                <span class="font-medium">Admin Pondok</span>
+                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+              </div>
+
+              <div
+                id="profile-dropdown"
+                class="dropdown-profile bg-white shadow-lg rounded-lg py-2 w-48 right-0"
+                bis_skin_checked="1"
+              >
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-user mr-2"></i> Profil Akun
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-cog mr-2"></i> Pengaturan Akun
+                </a>
+                <div
+                  class="border-t border-gray-200 my-1"
+                  bis_skin_checked="1"
+                ></div>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-red-600 hover:bg-gray-100"
+                >
+                  <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+          <div class="bg-white rounded-xl shadow-md p-6" bis_skin_checked="1">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">
+              PPDB - Penerimaan Peserta Didik Baru
+            </h1>
+
+            <!-- Status Cards -->
+            <div
+              class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
+              bis_skin_checked="1"
+            >
+              <div
+                class="bg-gradient-to-r from-red-50 to-red-100 p-6 rounded-xl shadow-sm card"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="flex items-center justify-between"
+                  bis_skin_checked="1"
+                >
+                  <div bis_skin_checked="1">
+                    <p class="text-red-800 text-sm font-medium">Belum Bayar</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">45</h2>
+                    <p class="text-red-600 text-sm mt-1">Calon Siswa</p>
+                  </div>
+                  <div class="bg-red-200 p-3 rounded-full" bis_skin_checked="1">
+                    <i
+                      class="fas fa-exclamation-circle text-red-600 text-xl"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-gradient-to-r from-yellow-50 to-yellow-100 p-6 rounded-xl shadow-sm card"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="flex items-center justify-between"
+                  bis_skin_checked="1"
+                >
+                  <div bis_skin_checked="1">
+                    <p class="text-yellow-800 text-sm font-medium">Uang Muka</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">28</h2>
+                    <p class="text-yellow-600 text-sm mt-1">Calon Siswa</p>
+                  </div>
+                  <div
+                    class="bg-yellow-200 p-3 rounded-full"
+                    bis_skin_checked="1"
+                  >
+                    <i
+                      class="fas fa-hourglass-half text-yellow-600 text-xl"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-xl shadow-sm card"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="flex items-center justify-between"
+                  bis_skin_checked="1"
+                >
+                  <div bis_skin_checked="1">
+                    <p class="text-green-800 text-sm font-medium">Lunas</p>
+                    <h2 class="text-3xl font-bold text-gray-800 mt-1">32</h2>
+                    <p class="text-green-600 text-sm mt-1">Calon Siswa</p>
+                  </div>
+                  <div
+                    class="bg-green-200 p-3 rounded-full"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Link Pendaftaran -->
+            <div
+              class="bg-indigo-50 p-5 rounded-xl mb-8 flex flex-col md:flex-row justify-between items-center"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <h3 class="text-lg font-semibold text-indigo-900">
+                  Link Pendaftaran PPDB
+                </h3>
+                <p class="text-indigo-700 text-sm mt-1">
+                  Bagikan link ini kepada calon orang tua siswa untuk
+                  pendaftaran online
+                </p>
+              </div>
+              <div class="mt-4 md:mt-0 flex items-center" bis_skin_checked="1">
+                <input
+                  type="text"
+                  value="https://pesantren-example.com/ppdb/daftar"
+                  class="px-4 py-2 border border-indigo-300 rounded-l-lg bg-white text-gray-700 w-64"
+                  readonly=""
+                  id="registration-link"
+                />
+                <button
+                  onclick="copyRegistrationLink()"
+                  class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-r-lg tooltip"
+                >
+                  <i class="fas fa-copy"></i>
+                  <span class="tooltiptext" id="copy-tooltip">Salin link</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter and Search -->
+            <div
+              class="bg-white border border-gray-200 rounded-xl p-5 mb-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="grid grid-cols-1 md:grid-cols-4 gap-4"
+                bis_skin_checked="1"
+              >
+                <div bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Jenjang Pendidikan</label
+                  >
+                  <select
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <option value="">Semua Jenjang</option>
+                    <option value="sd">SD/MI</option>
+                    <option value="smp">SMP/MTs</option>
+                    <option value="sma">SMA/MA</option>
+                  </select>
+                </div>
+                <div bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Gelombang</label
+                  >
+                  <select
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    <option value="">Semua Gelombang</option>
+                    <option value="1">Gelombang 1</option>
+                    <option value="2">Gelombang 2</option>
+                    <option value="3">Gelombang 3</option>
+                  </select>
+                </div>
+                <div bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Cari</label
+                  >
+                  <input
+                    type="text"
+                    placeholder="ID, NISN, atau Nama"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                  />
+                </div>
+                <div class="flex items-end space-x-2" bis_skin_checked="1">
+                  <button
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex-1"
+                  >
+                    <i class="fas fa-search mr-2"></i> Cari
+                  </button>
+                  <button
+                    onclick="showModal('modal-add-student')"
+                    class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg"
+                  >
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  <button
+                    onclick="exportData()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg"
+                  >
+                    <i class="fas fa-file-export"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabs and Table -->
+            <div bis_skin_checked="1">
+              <!-- Tabs -->
+              <div class="border-b border-gray-200 mb-4" bis_skin_checked="1">
+                <div class="flex space-x-8" bis_skin_checked="1">
+                  <button
+                    id="tab-all"
+                    class="tab-active py-3 px-1 text-center text-gray-700"
+                    onclick="switchTab('all')"
+                  >
+                    Semua
+                  </button>
+                  <button
+                    id="tab-unpaid"
+                    class="py-3 px-1 text-center text-gray-700"
+                    onclick="switchTab('unpaid')"
+                  >
+                    Belum Bayar
+                  </button>
+                  <button
+                    id="tab-partial"
+                    class="py-3 px-1 text-center text-gray-700"
+                    onclick="switchTab('partial')"
+                  >
+                    Uang Muka
+                  </button>
+                  <button
+                    id="tab-paid"
+                    class="py-3 px-1 text-center text-gray-700"
+                    onclick="switchTab('paid')"
+                  >
+                    Lunas
+                  </button>
+                </div>
+              </div>
+
+              <!-- Table -->
+              <div
+                class="overflow-x-auto bg-white rounded-lg shadow"
+                bis_skin_checked="1"
+              >
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        ID
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        NISN
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Nama
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Jenjang
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Gelombang
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Status
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Tagihan Tersisa
+                      </th>
+                      <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    class="bg-white divide-y divide-gray-200"
+                    id="student-table-body"
+                  >
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-001
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        1234567890
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Ahmad Fauzi
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMP/MTs
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 1
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-partial"
+                          >Uang Muka</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 5.000.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(0)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-0"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-001')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-001')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-001')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-001')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-001')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-002
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        2345678901
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Siti Nurhaliza
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMA/MA
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 1
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-unpaid"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 7.500.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(1)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-1"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-002')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-002')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-002')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-002')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-002')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-003
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        3456789012
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Muhammad Rizki
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SD/MI
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 2
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-paid">Lunas</span>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 0
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(2)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-2"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-003')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-003')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-003')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-003')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-003')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-004
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        4567890123
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Anisa Rahma
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMP/MTs
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 2
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-partial"
+                          >Uang Muka</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 4.000.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(3)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-3"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-004')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-004')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-004')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-004')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-004')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-005
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        5678901234
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Budi Santoso
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMA/MA
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 1
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-unpaid"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 7.500.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(4)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-4"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-005')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-005')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-005')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-005')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-005')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-006
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        6789012345
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Dewi Lestari
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SD/MI
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 3
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-paid">Lunas</span>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 0
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(5)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-5"
+                            class="dropdown-content show"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-006')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-006')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-006')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-006')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-006')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-007
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        7890123456
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Eko Prasetyo
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMP/MTs
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 2
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-unpaid"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 6.500.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(6)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-6"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-007')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-007')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-007')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-007')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-007')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-008
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        8901234567
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Fitri Handayani
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMA/MA
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 3
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-partial"
+                          >Uang Muka</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 3.500.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(7)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-7"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-008')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-008')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-008')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-008')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-008')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-009
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        9012345678
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Gunawan Wibisono
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SD/MI
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 1
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-paid">Lunas</span>
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 0
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(8)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-8"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-009')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-009')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-009')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-009')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-009')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        PPDB-2023-010
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        0123456789
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                      >
+                        Hani Permata
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        SMP/MTs
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        Gelombang 3
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <span class="status-badge status-unpaid"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                      >
+                        Rp 6.500.000
+                      </td>
+                      <td
+                        class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                      >
+                        <div class="dropdown" bis_skin_checked="1">
+                          <button
+                            onclick="toggleDropdown(9)"
+                            class="text-gray-500 hover:text-gray-700"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            id="dropdown-9"
+                            class="dropdown-content"
+                            bis_skin_checked="1"
+                          >
+                            <a
+                              href="#"
+                              onclick="showStudentDetail('PPDB-2023-010')"
+                              ><i class="fas fa-eye mr-2"></i> Detail</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showPaymentModal('PPDB-2023-010')"
+                              ><i class="fas fa-money-bill-wave mr-2"></i> Input
+                              Pembayaran</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showReminderModal('PPDB-2023-010')"
+                              ><i class="fas fa-bell mr-2"></i> Kirim
+                              Pengingat</a
+                            >
+                            <a href="#" onclick="showEditModal('PPDB-2023-010')"
+                              ><i class="fas fa-edit mr-2"></i> Ubah</a
+                            >
+                            <a
+                              href="#"
+                              onclick="showDeleteModal('PPDB-2023-010')"
+                              ><i class="fas fa-trash-alt mr-2"></i> Hapus</a
+                            >
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between mt-4"
+                bis_skin_checked="1"
+              >
+                <div class="text-sm text-gray-700" bis_skin_checked="1">
+                  Menampilkan <span class="font-medium">1</span> sampai
+                  <span class="font-medium">10</span> dari
+                  <span class="font-medium">105</span> data
+                </div>
+                <div class="flex space-x-2" bis_skin_checked="1">
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    Sebelumnya
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-indigo-500 bg-indigo-500 rounded-md text-sm text-white"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-white text-gray-700 hover:bg-gray-50"
+                  >
+                    Selanjutnya
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal Tambah Calon Siswa -->
+    <div
+      id="modal-add-student"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h3 class="text-lg font-semibold text-gray-900">
+            Tambah Calon Siswa
+          </h3>
+          <button
+            onclick="hideModal('modal-add-student')"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            bis_skin_checked="1"
+          >
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >NISN</label
+              >
+              <input
+                type="text"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Masukkan NISN"
+              />
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Nama Lengkap</label
+              >
+              <input
+                type="text"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Masukkan nama lengkap"
+              />
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Jenjang Pendidikan</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Pilih Jenjang</option>
+                <option value="sd">SD/MI</option>
+                <option value="smp">SMP/MTs</option>
+                <option value="sma">SMA/MA</option>
+              </select>
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Gelombang</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Pilih Gelombang</option>
+                <option value="1">Gelombang 1</option>
+                <option value="2">Gelombang 2</option>
+                <option value="3">Gelombang 3</option>
+              </select>
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Tanggal Lahir</label
+              >
+              <input
+                type="date"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Jenis Kelamin</label
+              >
+              <select
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="L">Laki-laki</option>
+                <option value="P">Perempuan</option>
+              </select>
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Nama Orang Tua/Wali</label
+              >
+              <input
+                type="text"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Masukkan nama orang tua/wali"
+              />
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >No. HP Orang Tua/Wali</label
+              >
+              <input
+                type="text"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Masukkan nomor HP"
+              />
+            </div>
+            <div class="md:col-span-2" bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Alamat</label
+              >
+              <textarea
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                rows="2"
+                placeholder="Masukkan alamat lengkap"
+              ></textarea>
+            </div>
+          </div>
+          <div class="flex justify-end mt-6" bis_skin_checked="1">
+            <button
+              type="button"
+              onclick="hideModal('modal-add-student')"
+              class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onclick="addStudent()"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+            >
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Detail Siswa -->
+    <div
+      id="modal-detail-student"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h3 class="text-lg font-semibold text-gray-900">
+            Detail Calon Siswa
+          </h3>
+          <button
+            onclick="hideModal('modal-detail-student')"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" bis_skin_checked="1">
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">ID Pendaftaran</h4>
+            <p class="text-gray-900" id="detail-id">PPDB-2023-001</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">NISN</h4>
+            <p class="text-gray-900" id="detail-nisn">1234567890</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">Nama Lengkap</h4>
+            <p class="text-gray-900" id="detail-name">Ahmad Fauzi</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">
+              Jenjang Pendidikan
+            </h4>
+            <p class="text-gray-900" id="detail-level">SMP/MTs</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">Gelombang</h4>
+            <p class="text-gray-900" id="detail-batch">Gelombang 1</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">Status Pembayaran</h4>
+            <p class="text-gray-900" id="detail-status">
+              <span class="status-badge status-partial">Uang Muka</span>
+            </p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">
+              Tanggal Pendaftaran
+            </h4>
+            <p class="text-gray-900" id="detail-date">15 Mei 2023</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">Tagihan Tersisa</h4>
+            <p class="text-gray-900" id="detail-remaining">Rp 5.000.000</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">
+              Nama Orang Tua/Wali
+            </h4>
+            <p class="text-gray-900" id="detail-parent">Budi Santoso</p>
+          </div>
+          <div bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">
+              No. HP Orang Tua/Wali
+            </h4>
+            <p class="text-gray-900" id="detail-phone">081234567890</p>
+          </div>
+          <div class="md:col-span-2" bis_skin_checked="1">
+            <h4 class="text-sm font-medium text-gray-500">Alamat</h4>
+            <p class="text-gray-900" id="detail-address">
+              Jl. Merdeka No. 123, Kota Jakarta
+            </p>
+          </div>
+        </div>
+        <div class="mt-6" bis_skin_checked="1">
+          <h4 class="text-sm font-medium text-gray-500 mb-2">
+            Riwayat Pembayaran
+          </h4>
+          <div class="bg-gray-50 rounded-lg p-4" bis_skin_checked="1">
+            <div
+              class="flex justify-between items-center mb-2"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <p class="text-sm font-medium text-gray-900">Uang Muka</p>
+                <p class="text-xs text-gray-500">20 Mei 2023</p>
+              </div>
+              <p class="text-sm font-medium text-green-600">Rp 2.000.000</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end mt-6" bis_skin_checked="1">
+          <button
+            type="button"
+            onclick="hideModal('modal-detail-student')"
+            class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Input Pembayaran -->
+    <div
+      id="modal-payment"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h3 class="text-lg font-semibold text-gray-900">Input Pembayaran</h3>
+          <button
+            onclick="hideModal('modal-payment')"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Nama Siswa</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Ahmad Fauzi"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Total Tagihan</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Rp 7.000.000"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Sudah Dibayar</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Rp 2.000.000"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Sisa Tagihan</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Rp 5.000.000"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Jumlah Pembayaran</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Masukkan jumlah pembayaran"
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Metode Pembayaran</label
+            >
+            <select
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Pilih metode pembayaran</option>
+              <option value="transfer">Transfer Bank</option>
+              <option value="cash">Tunai</option>
+            </select>
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Tanggal Pembayaran</label
+            >
+            <input
+              type="date"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Keterangan</label
+            >
+            <textarea
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              rows="2"
+              placeholder="Masukkan keterangan (opsional)"
+            ></textarea>
+          </div>
+          <div class="flex justify-end mt-6" bis_skin_checked="1">
+            <button
+              type="button"
+              onclick="hideModal('modal-payment')"
+              class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onclick="savePayment()"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+            >
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Kirim Pengingat -->
+    <div
+      id="modal-reminder"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h3 class="text-lg font-semibold text-gray-900">
+            Kirim Pengingat Pembayaran
+          </h3>
+          <button
+            onclick="hideModal('modal-reminder')"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Nama Siswa</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Ahmad Fauzi"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Nama Orang Tua/Wali</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Budi Santoso"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >No. HP</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="081234567890"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Sisa Tagihan</label
+            >
+            <input
+              type="text"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              value="Rp 5.000.000"
+              readonly=""
+            />
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Template Pesan</label
+            >
+            <select
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              id="reminder-template"
+              onchange="updateReminderMessage()"
+            >
+              <option value="default">Pengingat Pembayaran Standar</option>
+              <option value="urgent">Pengingat Pembayaran Mendesak</option>
+              <option value="final">Pengingat Pembayaran Terakhir</option>
+            </select>
+          </div>
+          <div class="mb-4" bis_skin_checked="1">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Pesan</label
+            >
+            <textarea
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              rows="4"
+              id="reminder-message"
+            >
+Yth. Bapak/Ibu Budi Santoso, kami mengingatkan bahwa masih terdapat tagihan pembayaran PPDB untuk Ahmad Fauzi sebesar Rp 5.000.000. Mohon segera melakukan pembayaran. Terima kasih.</textarea
+            >
+          </div>
+          <div class="flex justify-end mt-6" bis_skin_checked="1">
+            <button
+              type="button"
+              onclick="hideModal('modal-reminder')"
+              class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onclick="sendReminder()"
+              class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+            >
+              Kirim
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div
+      id="modal-delete"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus</h3>
+          <button
+            onclick="hideModal('modal-delete')"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="mb-6" bis_skin_checked="1">
+          <p class="text-gray-700">
+            Apakah Anda yakin ingin menghapus data calon siswa
+            <span class="font-semibold" id="delete-student-name"
+              >Ahmad Fauzi</span
+            >?
+          </p>
+          <p class="text-red-600 text-sm mt-2">
+            Perhatian: Tindakan ini tidak dapat dibatalkan.
+          </p>
+        </div>
+        <div class="flex justify-end" bis_skin_checked="1">
+          <button
+            type="button"
+            onclick="hideModal('modal-delete')"
+            class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mr-2"
+          >
+            Batal
+          </button>
+          <button
+            type="button"
+            onclick="deleteStudent()"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+          >
+            Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sample data
+      const students = [
+        {
+          id: "PPDB-2023-001",
+          nisn: "1234567890",
+          name: "Ahmad Fauzi",
+          level: "SMP/MTs",
+          batch: "1",
+          status: "partial",
+          remaining: "Rp 5.000.000",
+        },
+        {
+          id: "PPDB-2023-002",
+          nisn: "2345678901",
+          name: "Siti Nurhaliza",
+          level: "SMA/MA",
+          batch: "1",
+          status: "unpaid",
+          remaining: "Rp 7.500.000",
+        },
+        {
+          id: "PPDB-2023-003",
+          nisn: "3456789012",
+          name: "Muhammad Rizki",
+          level: "SD/MI",
+          batch: "2",
+          status: "paid",
+          remaining: "Rp 0",
+        },
+        {
+          id: "PPDB-2023-004",
+          nisn: "4567890123",
+          name: "Anisa Rahma",
+          level: "SMP/MTs",
+          batch: "2",
+          status: "partial",
+          remaining: "Rp 4.000.000",
+        },
+        {
+          id: "PPDB-2023-005",
+          nisn: "5678901234",
+          name: "Budi Santoso",
+          level: "SMA/MA",
+          batch: "1",
+          status: "unpaid",
+          remaining: "Rp 7.500.000",
+        },
+        {
+          id: "PPDB-2023-006",
+          nisn: "6789012345",
+          name: "Dewi Lestari",
+          level: "SD/MI",
+          batch: "3",
+          status: "paid",
+          remaining: "Rp 0",
+        },
+        {
+          id: "PPDB-2023-007",
+          nisn: "7890123456",
+          name: "Eko Prasetyo",
+          level: "SMP/MTs",
+          batch: "2",
+          status: "unpaid",
+          remaining: "Rp 6.500.000",
+        },
+        {
+          id: "PPDB-2023-008",
+          nisn: "8901234567",
+          name: "Fitri Handayani",
+          level: "SMA/MA",
+          batch: "3",
+          status: "partial",
+          remaining: "Rp 3.500.000",
+        },
+        {
+          id: "PPDB-2023-009",
+          nisn: "9012345678",
+          name: "Gunawan Wibisono",
+          level: "SD/MI",
+          batch: "1",
+          status: "paid",
+          remaining: "Rp 0",
+        },
+        {
+          id: "PPDB-2023-010",
+          nisn: "0123456789",
+          name: "Hani Permata",
+          level: "SMP/MTs",
+          batch: "3",
+          status: "unpaid",
+          remaining: "Rp 6.500.000",
+        },
+      ];
+
+      // Current active tab
+      let activeTab = "all";
+
+      // Initialize the page
+      document.addEventListener("DOMContentLoaded", function () {
+        populateTable();
+      });
+
+      // Tab switching
+      function switchTab(tab) {
+        const tabs = ["all", "unpaid", "partial", "paid"];
+        tabs.forEach((t) => {
+          document.getElementById(`tab-${t}`).classList.remove("tab-active");
+        });
+        document.getElementById(`tab-${tab}`).classList.add("tab-active");
+        activeTab = tab;
+        populateTable();
+      }
+
+      // Populate table based on active tab
+      function populateTable() {
+        const tableBody = document.getElementById("student-table-body");
+        tableBody.innerHTML = "";
+
+        let filteredStudents = students;
+        if (activeTab !== "all") {
+          filteredStudents = students.filter(
+            (student) => student.status === activeTab
+          );
+        }
+
+        filteredStudents.forEach((student, index) => {
+          const row = document.createElement("tr");
+
+          // Status badge class
+          let statusBadgeClass = "";
+          let statusText = "";
+
+          if (student.status === "unpaid") {
+            statusBadgeClass = "status-unpaid";
+            statusText = "Belum Bayar";
+          } else if (student.status === "partial") {
+            statusBadgeClass = "status-partial";
+            statusText = "Uang Muka";
+          } else if (student.status === "paid") {
+            statusBadgeClass = "status-paid";
+            statusText = "Lunas";
+          }
+
+          row.innerHTML = `
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.id}</td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.nisn}</td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${student.name}</td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${student.level}</td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Gelombang ${student.batch}</td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                   <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+               </td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${student.remaining}</td>
+               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                   <div class="dropdown">
+                       <button onclick="toggleDropdown(${index})" class="text-gray-500 hover:text-gray-700">
+                           <i class="fas fa-ellipsis-v"></i>
+                       </button>
+                       <div id="dropdown-${index}" class="dropdown-content">
+                           <a href="#" onclick="showStudentDetail('${student.id}')"><i class="fas fa-eye mr-2"></i> Detail</a>
+                           <a href="#" onclick="showPaymentModal('${student.id}')"><i class="fas fa-money-bill-wave mr-2"></i> Input Pembayaran</a>
+                           <a href="#" onclick="showReminderModal('${student.id}')"><i class="fas fa-bell mr-2"></i> Kirim Pengingat</a>
+                           <a href="#" onclick="showEditModal('${student.id}')"><i class="fas fa-edit mr-2"></i> Ubah</a>
+                           <a href="#" onclick="showDeleteModal('${student.id}')"><i class="fas fa-trash-alt mr-2"></i> Hapus</a>
+                       </div>
+                   </div>
+               </td>
+           `;
+
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Dropdown toggle
+      function toggleDropdown(id) {
+        document.getElementById(`dropdown-${id}`).classList.toggle("show");
+      }
+
+      // Close dropdowns when clicking outside
+      window.onclick = function (event) {
+        if (!event.target.matches(".fa-ellipsis-v")) {
+          const dropdowns = document.getElementsByClassName("dropdown-content");
+          for (let i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].classList.contains("show")) {
+              dropdowns[i].classList.remove("show");
+            }
+          }
+        }
+      };
+
+      // Modal functions
+      function showModal(id) {
+        document.getElementById(id).classList.remove("hidden");
+      }
+
+      function hideModal(id) {
+        document.getElementById(id).classList.add("hidden");
+      }
+
+      // Copy registration link
+      function copyRegistrationLink() {
+        const copyText = document.getElementById("registration-link");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+
+        const tooltip = document.getElementById("copy-tooltip");
+        tooltip.innerHTML = "Tersalin!";
+
+        setTimeout(function () {
+          tooltip.innerHTML = "Salin link";
+        }, 2000);
+      }
+
+      // Show student detail
+      function showStudentDetail(id) {
+        // In a real app, you would fetch the student details from the server
+        // For now, we'll just show the modal
+        showModal("modal-detail-student");
+      }
+
+      // Show payment modal
+      function showPaymentModal(id) {
+        showModal("modal-payment");
+      }
+
+      // Show reminder modal
+      function showReminderModal(id) {
+        showModal("modal-reminder");
+      }
+
+      // Show edit modal
+      function showEditModal(id) {
+        // In a real app, you would populate the form with the student's data
+        showModal("modal-add-student");
+      }
+
+      // Show delete modal
+      function showDeleteModal(id) {
+        // Find the student by id
+        const student = students.find((s) => s.id === id);
+        if (student) {
+          document.getElementById("delete-student-name").textContent =
+            student.name;
+        }
+        showModal("modal-delete");
+      }
+
+      // Add new student
+      function addStudent() {
+        // Logic to add student would go here
+        hideModal("modal-add-student");
+        // Show success notification
+        showNotification("Data calon siswa berhasil ditambahkan!");
+      }
+
+      // Save payment
+      function savePayment() {
+        // Logic to save payment would go here
+        hideModal("modal-payment");
+        // Show success notification
+        showNotification("Pembayaran berhasil disimpan!");
+        // Refresh the table
+        populateTable();
+      }
+
+      // Send reminder
+      function sendReminder() {
+        // Logic to send reminder would go here
+        hideModal("modal-reminder");
+        // Show success notification
+        showNotification("Pengingat pembayaran berhasil dikirim!");
+      }
+
+      // Delete student
+      function deleteStudent() {
+        // Logic to delete student would go here
+        hideModal("modal-delete");
+        // Show success notification
+        showNotification("Data calon siswa berhasil dihapus!");
+        // Refresh the table
+        populateTable();
+      }
+
+      // Export data
+      function exportData() {
+        // Logic to export data would go here
+        showNotification("Data berhasil diekspor!");
+      }
+
+      // Update reminder message based on template
+      function updateReminderMessage() {
+        const template = document.getElementById("reminder-template").value;
+        const messageField = document.getElementById("reminder-message");
+
+        if (template === "default") {
+          messageField.value =
+            "Yth. Bapak/Ibu Budi Santoso, kami mengingatkan bahwa masih terdapat tagihan pembayaran PPDB untuk Ahmad Fauzi sebesar Rp 5.000.000. Mohon segera melakukan pembayaran. Terima kasih.";
+        } else if (template === "urgent") {
+          messageField.value =
+            "PENTING: Yth. Bapak/Ibu Budi Santoso, kami mengingatkan kembali bahwa tagihan pembayaran PPDB untuk Ahmad Fauzi sebesar Rp 5.000.000 sudah mendekati tenggat waktu. Mohon segera melakukan pembayaran untuk menghindari pembatalan pendaftaran. Terima kasih.";
+        } else if (template === "final") {
+          messageField.value =
+            "PENGINGAT TERAKHIR: Yth. Bapak/Ibu Budi Santoso, ini adalah pengingat terakhir untuk tagihan pembayaran PPDB Ahmad Fauzi sebesar Rp 5.000.000. Jika tidak dilakukan pembayaran dalam 3 hari, pendaftaran akan dibatalkan. Terima kasih.";
+        }
+      }
+
+      // Success notification
+      function showNotification(message) {
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-300";
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.style.opacity = "0";
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 3000);
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'941487cf12568196',t:'MTc0NzQ5OTc1NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <iframe
+      height="1"
+      width="1"
+      style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: medium;
+        visibility: hidden;
+      "
+    ></iframe>
+
+    <!-- Do Not Delete -->
+    <script>
+      // Update current date and time
+      function updateDateTime() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        document.getElementById("current-datetime").textContent =
+          now.toLocaleDateString("id-ID", options);
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 60000); // Update every minute
+
+      // Toggle sidebar on mobile
+      document
+        .getElementById("sidebar-toggle")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("open");
+        });
+
+      // Toggle submenu
+      function toggleSubmenu(id) {
+        const submenu = document.getElementById(id);
+        const icon = document.getElementById(id.split("-")[0] + "-icon");
+
+        if (submenu.classList.contains("active")) {
+          submenu.classList.remove("active");
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          submenu.classList.add("active");
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+      // Toggle profile dropdown
+      document
+        .getElementById("profile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("profile-dropdown").classList.toggle("show");
+        });
+
+      // Close dropdown when clicking outside
+      window.addEventListener("click", function (event) {
+        if (!event.target.closest("#profile-menu-button")) {
+          const dropdown = document.getElementById("profile-dropdown");
+          if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+          }
+        }
+
+        // Close action dropdowns when clicking outside
+        if (!event.target.closest(".action-button")) {
+          const actionDropdowns = document.querySelectorAll(".action-dropdown");
+          actionDropdowns.forEach((dropdown) => {
+            if (dropdown.classList.contains("show")) {
+              dropdown.classList.remove("show");
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

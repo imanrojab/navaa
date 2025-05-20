@@ -1,0 +1,2385 @@
+<html lang="id">
+  <script>
+    window[
+      Symbol.for("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}")
+    ] = new (class {
+      constructor(e, t) {
+        (this.name = e),
+          (this.destination = t),
+          (this.serverListeners = {}),
+          (this.bgRequestsListeners = {}),
+          (this.bgEventsListeners = {}),
+          window.addEventListener("message", (e) => {
+            const t = e.data,
+              s = !(t.destination && t.destination === this.name),
+              n = !t.event;
+            if (!s && !n)
+              if ("MARIO_POST_SERVER__BG_RESPONSE" === t.event) {
+                const e = t.args;
+                if (this.hasBgRequestListener(e.requestId)) {
+                  try {
+                    this.bgRequestsListeners[e.requestId](e.response);
+                  } catch (e) {}
+                  delete this.bgRequestsListeners[e.requestId];
+                }
+              } else if ("MARIO_POST_SERVER__BG_EVENT" === t.event) {
+                const e = t.args;
+                if (this.hasBgEventListener(e.event))
+                  try {
+                    this.bgEventsListeners[t.id](e.payload);
+                  } catch (e) {}
+              } else if (this.hasServerListener(t.event))
+                try {
+                  this.serverListeners[t.event](t.args);
+                } catch (e) {}
+          });
+      }
+      emitToServer(e, t) {
+        const s = this.generateUIID(),
+          n = { args: t, destination: this.destination, event: e, id: s };
+        return window.postMessage(n, location.origin), s;
+      }
+      emitToBg(e, t) {
+        const s = this.generateUIID(),
+          n = { bgEventName: e, requestId: s, args: t };
+        return this.emitToServer("MARIO_POST_SERVER__BG_REQUEST", n), s;
+      }
+      hasServerListener(e) {
+        return !!this.serverListeners[e];
+      }
+      hasBgRequestListener(e) {
+        return !!this.bgRequestsListeners[e];
+      }
+      hasBgEventListener(e) {
+        return !!this.bgEventsListeners[e];
+      }
+      fromServerEvent(e, t) {
+        this.serverListeners[e] = t;
+      }
+      fromBgEvent(e, t) {
+        this.bgEventsListeners[e] = t;
+      }
+      fromBgResponse(e, t) {
+        this.bgRequestsListeners[e] = t;
+      }
+      generateUIID() {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+          /[xy]/g,
+          function (e) {
+            const t = (16 * Math.random()) | 0;
+            return ("x" === e ? t : (3 & t) | 8).toString(16);
+          }
+        );
+      }
+    })(
+      "MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}",
+      "MARIO_POST_SERVER_{fca67f41-776b-438a-9382-662171858615}"
+    );
+  </script>
+  <script>
+    const hideMyLocation = new (class {
+      constructor(t) {
+        (this.clientKey = t),
+          (this.watchIDs = {}),
+          (this.client = window[Symbol.for(t)]);
+        const e = navigator.geolocation.getCurrentPosition,
+          o = navigator.geolocation.watchPosition,
+          n = navigator.geolocation.clearWatch,
+          i = this;
+        (navigator.geolocation.getCurrentPosition = function (t, o, n) {
+          i.handle(e, "GET", t, o, n);
+        }),
+          (navigator.geolocation.watchPosition = function (t, e, n) {
+            return i.handle(o, "WATCH", t, e, n);
+          }),
+          (navigator.geolocation.clearWatch = function (t) {
+            if (-1 === t) return;
+            const e = i.watchIDs[t];
+            return delete i.watchIDs[t], n.apply(this, [e]);
+          });
+      }
+      handle(t, e, o, n, i) {
+        const a = this.client.emitToBg("HIDE_MY_LOCATION__GET_LOCATION");
+        let r = this.getRandomInt(0, 1e5);
+        if (
+          (this.client.fromBgResponse(a, (a) => {
+            if (a.enabled)
+              if ("SUCCESS" === a.status) {
+                const t = this.map(a);
+                o(t);
+              } else {
+                const t = this.errorObj();
+                n(t), (r = -1);
+              }
+            else {
+              const a = [o, n, i],
+                c = t.apply(navigator.geolocation, a);
+              "WATCH" === e && (this.watchIDs[r] = c);
+            }
+          }),
+          "WATCH" === e)
+        )
+          return r;
+      }
+      map(t) {
+        return {
+          coords: {
+            accuracy: 20,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            latitude: t.latitude,
+            longitude: t.longitude,
+            speed: null,
+          },
+          timestamp: Date.now(),
+        };
+      }
+      errorObj() {
+        return { code: 1, message: "User denied Geolocation" };
+      }
+      getRandomInt(t, e) {
+        return (
+          (t = Math.ceil(t)),
+          (e = Math.floor(e)),
+          Math.floor(Math.random() * (e - t + 1)) + t
+        );
+      }
+    })("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}");
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NavaaBoarding - Dashboard Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script ecommerce-type="extend-native-history-api">
+      (() => {
+        const e = history.pushState,
+          t = history.replaceState,
+          a = history.back,
+          r = history.forward;
+        function n() {
+          window.postMessage({ _custom_type_: "CUSTOM_ON_URL_CHANGED" });
+        }
+        (history.pushState = function () {
+          e.apply(history, arguments), n();
+        }),
+          (history.replaceState = function () {
+            t.apply(history, arguments), n();
+          }),
+          (history.back = function () {
+            a.apply(history, arguments), n();
+          }),
+          (history.forward = function () {
+            r.apply(history, arguments), n();
+          });
+      })();
+    </script>
+    <script>
+      (function inject(e) {
+        function SendXHRCandidate(e, t, n, r, i) {
+          try {
+            var o = "detector",
+              s = {
+                posdMessageId: "PANELOS_MESSAGE",
+                posdHash: (
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15)
+                ).substring(0, 22),
+                type: "VIDEO_XHR_CANDIDATE",
+                from: o,
+                to: o.substring(0, 6),
+                content: { requestMethod: e, url: t, type: n, content: r },
+              };
+            i && i[0] && i[0].length && (s.content.encodedPostBody = i[0]),
+              window.postMessage(s, "*");
+          } catch (e) {}
+        }
+        var t = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function () {
+          (this.requestMethod = arguments[0]), t.apply(this, arguments);
+        };
+        var n = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function () {
+          var t = Object.assign(arguments, {}),
+            r = this.onreadystatechange;
+          return (
+            (this.onreadystatechange = function () {
+              if (
+                (4 !== this.readyState ||
+                  (function isFrameInBlackList(t) {
+                    return e.some(function (e) {
+                      return t.includes(e);
+                    });
+                  })(this.responseURL) ||
+                  setTimeout(
+                    SendXHRCandidate(
+                      this.requestMethod,
+                      this.responseURL,
+                      this.getResponseHeader("content-type"),
+                      this.response,
+                      t
+                    ),
+                    0
+                  ),
+                r)
+              )
+                return r.apply(this, arguments);
+            }),
+            n.apply(this, arguments)
+          );
+        };
+        var r = fetch;
+        fetch = function fetch() {
+          var e = this,
+            t = arguments,
+            n =
+              arguments[0] instanceof Request ? arguments[0].url : arguments[0],
+            i = arguments[0] instanceof Request ? arguments[0].method : "GET";
+          return new Promise(function (o, s) {
+            r.apply(e, t)
+              .then(function (e) {
+                if (e.body instanceof ReadableStream) {
+                  var t = e.json;
+                  e.json = function () {
+                    var r = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      t.apply(o, r)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              JSON.stringify(t)
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                  var r = e.text;
+                  e.text = function () {
+                    var t = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      r.apply(o, t)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              t
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                }
+                o.apply(this, arguments);
+              })
+              .catch(function () {
+                s.apply(this, arguments);
+              });
+          });
+        };
+      })([
+        "facebook.com/",
+        "twitter.com/",
+        "youtube-nocookie.com/embed/",
+        "//vk.com/",
+        "//www.vk.com/",
+        "//linkedin.com/",
+        "//www.linkedin.com/",
+        "//instagram.com/",
+        "//www.instagram.com/",
+        "//www.google.com/recaptcha/api2/",
+        "//hangouts.google.com/webchat/",
+        "//www.google.com/calendar/",
+        "//www.google.com/maps/embed",
+        "spotify.com/",
+        "soundcloud.com/",
+        "//player.vimeo.com/",
+        "//disqus.com/",
+        "//tgwidget.com/",
+        "//js.driftt.com/",
+        "friends2follow.com",
+        "/widget",
+        "login",
+        "//video.bigmir.net/",
+        "blogger.com",
+        "//smartlock.google.com/",
+        "//keep.google.com/",
+        "/web.tolstoycomments.com/",
+        "moz-extension://",
+        "chrome-extension://",
+        "/auth/",
+        "//analytics.google.com/",
+        "adclarity.com",
+        "paddle.com/checkout",
+        "hcaptcha.com",
+        "recaptcha.net",
+        "2captcha.com",
+        "accounts.google.com",
+        "www.google.com/shopping/customerreviews",
+        "buy.tinypass.com",
+        "gstatic.com",
+        "secureir.ebaystatic.com",
+        "docs.google.com",
+        "contacts.google.com",
+        "github.com",
+        "mail.google.com",
+        "chat.google.com",
+        "audio.xpleer.com",
+        "keepa.com",
+        "static.xx.fbcdn.net",
+      ]);
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-gray-50 all-sidebar absensisekolah-page"
+    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6IntmY2E2N2Y0MS03NzZiLTQzOGEtOTM4Mi02NjIxNzE4NTg2MTV9IiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjEuOS4xNSIsInNjb3JlIjoxMDkxNX1d"
+  >
+    <div class="flex h-screen overflow-hidden" bis_skin_checked="1">
+      <!-- Sidebar -->
+      <div
+        id="sidebar"
+        class="sidebar w-64 h-full fixed left-0 top-0 text-white overflow-y-auto z-30"
+        bis_skin_checked="1"
+      >
+        <!-- Logo -->
+        <div
+          class="p-4 flex justify-center items-center border-b border-white/20"
+          bis_skin_checked="1"
+        >
+          <div
+            class="bg-white rounded-full h-12 w-12 flex items-center justify-center"
+            bis_skin_checked="1"
+          >
+            <span
+              class="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 text-transparent bg-clip-text"
+              >NB</span
+            >
+          </div>
+          <h1 class="ml-3 text-xl font-bold">NavaaBoarding</h1>
+        </div>
+
+        <!-- Menu Items -->
+        <nav class="mt-4">
+          <a href="dashboard.html">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-tachometer-alt w-6"></i>
+              <span class="ml-2">Dashboard</span>
+            </div></a
+          >
+
+          <!-- Pembayaran Menu -->
+          <div class="mt-2" bis_skin_checked="">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('pembayaran-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-money-bill-wave w-6"></i>
+                <span class="ml-2">Pembayaran</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs transition-transform"
+                id="pembayaran-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="pembayaran-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="datapembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-invoice-dollar w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Pembayaran</span>
+                </div></a
+              >
+              <a href="pembayarantertunggak.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-circle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pembayaran Tertunggak</span>
+                </div></a
+              >
+              <a href="pengaturanpembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Pembayaran</span>
+                </div></a
+              >
+              <a href="pengingatdannotifikasi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bell w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengingat &amp; Notifikasi</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Siswa Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('siswa-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-graduate w-6"></i>
+                <span class="ml-2">Data Siswa</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="siswa-icon"></i>
+            </div>
+            <div id="siswa-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="ppdb.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-user-plus w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">PPDB</span>
+                </div></a
+              >
+              <a href="datasiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-users w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa</span>
+                </div></a
+              >
+              <a href="datasiswasakit.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-procedures w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa Sakit</span>
+                </div></a
+              >
+              <a href="prestasisiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-trophy w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Prestasi Siswa</span>
+                </div></a
+              >
+              <a href="datakamar.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bed w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kamar</span>
+                </div></a
+              >
+              <a href="datakelaspondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Pondok</span>
+                </div></a
+              >
+              <a href="datakelassekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Absensi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('absensi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-clipboard-check w-6"></i>
+                <span class="ml-2">Absensi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                style="transform: rotate(180deg)"
+                id="absensi-icon"
+              ></i>
+            </div>
+            <div
+              id="absensi-submenu"
+              class="submenu pl-4 active"
+              bis_skin_checked="1"
+            >
+              <a href="absensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm"> Absensi Pondok</span>
+                </div></a
+              ><a href="absensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Absensi Sekolah</span>
+                </div></a
+              ><a href="pengaturanabsensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Pondok</span>
+                </div></a
+              ><a href="pengaturanabsensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Keamanan Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('keamanan-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-shield-alt w-6"></i>
+                <span class="ml-2">Keamanan</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="keamanan-icon"></i>
+            </div>
+            <div
+              id="keamanan-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="perizinan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-door-open w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Perizinan</span>
+                </div></a
+              >
+              <a href="pelaporankejadian.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-triangle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pelaporan Kejadian</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Alumni Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('alumni-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-tie w-6"></i>
+                <span class="ml-2">Data Alumni</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="alumni-icon"></i>
+            </div>
+            <div id="alumni-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="daftaralumni.html"
+                ><div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-list w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Daftar Alumni</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Dokumen Center Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('dokumen-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="ml-2">Dokumen Center</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="dokumen-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div id="dokumen-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="dokumenumum.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-alt w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Umum</span>
+                </div></a
+              ><a href="dokumenterbatas.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-lock w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Terbatas</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Informasi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('informasi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-info-circle w-6"></i>
+                <span class="ml-2">Informasi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="informasi-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="informasi-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="suratresmi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-envelope w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Surat Resmi</span>
+                </div></a
+              ><a href="sorotan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bullhorn w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Sorotan</span>
+                </div></a
+              >
+            </div>
+          </div>
+        </nav>
+
+        <!-- Fixed Bottom Menu -->
+        <div
+          class="mt-auto border-t border-white/20 pt-4 pb-4 px-4 absolute bottom-0 w-full bg-gradient-to-r from-green-700 to-blue-700"
+          bis_skin_checked="1"
+        >
+          <a href="pengaturan.html">
+            <div
+              class="px-4 py-2 rounded-lg cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-cog w-6"></i>
+              <span class="ml-2">Pengaturan</span>
+            </div></a
+          >
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col ml-64 main-content" bis_skin_checked="1">
+        <!-- Header -->
+        <header
+          class="bg-white shadow-sm h-16 flex items-center justify-between px-6 sticky top-0 z-20"
+        >
+          <div class="flex items-center" bis_skin_checked="1">
+            <button id="sidebar-toggle" class="mr-4 md:hidden">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div bis_skin_checked="1">
+              <p class="text-green-700 font-medium">Assalamu'alaikum Wr. Wb.</p>
+              <p class="text-sm text-gray-600" id="current-datetime">
+                Sabtu, 17 Mei 2025 pukul 21.00
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4" bis_skin_checked="1">
+            <div class="relative" bis_skin_checked="1">
+              <button class="relative">
+                <i class="fas fa-bell text-gray-600"></i>
+                <span
+                  class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+                  >3</span
+                >
+              </button>
+            </div>
+
+            <div class="relative" bis_skin_checked="1">
+              <div
+                class="flex items-center cursor-pointer"
+                id="profile-menu-button"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-bold mr-2"
+                  bis_skin_checked="1"
+                >
+                  A
+                </div>
+                <span class="font-medium">Admin Pondok</span>
+                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+              </div>
+
+              <div
+                id="profile-dropdown"
+                class="dropdown-profile bg-white shadow-lg rounded-lg py-2 w-48 right-0"
+                bis_skin_checked="1"
+              >
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-user mr-2"></i> Profil Akun
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-cog mr-2"></i> Pengaturan Akun
+                </a>
+                <div
+                  class="border-t border-gray-200 my-1"
+                  bis_skin_checked="1"
+                ></div>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-red-600 hover:bg-gray-100"
+                >
+                  <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+          <!-- Header -->
+          <div class="mb-6" bis_skin_checked="1">
+            <h1 class="text-2xl font-bold text-gray-800">Absensi Sekolah</h1>
+            <p class="text-gray-600">
+              Pantau kegiatan Sekolah siswa dengan absensi
+            </p>
+          </div>
+          <!-- Stats Cards -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
+            bis_skin_checked="1"
+          >
+            <div
+              class="card bg-white rounded-xl shadow-md p-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="flex items-center justify-between"
+                bis_skin_checked="1"
+              >
+                <div bis_skin_checked="1">
+                  <p class="text-sm text-gray-500">Hadir Hari Ini</p>
+                  <h2 class="text-2xl font-bold text-gray-800" id="hadirCount">
+                    1
+                  </h2>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full" bis_skin_checked="1">
+                  <i class="fas fa-user-check text-green-500"></i>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card bg-white rounded-xl shadow-md p-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="flex items-center justify-between"
+                bis_skin_checked="1"
+              >
+                <div bis_skin_checked="1">
+                  <p class="text-sm text-gray-500">Sakit</p>
+                  <h2 class="text-2xl font-bold text-gray-800" id="sakitCount">
+                    1
+                  </h2>
+                </div>
+                <div class="bg-red-100 p-3 rounded-full" bis_skin_checked="1">
+                  <i class="fas fa-procedures text-red-500"></i>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card bg-white rounded-xl shadow-md p-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="flex items-center justify-between"
+                bis_skin_checked="1"
+              >
+                <div bis_skin_checked="1">
+                  <p class="text-sm text-gray-500">Izin</p>
+                  <h2 class="text-2xl font-bold text-gray-800" id="izinCount">
+                    2
+                  </h2>
+                </div>
+                <div
+                  class="bg-yellow-100 p-3 rounded-full"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-alt text-yellow-500"></i>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card bg-white rounded-xl shadow-md p-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="flex items-center justify-between"
+                bis_skin_checked="1"
+              >
+                <div bis_skin_checked="1">
+                  <p class="text-sm text-gray-500">Tanpa Keterangan</p>
+                  <h2 class="text-2xl font-bold text-gray-800" id="alphaCount">
+                    1
+                  </h2>
+                </div>
+                <div class="bg-gray-100 p-3 rounded-full" bis_skin_checked="1">
+                  <i class="fas fa-question text-gray-500"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-4 mb-8" bis_skin_checked="1">
+            <button
+              id="btnMulaiAbsensi"
+              class="btn-primary rounded-lg px-6 py-3 font-medium flex items-center"
+            >
+              <i class="fas fa-clipboard-list mr-2"></i> Mulai Proses Absensi
+            </button>
+            <button
+              id="btnRevisiAbsensi"
+              class="btn-secondary rounded-lg px-6 py-3 font-medium flex items-center"
+            >
+              <i class="fas fa-edit mr-2"></i> Revisi Absensi
+            </button>
+          </div>
+
+          <!-- Search and Filter -->
+          <div
+            class="bg-white rounded-xl shadow-md p-6 mb-8"
+            bis_skin_checked="1"
+          >
+            <div
+              class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6"
+              bis_skin_checked="1"
+            >
+              <div class="relative flex-grow" bis_skin_checked="1">
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Cari siswa, kelas, atau wali kelas..."
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <i
+                  class="fas fa-search absolute left-3 top-3 text-gray-400"
+                ></i>
+              </div>
+              <div class="flex flex-wrap gap-2" bis_skin_checked="1">
+                <select
+                  id="filterKelas"
+                  class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Semua Kelas</option>
+                  <option value="10A">Kelas 10A</option>
+                  <option value="10B">Kelas 10B</option>
+                  <option value="11A">Kelas 11A</option>
+                  <option value="11B">Kelas 11B</option>
+                  <option value="12A">Kelas 12A</option>
+                  <option value="12B">Kelas 12B</option>
+                </select>
+                <select
+                  id="filterMapel"
+                  class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Semua Mata Pelajaran</option>
+                  <option value="Matematika">Matematika</option>
+                  <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                  <option value="Bahasa Inggris">Bahasa Inggris</option>
+                  <option value="Fisika">Fisika</option>
+                  <option value="Kimia">Kimia</option>
+                  <option value="Biologi">Biologi</option>
+                  <option value="Pendidikan Agama">Pendidikan Agama</option>
+                </select>
+                <select
+                  id="filterStatus"
+                  class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="hadir">Hadir</option>
+                  <option value="sakit">Sakit</option>
+                  <option value="ijin">Izin</option>
+                  <option value="alpha">Tanpa Keterangan</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto" bis_skin_checked="1">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      NISN/No
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Nama
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Kelas
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Mata Pelajaran
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Pengajar
+                    </th>
+                    <th
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="bg-white divide-y divide-gray-200"
+                  id="absensiTable"
+                >
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">1011</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center" bis_skin_checked="1">
+                        <div
+                          class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden"
+                          bis_skin_checked="1"
+                        >
+                          <svg
+                            class="w-full h-full text-purple-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <circle
+                              cx="10"
+                              cy="7"
+                              r="4"
+                              fill="#4B5563"
+                            ></circle>
+                            <path
+                              d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                              fill="#4B5563"
+                            ></path>
+                          </svg>
+                        </div>
+                        <div class="ml-4" bis_skin_checked="1">
+                          <div
+                            class="text-sm font-medium text-gray-900"
+                            bis_skin_checked="1"
+                          >
+                            Kartika Sari
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">Kelas 10B</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Matematika</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      Ustadz Muhammad Rizki, S.Pd
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full status-ijin"
+                      >
+                        Ijin
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">1012</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center" bis_skin_checked="1">
+                        <div
+                          class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden"
+                          bis_skin_checked="1"
+                        >
+                          <svg
+                            class="w-full h-full text-yellow-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <circle
+                              cx="10"
+                              cy="7"
+                              r="4"
+                              fill="#4B5563"
+                            ></circle>
+                            <path
+                              d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                              fill="#4B5563"
+                            ></path>
+                          </svg>
+                        </div>
+                        <div class="ml-4" bis_skin_checked="1">
+                          <div
+                            class="text-sm font-medium text-gray-900"
+                            bis_skin_checked="1"
+                          >
+                            Lukman Hakim
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">Kelas 10B</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Matematika</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      Ustadz Muhammad Rizki, S.Pd
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full status-hadir"
+                      >
+                        Hadir
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">1013</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center" bis_skin_checked="1">
+                        <div
+                          class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden"
+                          bis_skin_checked="1"
+                        >
+                          <svg
+                            class="w-full h-full text-red-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <circle
+                              cx="10"
+                              cy="7"
+                              r="4"
+                              fill="#4B5563"
+                            ></circle>
+                            <path
+                              d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                              fill="#4B5563"
+                            ></path>
+                          </svg>
+                        </div>
+                        <div class="ml-4" bis_skin_checked="1">
+                          <div
+                            class="text-sm font-medium text-gray-900"
+                            bis_skin_checked="1"
+                          >
+                            Mawar Indah
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">Kelas 10B</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Matematika</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      Ustadz Muhammad Rizki, S.Pd
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full status-sakit"
+                      >
+                        Sakit
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">1014</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center" bis_skin_checked="1">
+                        <div
+                          class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden"
+                          bis_skin_checked="1"
+                        >
+                          <svg
+                            class="w-full h-full text-indigo-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <circle
+                              cx="10"
+                              cy="7"
+                              r="4"
+                              fill="#4B5563"
+                            ></circle>
+                            <path
+                              d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                              fill="#4B5563"
+                            ></path>
+                          </svg>
+                        </div>
+                        <div class="ml-4" bis_skin_checked="1">
+                          <div
+                            class="text-sm font-medium text-gray-900"
+                            bis_skin_checked="1"
+                          >
+                            Nadia Putri
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">Kelas 10B</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Matematika</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      Ustadz Muhammad Rizki, S.Pd
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full status-alpha"
+                      >
+                        Alpha
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap">1015</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center" bis_skin_checked="1">
+                        <div
+                          class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden"
+                          bis_skin_checked="1"
+                        >
+                          <svg
+                            class="w-full h-full text-blue-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <circle
+                              cx="10"
+                              cy="7"
+                              r="4"
+                              fill="#4B5563"
+                            ></circle>
+                            <path
+                              d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                              fill="#4B5563"
+                            ></path>
+                          </svg>
+                        </div>
+                        <div class="ml-4" bis_skin_checked="1">
+                          <div
+                            class="text-sm font-medium text-gray-900"
+                            bis_skin_checked="1"
+                          >
+                            Oki Gunawan
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">Kelas 10B</td>
+                    <td class="px-6 py-4 whitespace-nowrap">Matematika</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      Ustadz Muhammad Rizki, S.Pd
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span
+                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full status-ijin"
+                      >
+                        Ijin
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal Mulai Absensi -->
+    <div
+      id="modalMulaiAbsensi"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-6"
+          bis_skin_checked="1"
+        >
+          <h2 class="text-2xl font-bold text-gray-800">Mulai Proses Absensi</h2>
+          <button class="closeModal text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="formMulaiAbsensi">
+          <div class="space-y-4" bis_skin_checked="1">
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Pilih Kelas</label
+              >
+              <select
+                id="selectKelas"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required=""
+              >
+                <option value="">Pilih Kelas</option>
+                <option value="10A">Kelas 10A</option>
+                <option value="10B">Kelas 10B</option>
+                <option value="11A">Kelas 11A</option>
+                <option value="11B">Kelas 11B</option>
+                <option value="12A">Kelas 12A</option>
+                <option value="12B">Kelas 12B</option>
+              </select>
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Mata Pelajaran</label
+              >
+              <select
+                id="selectMapel"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required=""
+              >
+                <option value="">Pilih Mata Pelajaran</option>
+                <option value="Matematika">Matematika</option>
+                <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                <option value="Bahasa Inggris">Bahasa Inggris</option>
+                <option value="Fisika">Fisika</option>
+                <option value="Kimia">Kimia</option>
+                <option value="Biologi">Biologi</option>
+                <option value="Pendidikan Agama">Pendidikan Agama</option>
+              </select>
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Tanggal</label
+              >
+              <input
+                type="date"
+                id="tanggalAbsensi"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required=""
+                max="2025-05-18"
+              />
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Wali Kelas</label
+              >
+              <input
+                type="text"
+                id="waliKelas"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100"
+                readonly=""
+                value="Ustadz Ahmad Fauzi, S.Pd"
+              />
+            </div>
+            <div bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Pengabsen</label
+              >
+              <input
+                type="text"
+                id="pengabsen"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-100"
+                readonly=""
+                value="Ustadz Muhammad Rizki, S.Pd"
+              />
+            </div>
+          </div>
+          <div class="mt-8" bis_skin_checked="1">
+            <button
+              type="submit"
+              class="w-full btn-primary rounded-lg py-3 font-medium"
+            >
+              Mulai Absensi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Proses Absensi -->
+    <div
+      id="modalProsesAbsensi"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-6"
+          bis_skin_checked="1"
+        >
+          <h2 class="text-2xl font-bold text-gray-800">Proses Absensi</h2>
+          <button class="closeModal text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="flex items-center justify-center mb-6" bis_skin_checked="1">
+          <button
+            id="prevStudent"
+            class="text-gray-500 hover:text-gray-700 text-2xl"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="mx-4 flex-grow" bis_skin_checked="1">
+            <div class="flex flex-col items-center" bis_skin_checked="1">
+              <div
+                class="w-24 h-24 rounded-full bg-gray-200 mb-4 overflow-hidden flex items-center justify-center"
+                id="studentPhotoContainer"
+                bis_skin_checked="1"
+              >
+                <svg
+                  class="w-full h-full text-blue-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <circle cx="10" cy="7" r="4" fill="#4B5563"></circle>
+                  <path
+                    d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                    fill="#4B5563"
+                  ></path>
+                </svg>
+              </div>
+              <p class="text-sm text-gray-500 mb-1">
+                Nomor Absen: <span id="nomorAbsen">5</span>
+              </p>
+              <h3 class="text-xl font-bold text-gray-800 mb-1" id="studentName">
+                Oki Gunawan
+              </h3>
+              <p class="text-gray-600" id="studentClass">Kelas 10B</p>
+            </div>
+          </div>
+          <button
+            id="nextStudent"
+            class="text-gray-500 hover:text-gray-700 text-2xl opacity-50"
+            disabled=""
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-4" bis_skin_checked="1">
+          <button
+            class="btn-success rounded-lg py-3 font-medium status-btn"
+            data-status="hadir"
+          >
+            <i class="fas fa-check-circle mr-2"></i> Hadir
+          </button>
+          <button
+            class="btn-warning rounded-lg py-3 font-medium status-btn"
+            data-status="ijin"
+          >
+            <i class="fas fa-file-alt mr-2"></i> Izin
+          </button>
+          <button
+            class="btn-danger rounded-lg py-3 font-medium status-btn"
+            data-status="sakit"
+          >
+            <i class="fas fa-procedures mr-2"></i> Sakit
+          </button>
+          <button
+            class="btn-secondary rounded-lg py-3 font-medium status-btn"
+            data-status="alpha"
+          >
+            <i class="fas fa-question-circle mr-2"></i> Tanpa Keterangan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Revisi Absensi -->
+    <div
+      id="modalRevisiAbsensi"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-6"
+          bis_skin_checked="1"
+        >
+          <h2 class="text-2xl font-bold text-gray-800">Revisi Absensi</h2>
+          <button class="closeModal text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="flex items-center justify-center mb-6" bis_skin_checked="1">
+          <button
+            id="prevStudentRevisi"
+            class="text-gray-500 hover:text-gray-700 text-2xl"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <div class="mx-4 flex-grow" bis_skin_checked="1">
+            <div class="flex flex-col items-center" bis_skin_checked="1">
+              <div
+                class="w-24 h-24 rounded-full bg-gray-200 mb-4 overflow-hidden flex items-center justify-center"
+                id="studentPhotoContainerRevisi"
+                bis_skin_checked="1"
+              >
+                <svg
+                  class="w-full h-full text-blue-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <circle cx="10" cy="7" r="4" fill="#4B5563"></circle>
+                  <path
+                    d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18"
+                    fill="#4B5563"
+                  ></path>
+                </svg>
+              </div>
+              <p class="text-sm text-gray-500 mb-1">
+                Nomor Absen: <span id="nomorAbsenRevisi">5</span>
+              </p>
+              <h3
+                class="text-xl font-bold text-gray-800 mb-1"
+                id="studentNameRevisi"
+              >
+                Oki Gunawan
+              </h3>
+              <p class="text-gray-600" id="studentClassRevisi">Kelas 10B</p>
+              <p class="text-sm text-gray-500 mt-2">
+                Status Saat Ini:
+                <span id="currentStatus" class="font-medium text-yellow-600"
+                  >Ijin</span
+                >
+              </p>
+            </div>
+          </div>
+          <button
+            id="nextStudentRevisi"
+            class="text-gray-500 hover:text-gray-700 text-2xl opacity-50"
+            disabled=""
+          >
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-2 gap-4" bis_skin_checked="1">
+          <button
+            class="btn-success rounded-lg py-3 font-medium status-btn-revisi"
+            data-status="hadir"
+          >
+            <i class="fas fa-check-circle mr-2"></i> Hadir
+          </button>
+          <button
+            class="btn-warning rounded-lg py-3 font-medium status-btn-revisi ring-2 ring-offset-2 ring-blue-500"
+            data-status="ijin"
+          >
+            <i class="fas fa-file-alt mr-2"></i> Izin
+          </button>
+          <button
+            class="btn-danger rounded-lg py-3 font-medium status-btn-revisi"
+            data-status="sakit"
+          >
+            <i class="fas fa-procedures mr-2"></i> Sakit
+          </button>
+          <button
+            class="btn-secondary rounded-lg py-3 font-medium status-btn-revisi"
+            data-status="alpha"
+          >
+            <i class="fas fa-question-circle mr-2"></i> Tanpa Keterangan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Sample data - Students with SVG photos
+      const students = [
+        {
+          id: 1,
+          nisn: "1001",
+          name: "Ahmad Farhan",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-blue-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 2,
+          nisn: "1002",
+          name: "Budi Santoso",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-green-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 3,
+          nisn: "1003",
+          name: "Citra Dewi",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-pink-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 4,
+          nisn: "1004",
+          name: "Dian Purnama",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-purple-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 5,
+          nisn: "1005",
+          name: "Eko Prasetyo",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-yellow-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 6,
+          nisn: "1006",
+          name: "Faisal Rahman",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-red-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 7,
+          nisn: "1007",
+          name: "Gita Nirmala",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-indigo-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 8,
+          nisn: "1008",
+          name: "Hadi Wijaya",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-blue-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 9,
+          nisn: "1009",
+          name: "Indah Permata",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-pink-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 10,
+          nisn: "1010",
+          name: "Joko Susilo",
+          class: "10A",
+          photo: `<svg class="w-full h-full text-green-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 11,
+          nisn: "1011",
+          name: "Kartika Sari",
+          class: "10B",
+          photo: `<svg class="w-full h-full text-purple-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 12,
+          nisn: "1012",
+          name: "Lukman Hakim",
+          class: "10B",
+          photo: `<svg class="w-full h-full text-yellow-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 13,
+          nisn: "1013",
+          name: "Mawar Indah",
+          class: "10B",
+          photo: `<svg class="w-full h-full text-red-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 14,
+          nisn: "1014",
+          name: "Nadia Putri",
+          class: "10B",
+          photo: `<svg class="w-full h-full text-indigo-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 15,
+          nisn: "1015",
+          name: "Oki Gunawan",
+          class: "10B",
+          photo: `<svg class="w-full h-full text-blue-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 16,
+          nisn: "1016",
+          name: "Putri Rahayu",
+          class: "11A",
+          photo: `<svg class="w-full h-full text-pink-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 17,
+          nisn: "1017",
+          name: "Qori Hidayat",
+          class: "11A",
+          photo: `<svg class="w-full h-full text-green-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 18,
+          nisn: "1018",
+          name: "Rudi Hartono",
+          class: "11A",
+          photo: `<svg class="w-full h-full text-purple-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 19,
+          nisn: "1019",
+          name: "Siti Nurhaliza",
+          class: "11B",
+          photo: `<svg class="w-full h-full text-yellow-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+        {
+          id: 20,
+          nisn: "1020",
+          name: "Tono Sucipto",
+          class: "11B",
+          photo: `<svg class="w-full h-full text-red-500" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="7" r="4" fill="#4B5563"/><path d="M2 18C2 14.5 5 12 10 12C15 12 18 14.5 18 18" fill="#4B5563"/></svg>`,
+        },
+      ];
+
+      // Sample data - Wali Kelas
+      const waliKelasData = {
+        "10A": "Ustadz Ahmad Fauzi, S.Pd",
+        "10B": "Ustadzah Siti Aminah, S.Pd",
+        "11A": "Ustadz Budi Santoso, M.Pd",
+        "11B": "Ustadzah Dewi Kartika, S.Pd",
+        "12A": "Ustadz Hasan Basri, S.Pd.I",
+        "12B": "Ustadzah Nur Hidayah, M.Pd",
+      };
+
+      // Attendance data
+      let attendanceData = [];
+      let currentStudentIndex = 0;
+      let selectedClass = "";
+      let selectedMapel = "";
+
+      // DOM Elements
+      const modalMulaiAbsensi = document.getElementById("modalMulaiAbsensi");
+      const modalProsesAbsensi = document.getElementById("modalProsesAbsensi");
+      const modalRevisiAbsensi = document.getElementById("modalRevisiAbsensi");
+      const btnMulaiAbsensi = document.getElementById("btnMulaiAbsensi");
+      const btnRevisiAbsensi = document.getElementById("btnRevisiAbsensi");
+      const formMulaiAbsensi = document.getElementById("formMulaiAbsensi");
+      const absensiTable = document.getElementById("absensiTable");
+      const searchInput = document.getElementById("searchInput");
+      const filterKelas = document.getElementById("filterKelas");
+      const filterMapel = document.getElementById("filterMapel");
+      const filterStatus = document.getElementById("filterStatus");
+      const tanggalAbsensi = document.getElementById("tanggalAbsensi");
+      const selectKelas = document.getElementById("selectKelas");
+      const selectMapel = document.getElementById("selectMapel");
+      const waliKelas = document.getElementById("waliKelas");
+      const pengabsen = document.getElementById("pengabsen");
+
+      // Set default date to today
+      const today = new Date();
+      const maxDate = today.toISOString().split("T")[0];
+      tanggalAbsensi.value = maxDate;
+      tanggalAbsensi.max = maxDate;
+
+      // Initialize with some sample attendance data
+      initializeSampleData();
+
+      function initializeSampleData() {
+        // Create sample attendance data for today
+        const sampleAttendanceData = students.slice(0, 15).map((student) => ({
+          ...student,
+          mapel: "Matematika",
+          pengajar: "Ustadz Muhammad Rizki, S.Pd",
+          status:
+            Math.random() > 0.2
+              ? "hadir"
+              : Math.random() > 0.5
+              ? "sakit"
+              : Math.random() > 0.5
+              ? "ijin"
+              : "alpha",
+          date: maxDate,
+        }));
+
+        attendanceData = sampleAttendanceData;
+        updateAttendanceTable();
+        updateAttendanceCounts();
+      }
+
+      // Open modal functions
+      btnMulaiAbsensi.addEventListener("click", () => {
+        modalMulaiAbsensi.classList.remove("hidden");
+        modalMulaiAbsensi.classList.add("fade-in");
+      });
+
+      btnRevisiAbsensi.addEventListener("click", () => {
+        if (attendanceData.length === 0) {
+          showNotification("Belum ada data absensi untuk direvisi", "warning");
+          return;
+        }
+        currentStudentIndex = 0;
+        updateRevisiStudentUI();
+        modalRevisiAbsensi.classList.remove("hidden");
+        modalRevisiAbsensi.classList.add("fade-in");
+      });
+
+      // Close modal functions
+      document.querySelectorAll(".closeModal").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          modalMulaiAbsensi.classList.add("hidden");
+          modalProsesAbsensi.classList.add("hidden");
+          modalRevisiAbsensi.classList.add("hidden");
+        });
+      });
+
+      // Form submission
+      formMulaiAbsensi.addEventListener("submit", (e) => {
+        e.preventDefault();
+        selectedClass = selectKelas.value;
+        selectedMapel = selectMapel.value;
+
+        // Filter students by selected class
+        const filteredStudents = students.filter(
+          (student) => student.class === selectedClass
+        );
+
+        if (filteredStudents.length === 0) {
+          showNotification("Tidak ada siswa di kelas ini", "warning");
+          return;
+        }
+
+        // Reset attendance data
+        attendanceData = filteredStudents.map((student) => ({
+          ...student,
+          mapel: selectedMapel,
+          pengajar: pengabsen.value,
+          status: null,
+          date: tanggalAbsensi.value,
+        }));
+
+        currentStudentIndex = 0;
+        modalMulaiAbsensi.classList.add("hidden");
+        updateStudentUI();
+        modalProsesAbsensi.classList.remove("hidden");
+        modalProsesAbsensi.classList.add("fade-in");
+
+        showNotification(
+          `Memulai absensi untuk kelas ${selectedClass}`,
+          "success"
+        );
+      });
+
+      // Update student UI in absensi process
+      function updateStudentUI() {
+        const student = attendanceData[currentStudentIndex];
+        document.getElementById("nomorAbsen").textContent =
+          currentStudentIndex + 1;
+        document.getElementById("studentName").textContent = student.name;
+        document.getElementById(
+          "studentClass"
+        ).textContent = `Kelas ${student.class}`;
+
+        // Handle student photo
+        if (student.photo) {
+          document.getElementById("studentPhotoContainer").innerHTML =
+            student.photo;
+        } else {
+          document.getElementById("studentPhotoContainer").innerHTML = `
+                  <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                  </svg>
+              `;
+        }
+
+        // Update navigation buttons
+        document.getElementById("prevStudent").disabled =
+          currentStudentIndex === 0;
+        document
+          .getElementById("prevStudent")
+          .classList.toggle("opacity-50", currentStudentIndex === 0);
+        document.getElementById("nextStudent").disabled =
+          currentStudentIndex === attendanceData.length - 1;
+        document
+          .getElementById("nextStudent")
+          .classList.toggle(
+            "opacity-50",
+            currentStudentIndex === attendanceData.length - 1
+          );
+      }
+
+      // Update student UI in revisi process
+      function updateRevisiStudentUI() {
+        const student = attendanceData[currentStudentIndex];
+        document.getElementById("nomorAbsenRevisi").textContent =
+          currentStudentIndex + 1;
+        document.getElementById("studentNameRevisi").textContent = student.name;
+        document.getElementById(
+          "studentClassRevisi"
+        ).textContent = `Kelas ${student.class}`;
+        document.getElementById("currentStatus").textContent = student.status
+          ? capitalizeFirstLetter(student.status)
+          : "Belum diabsen";
+
+        // Update status class
+        document.getElementById("currentStatus").className = "font-medium";
+        if (student.status) {
+          document
+            .getElementById("currentStatus")
+            .classList.add(`text-${getStatusColor(student.status)}-600`);
+        }
+
+        // Handle student photo
+        if (student.photo) {
+          document.getElementById("studentPhotoContainerRevisi").innerHTML =
+            student.photo;
+        } else {
+          document.getElementById("studentPhotoContainerRevisi").innerHTML = `
+                  <svg class="w-16 h-16 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                  </svg>
+              `;
+        }
+
+        // Update navigation buttons
+        document.getElementById("prevStudentRevisi").disabled =
+          currentStudentIndex === 0;
+        document
+          .getElementById("prevStudentRevisi")
+          .classList.toggle("opacity-50", currentStudentIndex === 0);
+        document.getElementById("nextStudentRevisi").disabled =
+          currentStudentIndex === attendanceData.length - 1;
+        document
+          .getElementById("nextStudentRevisi")
+          .classList.toggle(
+            "opacity-50",
+            currentStudentIndex === attendanceData.length - 1
+          );
+
+        // Highlight current status button
+        document.querySelectorAll(".status-btn-revisi").forEach((btn) => {
+          const btnStatus = btn.getAttribute("data-status");
+          btn.classList.toggle("ring-2", btnStatus === student.status);
+          btn.classList.toggle("ring-offset-2", btnStatus === student.status);
+          btn.classList.toggle("ring-blue-500", btnStatus === student.status);
+        });
+      }
+
+      // Navigation buttons
+      document.getElementById("prevStudent").addEventListener("click", () => {
+        if (currentStudentIndex > 0) {
+          currentStudentIndex--;
+          updateStudentUI();
+        }
+      });
+
+      document.getElementById("nextStudent").addEventListener("click", () => {
+        if (currentStudentIndex < attendanceData.length - 1) {
+          currentStudentIndex++;
+          updateStudentUI();
+        }
+      });
+
+      document
+        .getElementById("prevStudentRevisi")
+        .addEventListener("click", () => {
+          if (currentStudentIndex > 0) {
+            currentStudentIndex--;
+            updateRevisiStudentUI();
+          }
+        });
+
+      document
+        .getElementById("nextStudentRevisi")
+        .addEventListener("click", () => {
+          if (currentStudentIndex < attendanceData.length - 1) {
+            currentStudentIndex++;
+            updateRevisiStudentUI();
+          }
+        });
+
+      // Status buttons
+      document.querySelectorAll(".status-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const status = btn.getAttribute("data-status");
+          attendanceData[currentStudentIndex].status = status;
+
+          // Add animation
+          btn.classList.add("ring-2", "ring-offset-2", "ring-blue-500");
+          setTimeout(() => {
+            btn.classList.remove("ring-2", "ring-offset-2", "ring-blue-500");
+          }, 300);
+
+          if (currentStudentIndex < attendanceData.length - 1) {
+            currentStudentIndex++;
+            updateStudentUI();
+          } else {
+            modalProsesAbsensi.classList.add("hidden");
+            updateAttendanceTable();
+            updateAttendanceCounts();
+            showNotification("Absensi telah selesai", "success");
+          }
+        });
+      });
+
+      // Revisi status buttons
+      document.querySelectorAll(".status-btn-revisi").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const status = btn.getAttribute("data-status");
+          const oldStatus = attendanceData[currentStudentIndex].status;
+          attendanceData[currentStudentIndex].status = status;
+
+          // Add animation
+          btn.classList.add("ring-2", "ring-offset-2", "ring-blue-500");
+          setTimeout(() => {
+            btn.classList.remove("ring-2", "ring-offset-2", "ring-blue-500");
+          }, 300);
+
+          if (currentStudentIndex < attendanceData.length - 1) {
+            currentStudentIndex++;
+            updateRevisiStudentUI();
+          } else {
+            modalRevisiAbsensi.classList.add("hidden");
+            updateAttendanceTable();
+            updateAttendanceCounts();
+            showNotification(
+              `Status absensi berhasil direvisi dari ${capitalizeFirstLetter(
+                oldStatus
+              )} menjadi ${capitalizeFirstLetter(status)}`,
+              "success"
+            );
+          }
+        });
+      });
+
+      // Update attendance table
+      function updateAttendanceTable() {
+        absensiTable.innerHTML = "";
+
+        const filteredData = filterAttendanceData();
+
+        if (filteredData.length === 0) {
+          const emptyRow = document.createElement("tr");
+          emptyRow.innerHTML = `
+                  <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada data absensi</td>
+              `;
+          absensiTable.appendChild(emptyRow);
+          return;
+        }
+
+        filteredData.forEach((student) => {
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50 transition-colors";
+
+          const statusClass = getStatusClass(student.status);
+
+          row.innerHTML = `
+                  <td class="px-6 py-4 whitespace-nowrap">${student.nisn}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                          <div class="flex-shrink-0 h-10 w-10 rounded-full overflow-hidden">
+                              ${
+                                student.photo ||
+                                `
+                                  <svg class="h-10 w-10 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                      <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                  </svg>
+                              `
+                              }
+                          </div>
+                          <div class="ml-4">
+                              <div class="text-sm font-medium text-gray-900">${
+                                student.name
+                              }</div>
+                          </div>
+                      </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">Kelas ${
+                    student.class
+                  }</td>
+                  <td class="px-6 py-4 whitespace-nowrap">${student.mapel}</td>
+                  <td class="px-6 py-4 whitespace-nowrap">${
+                    student.pengajar
+                  }</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+                          ${
+                            student.status
+                              ? capitalizeFirstLetter(student.status)
+                              : "Belum diabsen"
+                          }
+                      </span>
+                  </td>
+              `;
+
+          absensiTable.appendChild(row);
+        });
+      }
+
+      // Filter attendance data based on search and filters
+      function filterAttendanceData() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const classFilter = filterKelas.value;
+        const mapelFilter = filterMapel.value;
+        const statusFilter = filterStatus.value;
+
+        return attendanceData.filter((student) => {
+          const matchSearch =
+            student.name.toLowerCase().includes(searchTerm) ||
+            student.class.toLowerCase().includes(searchTerm) ||
+            (student.pengajar &&
+              student.pengajar.toLowerCase().includes(searchTerm));
+
+          const matchClass = classFilter ? student.class === classFilter : true;
+          const matchMapel = mapelFilter ? student.mapel === mapelFilter : true;
+          const matchStatus = statusFilter
+            ? student.status === statusFilter
+            : true;
+
+          return matchSearch && matchClass && matchMapel && matchStatus;
+        });
+      }
+
+      // Update attendance counts
+      function updateAttendanceCounts() {
+        const hadirCount = attendanceData.filter(
+          (s) => s.status === "hadir"
+        ).length;
+        const sakitCount = attendanceData.filter(
+          (s) => s.status === "sakit"
+        ).length;
+        const ijinCount = attendanceData.filter(
+          (s) => s.status === "ijin"
+        ).length;
+        const alphaCount = attendanceData.filter(
+          (s) => s.status === "alpha"
+        ).length;
+
+        document.getElementById("hadirCount").textContent = hadirCount;
+        document.getElementById("sakitCount").textContent = sakitCount;
+        document.getElementById("izinCount").textContent = ijinCount;
+        document.getElementById("alphaCount").textContent = alphaCount;
+
+        // Add animation
+        document.querySelectorAll(".card").forEach((card) => {
+          card.classList.add("scale-105");
+          setTimeout(() => {
+            card.classList.remove("scale-105");
+          }, 300);
+        });
+      }
+
+      // Search and filter event listeners
+      searchInput.addEventListener("input", updateAttendanceTable);
+      filterKelas.addEventListener("change", updateAttendanceTable);
+      filterMapel.addEventListener("change", updateAttendanceTable);
+      filterStatus.addEventListener("change", updateAttendanceTable);
+
+      // Auto-populate wali kelas based on selected class
+      selectKelas.addEventListener("change", () => {
+        const selectedClass = selectKelas.value;
+        waliKelas.value = waliKelasData[selectedClass] || "";
+      });
+
+      // Show notification
+      function showNotification(message, type = "info") {
+        // Create notification element
+        const notification = document.createElement("div");
+        notification.className = `fixed bottom-4 right-4 px-6 py-3 rounded-lg shadow-lg text-white z-50 transform transition-all duration-500 translate-y-20 opacity-0`;
+
+        // Set background color based on type
+        switch (type) {
+          case "success":
+            notification.classList.add("bg-green-500");
+            break;
+          case "warning":
+            notification.classList.add("bg-yellow-500");
+            break;
+          case "error":
+            notification.classList.add("bg-red-500");
+            break;
+          default:
+            notification.classList.add("bg-blue-500");
+        }
+
+        notification.innerHTML = `
+              <div class="flex items-center">
+                  <i class="fas ${
+                    type === "success"
+                      ? "fa-check-circle"
+                      : type === "warning"
+                      ? "fa-exclamation-triangle"
+                      : type === "error"
+                      ? "fa-times-circle"
+                      : "fa-info-circle"
+                  } mr-2"></i>
+                  <span>${message}</span>
+              </div>
+          `;
+
+        document.body.appendChild(notification);
+
+        // Show notification
+        setTimeout(() => {
+          notification.classList.remove("translate-y-20", "opacity-0");
+        }, 100);
+
+        // Hide and remove notification
+        setTimeout(() => {
+          notification.classList.add("translate-y-20", "opacity-0");
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 500);
+        }, 3000);
+      }
+
+      // Helper functions
+      function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+
+      function getStatusClass(status) {
+        switch (status) {
+          case "hadir":
+            return "status-hadir";
+          case "sakit":
+            return "status-sakit";
+          case "ijin":
+            return "status-ijin";
+          case "alpha":
+            return "status-alpha";
+          default:
+            return "bg-gray-100 text-gray-800";
+        }
+      }
+
+      function getStatusColor(status) {
+        switch (status) {
+          case "hadir":
+            return "green";
+          case "sakit":
+            return "red";
+          case "ijin":
+            return "yellow";
+          case "alpha":
+            return "gray";
+          default:
+            return "gray";
+        }
+      }
+
+      // Initialize with sample data
+      updateAttendanceTable();
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'941738b99523ba3d',t:'MTc0NzUyNzk3MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+
+    <iframe
+      height="1"
+      width="1"
+      style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: medium;
+        visibility: hidden;
+      "
+    ></iframe>
+    <!-- Jangan dihapus -->
+    <script>
+      // Update current date and time
+      function updateDateTime() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        document.getElementById("current-datetime").textContent =
+          now.toLocaleDateString("id-ID", options);
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 60000); // Update every minute
+
+      // Toggle sidebar on mobile
+      document
+        .getElementById("sidebar-toggle")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("open");
+        });
+
+      // Toggle submenu
+      function toggleSubmenu(id) {
+        const submenu = document.getElementById(id);
+        const icon = document.getElementById(id.split("-")[0] + "-icon");
+
+        if (submenu.classList.contains("active")) {
+          submenu.classList.remove("active");
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          submenu.classList.add("active");
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+      // Toggle profile dropdown
+      document
+        .getElementById("profile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("profile-dropdown").classList.toggle("show");
+        });
+
+      // Close dropdown when clicking outside
+      window.addEventListener("click", function (event) {
+        if (!event.target.closest("#profile-menu-button")) {
+          const dropdown = document.getElementById("profile-dropdown");
+          if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+          }
+        }
+
+        // Close action dropdowns when clicking outside
+        if (!event.target.closest(".action-button")) {
+          const actionDropdowns = document.querySelectorAll(".action-dropdown");
+          actionDropdowns.forEach((dropdown) => {
+            if (dropdown.classList.contains("show")) {
+              dropdown.classList.remove("show");
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

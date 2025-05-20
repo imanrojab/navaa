@@ -1,0 +1,3304 @@
+<html lang="id">
+  <script>
+    window[
+      Symbol.for("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}")
+    ] = new (class {
+      constructor(e, t) {
+        (this.name = e),
+          (this.destination = t),
+          (this.serverListeners = {}),
+          (this.bgRequestsListeners = {}),
+          (this.bgEventsListeners = {}),
+          window.addEventListener("message", (e) => {
+            const t = e.data,
+              s = !(t.destination && t.destination === this.name),
+              n = !t.event;
+            if (!s && !n)
+              if ("MARIO_POST_SERVER__BG_RESPONSE" === t.event) {
+                const e = t.args;
+                if (this.hasBgRequestListener(e.requestId)) {
+                  try {
+                    this.bgRequestsListeners[e.requestId](e.response);
+                  } catch (e) {}
+                  delete this.bgRequestsListeners[e.requestId];
+                }
+              } else if ("MARIO_POST_SERVER__BG_EVENT" === t.event) {
+                const e = t.args;
+                if (this.hasBgEventListener(e.event))
+                  try {
+                    this.bgEventsListeners[t.id](e.payload);
+                  } catch (e) {}
+              } else if (this.hasServerListener(t.event))
+                try {
+                  this.serverListeners[t.event](t.args);
+                } catch (e) {}
+          });
+      }
+      emitToServer(e, t) {
+        const s = this.generateUIID(),
+          n = { args: t, destination: this.destination, event: e, id: s };
+        return window.postMessage(n, location.origin), s;
+      }
+      emitToBg(e, t) {
+        const s = this.generateUIID(),
+          n = { bgEventName: e, requestId: s, args: t };
+        return this.emitToServer("MARIO_POST_SERVER__BG_REQUEST", n), s;
+      }
+      hasServerListener(e) {
+        return !!this.serverListeners[e];
+      }
+      hasBgRequestListener(e) {
+        return !!this.bgRequestsListeners[e];
+      }
+      hasBgEventListener(e) {
+        return !!this.bgEventsListeners[e];
+      }
+      fromServerEvent(e, t) {
+        this.serverListeners[e] = t;
+      }
+      fromBgEvent(e, t) {
+        this.bgEventsListeners[e] = t;
+      }
+      fromBgResponse(e, t) {
+        this.bgRequestsListeners[e] = t;
+      }
+      generateUIID() {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+          /[xy]/g,
+          function (e) {
+            const t = (16 * Math.random()) | 0;
+            return ("x" === e ? t : (3 & t) | 8).toString(16);
+          }
+        );
+      }
+    })(
+      "MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}",
+      "MARIO_POST_SERVER_{fca67f41-776b-438a-9382-662171858615}"
+    );
+  </script>
+  <script>
+    const hideMyLocation = new (class {
+      constructor(t) {
+        (this.clientKey = t),
+          (this.watchIDs = {}),
+          (this.client = window[Symbol.for(t)]);
+        const e = navigator.geolocation.getCurrentPosition,
+          o = navigator.geolocation.watchPosition,
+          n = navigator.geolocation.clearWatch,
+          i = this;
+        (navigator.geolocation.getCurrentPosition = function (t, o, n) {
+          i.handle(e, "GET", t, o, n);
+        }),
+          (navigator.geolocation.watchPosition = function (t, e, n) {
+            return i.handle(o, "WATCH", t, e, n);
+          }),
+          (navigator.geolocation.clearWatch = function (t) {
+            if (-1 === t) return;
+            const e = i.watchIDs[t];
+            return delete i.watchIDs[t], n.apply(this, [e]);
+          });
+      }
+      handle(t, e, o, n, i) {
+        const a = this.client.emitToBg("HIDE_MY_LOCATION__GET_LOCATION");
+        let r = this.getRandomInt(0, 1e5);
+        if (
+          (this.client.fromBgResponse(a, (a) => {
+            if (a.enabled)
+              if ("SUCCESS" === a.status) {
+                const t = this.map(a);
+                o(t);
+              } else {
+                const t = this.errorObj();
+                n(t), (r = -1);
+              }
+            else {
+              const a = [o, n, i],
+                c = t.apply(navigator.geolocation, a);
+              "WATCH" === e && (this.watchIDs[r] = c);
+            }
+          }),
+          "WATCH" === e)
+        )
+          return r;
+      }
+      map(t) {
+        return {
+          coords: {
+            accuracy: 20,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            latitude: t.latitude,
+            longitude: t.longitude,
+            speed: null,
+          },
+          timestamp: Date.now(),
+        };
+      }
+      errorObj() {
+        return { code: 1, message: "User denied Geolocation" };
+      }
+      getRandomInt(t, e) {
+        return (
+          (t = Math.ceil(t)),
+          (e = Math.floor(e)),
+          Math.floor(Math.random() * (e - t + 1)) + t
+        );
+      }
+    })("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}");
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navaa - Surat Resmi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script ecommerce-type="extend-native-history-api">
+      (() => {
+        const e = history.pushState,
+          t = history.replaceState,
+          a = history.back,
+          r = history.forward;
+        function n() {
+          window.postMessage({ _custom_type_: "CUSTOM_ON_URL_CHANGED" });
+        }
+        (history.pushState = function () {
+          e.apply(history, arguments), n();
+        }),
+          (history.replaceState = function () {
+            t.apply(history, arguments), n();
+          }),
+          (history.back = function () {
+            a.apply(history, arguments), n();
+          }),
+          (history.forward = function () {
+            r.apply(history, arguments), n();
+          });
+      })();
+    </script>
+    <script>
+      (function inject(e) {
+        function SendXHRCandidate(e, t, n, r, i) {
+          try {
+            var o = "detector",
+              s = {
+                posdMessageId: "PANELOS_MESSAGE",
+                posdHash: (
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15)
+                ).substring(0, 22),
+                type: "VIDEO_XHR_CANDIDATE",
+                from: o,
+                to: o.substring(0, 6),
+                content: { requestMethod: e, url: t, type: n, content: r },
+              };
+            i && i[0] && i[0].length && (s.content.encodedPostBody = i[0]),
+              window.postMessage(s, "*");
+          } catch (e) {}
+        }
+        var t = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function () {
+          (this.requestMethod = arguments[0]), t.apply(this, arguments);
+        };
+        var n = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function () {
+          var t = Object.assign(arguments, {}),
+            r = this.onreadystatechange;
+          return (
+            (this.onreadystatechange = function () {
+              if (
+                (4 !== this.readyState ||
+                  (function isFrameInBlackList(t) {
+                    return e.some(function (e) {
+                      return t.includes(e);
+                    });
+                  })(this.responseURL) ||
+                  setTimeout(
+                    SendXHRCandidate(
+                      this.requestMethod,
+                      this.responseURL,
+                      this.getResponseHeader("content-type"),
+                      this.response,
+                      t
+                    ),
+                    0
+                  ),
+                r)
+              )
+                return r.apply(this, arguments);
+            }),
+            n.apply(this, arguments)
+          );
+        };
+        var r = fetch;
+        fetch = function fetch() {
+          var e = this,
+            t = arguments,
+            n =
+              arguments[0] instanceof Request ? arguments[0].url : arguments[0],
+            i = arguments[0] instanceof Request ? arguments[0].method : "GET";
+          return new Promise(function (o, s) {
+            r.apply(e, t)
+              .then(function (e) {
+                if (e.body instanceof ReadableStream) {
+                  var t = e.json;
+                  e.json = function () {
+                    var r = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      t.apply(o, r)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              JSON.stringify(t)
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                  var r = e.text;
+                  e.text = function () {
+                    var t = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      r.apply(o, t)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              t
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                }
+                o.apply(this, arguments);
+              })
+              .catch(function () {
+                s.apply(this, arguments);
+              });
+          });
+        };
+      })([
+        "facebook.com/",
+        "twitter.com/",
+        "youtube-nocookie.com/embed/",
+        "//vk.com/",
+        "//www.vk.com/",
+        "//linkedin.com/",
+        "//www.linkedin.com/",
+        "//instagram.com/",
+        "//www.instagram.com/",
+        "//www.google.com/recaptcha/api2/",
+        "//hangouts.google.com/webchat/",
+        "//www.google.com/calendar/",
+        "//www.google.com/maps/embed",
+        "spotify.com/",
+        "soundcloud.com/",
+        "//player.vimeo.com/",
+        "//disqus.com/",
+        "//tgwidget.com/",
+        "//js.driftt.com/",
+        "friends2follow.com",
+        "/widget",
+        "login",
+        "//video.bigmir.net/",
+        "blogger.com",
+        "//smartlock.google.com/",
+        "//keep.google.com/",
+        "/web.tolstoycomments.com/",
+        "moz-extension://",
+        "chrome-extension://",
+        "/auth/",
+        "//analytics.google.com/",
+        "adclarity.com",
+        "paddle.com/checkout",
+        "hcaptcha.com",
+        "recaptcha.net",
+        "2captcha.com",
+        "accounts.google.com",
+        "www.google.com/shopping/customerreviews",
+        "buy.tinypass.com",
+        "gstatic.com",
+        "secureir.ebaystatic.com",
+        "docs.google.com",
+        "contacts.google.com",
+        "github.com",
+        "mail.google.com",
+        "chat.google.com",
+        "audio.xpleer.com",
+        "keepa.com",
+        "static.xx.fbcdn.net",
+      ]);
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Include Quill.js for rich text editor -->
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gray-50 all-sidebar sorotan-page"
+    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6IntmY2E2N2Y0MS03NzZiLTQzOGEtOTM4Mi02NjIxNzE4NTg2MTV9IiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjEuOS4xNSIsInNjb3JlIjoxMDkxNX1d"
+  >
+    <div class="flex h-screen overflow-hidden" bis_skin_checked="1">
+      <!-- Sidebar -->
+      <div
+        id="sidebar"
+        class="sidebar w-64 h-full fixed left-0 top-0 text-white overflow-y-auto z-30"
+        bis_skin_checked="1"
+      >
+        <!-- Logo -->
+        <div
+          class="p-4 flex justify-center items-center border-b border-white/20"
+          bis_skin_checked="1"
+        >
+          <div
+            class="bg-white rounded-full h-12 w-12 flex items-center justify-center"
+            bis_skin_checked="1"
+          >
+            <span
+              class="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 text-transparent bg-clip-text"
+              >Na</span
+            >
+          </div>
+          <h1 class="ml-3 text-xl font-bold">NavaaBoarding</h1>
+        </div>
+
+        <!-- Menu Items -->
+        <nav class="mt-4">
+          <a href="dashboard.html">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-tachometer-alt w-6"></i>
+              <span class="ml-2">Dashboard</span>
+            </div></a
+          >
+
+          <!-- Pembayaran Menu -->
+          <div class="mt-2" bis_skin_checked="">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('pembayaran-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-money-bill-wave w-6"></i>
+                <span class="ml-2">Pembayaran</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs transition-transform"
+                id="pembayaran-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="pembayaran-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="datapembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-invoice-dollar w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Pembayaran</span>
+                </div></a
+              >
+              <a href="pembayarantertunggak.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-circle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pembayaran Tertunggak</span>
+                </div></a
+              >
+              <a href="pengaturanpembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Pembayaran</span>
+                </div></a
+              >
+              <a href="pengingatdannotifikasi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bell w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengingat &amp; Notifikasi</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Siswa Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('siswa-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-graduate w-6"></i>
+                <span class="ml-2">Data Siswa</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="siswa-icon"></i>
+            </div>
+            <div id="siswa-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="ppdb.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-user-plus w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">PPDB</span>
+                </div></a
+              >
+              <a href="datasiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-users w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa</span>
+                </div></a
+              >
+              <a href="datasiswasakit.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-procedures w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa Sakit</span>
+                </div></a
+              >
+              <a href="prestasisiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-trophy w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Prestasi Siswa</span>
+                </div></a
+              >
+              <a href="datakamar.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bed w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kamar</span>
+                </div></a
+              >
+              <a href="datakelaspondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Pondok</span>
+                </div></a
+              >
+              <a href="datakelassekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Absensi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('absensi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-clipboard-check w-6"></i>
+                <span class="ml-2">Absensi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                style="transform: rotate(0deg)"
+                id="absensi-icon"
+              ></i>
+            </div>
+            <div id="absensi-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="absensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm"> Absensi Pondok</span>
+                </div></a
+              ><a href="absensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Absensi Sekolah</span>
+                </div></a
+              ><a href="pengaturanabsensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Pondok</span>
+                </div></a
+              ><a href="pengaturanabsensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Keamanan Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('keamanan-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-shield-alt w-6"></i>
+                <span class="ml-2">Keamanan</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="keamanan-icon"></i>
+            </div>
+            <div
+              id="keamanan-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="perizinan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-door-open w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Perizinan</span>
+                </div></a
+              >
+              <a href="pelaporankejadian.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-triangle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pelaporan Kejadian</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Alumni Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('alumni-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-tie w-6"></i>
+                <span class="ml-2">Data Alumni</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="alumni-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div id="alumni-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="daftaralumni.html"
+                ><div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-list w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Daftar Alumni</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Dokumen Center Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('dokumen-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="ml-2">Dokumen Center</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="dokumen-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div id="dokumen-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="dokumenumum.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-alt w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Umum</span>
+                </div></a
+              ><a href="dokumenterbatas.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-lock w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Terbatas</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Informasi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('informasi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-info-circle w-6"></i>
+                <span class="ml-2">Informasi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="informasi-icon"
+                style="transform: rotate(180deg)"
+              ></i>
+            </div>
+            <div
+              id="informasi-submenu"
+              class="submenu pl-4 active"
+              bis_skin_checked="1"
+            >
+              <a href="suratresmi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-envelope w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Surat Resmi</span>
+                </div></a
+              ><a href="sorotan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bullhorn w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Sorotan</span>
+                </div></a
+              >
+            </div>
+          </div>
+        </nav>
+
+        <!-- Fixed Bottom Menu -->
+        <div
+          class="mt-auto border-t border-white/20 pt-4 pb-4 px-4 absolute bottom-0 w-full bg-gradient-to-r from-green-700 to-blue-700"
+          bis_skin_checked="1"
+        >
+          <a href="pengaturan.html">
+            <div
+              class="px-4 py-2 rounded-lg cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-cog w-6"></i>
+              <span class="ml-2">Pengaturan</span>
+            </div></a
+          >
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col ml-64 main-content" bis_skin_checked="1">
+        <!-- Header -->
+        <header
+          class="bg-white shadow-sm h-16 flex items-center justify-between px-6 sticky top-0 z-20"
+        >
+          <div class="flex items-center" bis_skin_checked="1">
+            <button id="sidebar-toggle" class="mr-4 md:hidden">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div bis_skin_checked="1">
+              <p class="text-green-700 font-medium">Assalamu'alaikum Wr. Wb.</p>
+              <p class="text-sm text-gray-600" id="current-datetime">
+                Sabtu, 17 Mei 2025 pukul 21.00
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4" bis_skin_checked="1">
+            <div class="relative" bis_skin_checked="1">
+              <button class="relative">
+                <i class="fas fa-bell text-gray-600"></i>
+                <span
+                  class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+                  >3</span
+                >
+              </button>
+            </div>
+
+            <div class="relative" bis_skin_checked="1">
+              <div
+                class="flex items-center cursor-pointer"
+                id="profile-menu-button"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-bold mr-2"
+                  bis_skin_checked="1"
+                >
+                  A
+                </div>
+                <span class="font-medium">Admin Pondok</span>
+                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+              </div>
+
+              <div
+                id="profile-dropdown"
+                class="dropdown-profile bg-white shadow-lg rounded-lg py-2 w-48 right-0"
+                bis_skin_checked="1"
+              >
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-user mr-2"></i> Profil Akun
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-cog mr-2"></i> Pengaturan Akun
+                </a>
+                <div
+                  class="border-t border-gray-200 my-1"
+                  bis_skin_checked="1"
+                ></div>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-red-600 hover:bg-gray-100"
+                >
+                  <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+          <div class="bg-white rounded-xl shadow-md p-6" bis_skin_checked="1">
+            <!-- Header -->
+            <div class="mb-8" bis_skin_checked="1">
+              <h1 class="text-2xl font-bold text-gray-800">Sorotan</h1>
+              <p class="text-gray-600">
+                Buat dan kelola artikel sorotan untuk ditampilkan di halaman
+                utama
+              </p>
+            </div>
+
+            <!-- Form Container -->
+            <div class="form-section mb-8" bis_skin_checked="1">
+              <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                Buat Sorotan Baru
+              </h2>
+
+              <form id="highlightForm">
+                <div class="space-y-6" bis_skin_checked="1">
+                  <div bis_skin_checked="1">
+                    <label for="title" class="form-label"
+                      >Judul <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      class="form-input"
+                      required=""
+                    />
+                  </div>
+
+                  <div bis_skin_checked="1">
+                    <label for="image" class="form-label"
+                      >Gambar Utama <span class="text-red-500">*</span></label
+                    >
+                    <div
+                      class="file-drop-area"
+                      id="dropArea"
+                      bis_skin_checked="1"
+                    >
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        class="hidden"
+                        accept="image/*"
+                      />
+                      <div class="space-y-2" bis_skin_checked="1">
+                        <i class="fas fa-image text-3xl text-gray-400"></i>
+                        <p class="text-sm text-gray-500">
+                          Klik atau seret gambar ke sini
+                        </p>
+                        <p class="text-xs text-gray-400">
+                          Format yang didukung: JPG, PNG, GIF
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      id="imagePreview"
+                      class="hidden mt-3 relative"
+                      bis_skin_checked="1"
+                    >
+                      <img
+                        id="previewImg"
+                        class="w-full h-48 object-cover rounded-lg"
+                        src=""
+                        alt="Preview"
+                      />
+                      <button
+                        type="button"
+                        id="removeImage"
+                        class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div bis_skin_checked="1">
+                    <label for="content" class="form-label"
+                      >Isi Artikel <span class="text-red-500">*</span></label
+                    >
+                    <div class="ql-snow" bis_skin_checked="1">
+                      <span class="ql-formats"
+                        ><span class="ql-picker"
+                          ><span
+                            class="ql-picker-label"
+                            tabindex="0"
+                            role="button"
+                            aria-expanded="false"
+                            aria-controls="ql-picker-options-0"
+                            ><svg viewBox="0 0 18 18">
+                              <polygon
+                                class="ql-stroke"
+                                points="7 11 9 13 11 11 7 11"
+                              ></polygon>
+                              <polygon
+                                class="ql-stroke"
+                                points="7 7 9 5 11 7 7 7"
+                              ></polygon></svg></span
+                          ><span
+                            class="ql-picker-options"
+                            aria-hidden="true"
+                            tabindex="-1"
+                            id="ql-picker-options-0"
+                            ><span
+                              tabindex="0"
+                              role="button"
+                              class="ql-picker-item"
+                              data-value="1"
+                            ></span
+                            ><span
+                              tabindex="0"
+                              role="button"
+                              class="ql-picker-item"
+                              data-value="2"
+                            ></span
+                            ><span
+                              tabindex="0"
+                              role="button"
+                              class="ql-picker-item"
+                              data-value="3"
+                            ></span
+                            ><span
+                              tabindex="0"
+                              role="button"
+                              class="ql-picker-item ql-selected"
+                            ></span></span></span
+                        ><select class="ql-header" style="display: none">
+                          <option value="1"></option>
+                          <option value="2"></option>
+                          <option value="3"></option>
+                          <option selected="selected"></option></select></span
+                      ><span class="ql-formats"
+                        ><button type="button" class="ql-bold">
+                          <svg viewBox="0 0 18 18">
+                            <path
+                              class="ql-stroke"
+                              d="M5,4H9.5A2.5,2.5,0,0,1,12,6.5v0A2.5,2.5,0,0,1,9.5,9H5A0,0,0,0,1,5,9V4A0,0,0,0,1,5,4Z"
+                            ></path>
+                            <path
+                              class="ql-stroke"
+                              d="M5,9h5.5A2.5,2.5,0,0,1,13,11.5v0A2.5,2.5,0,0,1,10.5,14H5a0,0,0,0,1,0,0V9A0,0,0,0,1,5,9Z"
+                            ></path>
+                          </svg></button
+                        ><button type="button" class="ql-italic">
+                          <svg viewBox="0 0 18 18">
+                            <line
+                              class="ql-stroke"
+                              x1="7"
+                              x2="13"
+                              y1="4"
+                              y2="4"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="5"
+                              x2="11"
+                              y1="14"
+                              y2="14"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="8"
+                              x2="10"
+                              y1="14"
+                              y2="4"
+                            ></line>
+                          </svg></button
+                        ><button type="button" class="ql-underline">
+                          <svg viewBox="0 0 18 18">
+                            <path
+                              class="ql-stroke"
+                              d="M5,3V9a4.012,4.012,0,0,0,4,4H9a4.012,4.012,0,0,0,4-4V3"
+                            ></path>
+                            <rect
+                              class="ql-fill"
+                              height="1"
+                              rx="0.5"
+                              ry="0.5"
+                              width="12"
+                              x="3"
+                              y="15"
+                            ></rect>
+                          </svg></button
+                        ><button type="button" class="ql-strike">
+                          <svg viewBox="0 0 18 18">
+                            <line
+                              class="ql-stroke ql-thin"
+                              x1="15.5"
+                              x2="2.5"
+                              y1="8.5"
+                              y2="9.5"
+                            ></line>
+                            <path
+                              class="ql-fill"
+                              d="M9.007,8C6.542,7.791,6,7.519,6,6.5,6,5.792,7.283,5,9,5c1.571,0,2.765.679,2.969,1.309a1,1,0,0,0,1.9-.617C13.356,4.106,11.354,3,9,3,6.2,3,4,4.538,4,6.5a3.2,3.2,0,0,0,.5,1.843Z"
+                            ></path>
+                            <path
+                              class="ql-fill"
+                              d="M8.984,10C11.457,10.208,12,10.479,12,11.5c0,0.708-1.283,1.5-3,1.5-1.571,0-2.765-.679-2.969-1.309a1,1,0,1,0-1.9.617C4.644,13.894,6.646,15,9,15c2.8,0,5-1.538,5-3.5a3.2,3.2,0,0,0-.5-1.843Z"
+                            ></path>
+                          </svg></button></span
+                      ><span class="ql-formats"
+                        ><button type="button" class="ql-list" value="ordered">
+                          <svg viewBox="0 0 18 18">
+                            <line
+                              class="ql-stroke"
+                              x1="7"
+                              x2="15"
+                              y1="4"
+                              y2="4"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="7"
+                              x2="15"
+                              y1="9"
+                              y2="9"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="7"
+                              x2="15"
+                              y1="14"
+                              y2="14"
+                            ></line>
+                            <line
+                              class="ql-stroke ql-thin"
+                              x1="2.5"
+                              x2="4.5"
+                              y1="5.5"
+                              y2="5.5"
+                            ></line>
+                            <path
+                              class="ql-fill"
+                              d="M3.5,6A0.5,0.5,0,0,1,3,5.5V3.085l-0.276.138A0.5,0.5,0,0,1,2.053,3c-0.124-.247-0.023-0.324.224-0.447l1-.5A0.5,0.5,0,0,1,4,2.5v3A0.5,0.5,0,0,1,3.5,6Z"
+                            ></path>
+                            <path
+                              class="ql-stroke ql-thin"
+                              d="M4.5,10.5h-2c0-.234,1.85-1.076,1.85-2.234A0.959,0.959,0,0,0,2.5,8.156"
+                            ></path>
+                            <path
+                              class="ql-stroke ql-thin"
+                              d="M2.5,14.846a0.959,0.959,0,0,0,1.85-.109A0.7,0.7,0,0,0,3.75,14a0.688,0.688,0,0,0,.6-0.736,0.959,0.959,0,0,0-1.85-.109"
+                            ></path>
+                          </svg></button
+                        ><button type="button" class="ql-list" value="bullet">
+                          <svg viewBox="0 0 18 18">
+                            <line
+                              class="ql-stroke"
+                              x1="6"
+                              x2="15"
+                              y1="4"
+                              y2="4"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="6"
+                              x2="15"
+                              y1="9"
+                              y2="9"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="6"
+                              x2="15"
+                              y1="14"
+                              y2="14"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="3"
+                              x2="3"
+                              y1="4"
+                              y2="4"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="3"
+                              x2="3"
+                              y1="9"
+                              y2="9"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="3"
+                              x2="3"
+                              y1="14"
+                              y2="14"
+                            ></line>
+                          </svg></button></span
+                      ><span class="ql-formats"
+                        ><button type="button" class="ql-link">
+                          <svg viewBox="0 0 18 18">
+                            <line
+                              class="ql-stroke"
+                              x1="7"
+                              x2="11"
+                              y1="7"
+                              y2="11"
+                            ></line>
+                            <path
+                              class="ql-even ql-stroke"
+                              d="M8.9,4.577a3.476,3.476,0,0,1,.36,4.679A3.476,3.476,0,0,1,4.577,8.9C3.185,7.5,2.035,6.4,4.217,4.217S7.5,3.185,8.9,4.577Z"
+                            ></path>
+                            <path
+                              class="ql-even ql-stroke"
+                              d="M13.423,9.1a3.476,3.476,0,0,0-4.679-.36,3.476,3.476,0,0,0,.36,4.679c1.392,1.392,2.5,2.542,4.679.36S14.815,10.5,13.423,9.1Z"
+                            ></path>
+                          </svg></button
+                        ><button type="button" class="ql-image">
+                          <svg viewBox="0 0 18 18">
+                            <rect
+                              class="ql-stroke"
+                              height="10"
+                              width="12"
+                              x="3"
+                              y="4"
+                            ></rect>
+                            <circle
+                              class="ql-fill"
+                              cx="6"
+                              cy="7"
+                              r="1"
+                            ></circle>
+                            <polyline
+                              class="ql-even ql-fill"
+                              points="5 12 5 11 7 9 8 10 11 7 13 9 13 12 5 12"
+                            ></polyline>
+                          </svg></button></span
+                      ><span class="ql-formats"
+                        ><button type="button" class="ql-clean">
+                          <svg class="" viewBox="0 0 18 18">
+                            <line
+                              class="ql-stroke"
+                              x1="5"
+                              x2="13"
+                              y1="3"
+                              y2="3"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="6"
+                              x2="9.35"
+                              y1="12"
+                              y2="3"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="11"
+                              x2="15"
+                              y1="11"
+                              y2="15"
+                            ></line>
+                            <line
+                              class="ql-stroke"
+                              x1="15"
+                              x2="11"
+                              y1="11"
+                              y2="15"
+                            ></line>
+                            <rect
+                              class="ql-fill"
+                              height="1"
+                              rx="0.5"
+                              ry="0.5"
+                              width="7"
+                              x="2"
+                              y="14"
+                            ></rect>
+                          </svg></button
+                      ></span>
+                    </div>
+                    <div
+                      id="editor"
+                      class="ql-container ql-snow"
+                      bis_skin_checked="1"
+                    >
+                      <div
+                        class="ql-editor ql-blank"
+                        data-gramm="false"
+                        contenteditable="true"
+                        data-placeholder="Tulis artikel di sini..."
+                        bis_skin_checked="1"
+                      >
+                        <p><br /></p>
+                      </div>
+                      <div
+                        class="ql-clipboard"
+                        contenteditable="true"
+                        tabindex="-1"
+                        bis_skin_checked="1"
+                      ></div>
+                      <div class="ql-tooltip ql-hidden" bis_skin_checked="1">
+                        <a
+                          class="ql-preview"
+                          target="_blank"
+                          href="about:blank"
+                        ></a
+                        ><input
+                          type="text"
+                          data-formula="e=mc^2"
+                          data-link="https://quilljs.com"
+                          data-video="Embed URL"
+                        /><a class="ql-action"></a><a class="ql-remove"></a>
+                      </div>
+                    </div>
+                    <input type="hidden" id="content" name="content" />
+                  </div>
+
+                  <div
+                    class="grid grid-cols-1 md:grid-cols-2 gap-6"
+                    bis_skin_checked="1"
+                  >
+                    <div bis_skin_checked="1">
+                      <label for="category" class="form-label"
+                        >Kategori Penerima
+                        <span class="text-red-500">*</span></label
+                      >
+                      <select
+                        id="category"
+                        name="category"
+                        class="form-select"
+                        required=""
+                      >
+                        <option value="">Pilih Kategori</option>
+                        <option value="Publik">Publik</option>
+                        <option value="Internal">Internal</option>
+                      </select>
+                    </div>
+
+                    <div bis_skin_checked="1">
+                      <label for="featured" class="form-label"
+                        >Jadikan Artikel Unggulan</label
+                      >
+                      <div
+                        class="flex items-center space-x-4 mt-2"
+                        bis_skin_checked="1"
+                      >
+                        <label class="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="featured"
+                            value="Ya"
+                            class="form-radio text-indigo-600"
+                            checked=""
+                          />
+                          <span class="ml-2 text-gray-700">Ya</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                          <input
+                            type="radio"
+                            name="featured"
+                            value="Tidak"
+                            class="form-radio text-indigo-600"
+                          />
+                          <span class="ml-2 text-gray-700">Tidak</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div bis_skin_checked="1">
+                      <label for="publishDate" class="form-label"
+                        >Tanggal Terbit</label
+                      >
+                      <input
+                        type="date"
+                        id="publishDate"
+                        name="publishDate"
+                        class="form-input"
+                        readonly=""
+                      />
+                    </div>
+
+                    <div bis_skin_checked="1">
+                      <label for="publisher" class="form-label"
+                        >Dibuat Oleh</label
+                      >
+                      <input
+                        type="text"
+                        id="publisher"
+                        name="publisher"
+                        class="form-input bg-gray-50"
+                        readonly=""
+                      />
+                    </div>
+                  </div>
+
+                  <div class="flex justify-end" bis_skin_checked="1">
+                    <button type="submit" class="btn-primary flex items-center">
+                      <i class="fas fa-paper-plane mr-2"></i> Kirim
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- History Container -->
+            <div class="form-section" bis_skin_checked="1">
+              <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                Riwayat Sorotan
+              </h2>
+
+              <!-- Search and Filter -->
+              <div class="mb-6" bis_skin_checked="1">
+                <div
+                  class="flex flex-col md:flex-row gap-4"
+                  bis_skin_checked="1"
+                >
+                  <div class="flex-1" bis_skin_checked="1">
+                    <div class="relative" bis_skin_checked="1">
+                      <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Cari sorotan..."
+                        class="form-input pl-10"
+                      />
+                      <i
+                        class="fas fa-search absolute left-3 top-3 text-gray-400"
+                      ></i>
+                    </div>
+                  </div>
+
+                  <div bis_skin_checked="1">
+                    <select id="filterCategory" class="form-select">
+                      <option value="">Semua Kategori</option>
+                      <option value="Publik">Publik</option>
+                      <option value="Internal">Internal</option>
+                    </select>
+                  </div>
+
+                  <div bis_skin_checked="1">
+                    <select id="filterPublisher" class="form-select">
+                      <option value="">Semua Penerbit</option>
+                      <option value="Admin">Admin</option>
+                      <option value="Kepala Sekolah">Kepala Sekolah</option>
+                      <option value="Wakil Kepala Sekolah">
+                        Wakil Kepala Sekolah
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Highlights Grid -->
+              <div
+                id="highlightsGrid"
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="highlight-card bg-white rounded-lg overflow-hidden shadow-md relative"
+                  bis_skin_checked="1"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+                    alt="Prestasi Gemilang Siswa dalam Olimpiade Sains Nasional"
+                    class="card-image w-full"
+                  />
+                  <div class="featured-badge" bis_skin_checked="1">
+                    Unggulan
+                  </div>
+                  <div class="p-4" bis_skin_checked="1">
+                    <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      Prestasi Gemilang Siswa dalam Olimpiade Sains Nasional
+                    </h3>
+                    <div
+                      class="flex items-center justify-between text-sm"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-gray-500" bis_skin_checked="1">
+                        15 Jun 2023
+                      </div>
+                      <span class="category-badge bg-green-100 text-green-800"
+                        >Publik</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between mt-4"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-xs text-gray-500" bis_skin_checked="1">
+                        <i class="fas fa-user mr-1"></i> Kepala Sekolah
+                      </div>
+                      <div class="relative" bis_skin_checked="1">
+                        <button
+                          class="action-btn text-gray-500 hover:text-gray-700 focus:outline-none"
+                          data-id="1"
+                        >
+                          <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div
+                          class="dropdown-menu"
+                          id="dropdown-1"
+                          bis_skin_checked="1"
+                        >
+                          <a
+                            href="#"
+                            class="dropdown-item view-btn"
+                            data-id="1"
+                          >
+                            <i class="fas fa-eye"></i> Lihat Detail
+                          </a>
+
+                          <a
+                            href="#"
+                            class="dropdown-item edit-btn"
+                            data-id="1"
+                          >
+                            <i class="fas fa-edit"></i> Ubah
+                          </a>
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item delete-btn text-red-600"
+                            data-id="1"
+                          >
+                            <i class="fas fa-trash-alt"></i> Hapus
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="highlight-card bg-white rounded-lg overflow-hidden shadow-md relative"
+                  bis_skin_checked="1"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+                    alt="Pembangunan Fasilitas Olahraga Baru"
+                    class="card-image w-full"
+                  />
+                  <div class="featured-badge" bis_skin_checked="1">
+                    Unggulan
+                  </div>
+                  <div class="p-4" bis_skin_checked="1">
+                    <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      Pembangunan Fasilitas Olahraga Baru
+                    </h3>
+                    <div
+                      class="flex items-center justify-between text-sm"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-gray-500" bis_skin_checked="1">
+                        10 Jun 2023
+                      </div>
+                      <span class="category-badge bg-blue-100 text-blue-800"
+                        >Internal</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between mt-4"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-xs text-gray-500" bis_skin_checked="1">
+                        <i class="fas fa-user mr-1"></i> Admin
+                      </div>
+                      <div class="relative" bis_skin_checked="1">
+                        <button
+                          class="action-btn text-gray-500 hover:text-gray-700 focus:outline-none"
+                          data-id="2"
+                        >
+                          <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div
+                          class="dropdown-menu"
+                          id="dropdown-2"
+                          bis_skin_checked="1"
+                        >
+                          <a
+                            href="#"
+                            class="dropdown-item view-btn"
+                            data-id="2"
+                          >
+                            <i class="fas fa-eye"></i> Lihat Detail
+                          </a>
+
+                          <a
+                            href="#"
+                            class="dropdown-item edit-btn"
+                            data-id="2"
+                          >
+                            <i class="fas fa-edit"></i> Ubah
+                          </a>
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item delete-btn text-red-600"
+                            data-id="2"
+                          >
+                            <i class="fas fa-trash-alt"></i> Hapus
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="highlight-card bg-white rounded-lg overflow-hidden shadow-md relative"
+                  bis_skin_checked="1"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+                    alt="Kunjungan Menteri Pendidikan"
+                    class="card-image w-full"
+                  />
+
+                  <div class="p-4" bis_skin_checked="1">
+                    <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      Kunjungan Menteri Pendidikan
+                    </h3>
+                    <div
+                      class="flex items-center justify-between text-sm"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-gray-500" bis_skin_checked="1">
+                        5 Jun 2023
+                      </div>
+                      <span class="category-badge bg-green-100 text-green-800"
+                        >Publik</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between mt-4"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-xs text-gray-500" bis_skin_checked="1">
+                        <i class="fas fa-user mr-1"></i> Wakil Kepala Sekolah
+                      </div>
+                      <div class="relative" bis_skin_checked="1">
+                        <button
+                          class="action-btn text-gray-500 hover:text-gray-700 focus:outline-none"
+                          data-id="3"
+                        >
+                          <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div
+                          class="dropdown-menu"
+                          id="dropdown-3"
+                          bis_skin_checked="1"
+                        >
+                          <a
+                            href="#"
+                            class="dropdown-item view-btn"
+                            data-id="3"
+                          >
+                            <i class="fas fa-eye"></i> Lihat Detail
+                          </a>
+
+                          <a
+                            href="#"
+                            class="dropdown-item edit-btn"
+                            data-id="3"
+                          >
+                            <i class="fas fa-edit"></i> Ubah
+                          </a>
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item delete-btn text-red-600"
+                            data-id="3"
+                          >
+                            <i class="fas fa-trash-alt"></i> Hapus
+                          </a>
+
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item feature-btn text-yellow-600"
+                            data-id="3"
+                          >
+                            <i class="fas fa-star"></i> Jadikan Unggulan
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="highlight-card bg-white rounded-lg overflow-hidden shadow-md relative"
+                  bis_skin_checked="1"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+                    alt="Program Beasiswa untuk Siswa Berprestasi"
+                    class="card-image w-full"
+                  />
+                  <div class="featured-badge" bis_skin_checked="1">
+                    Unggulan
+                  </div>
+                  <div class="p-4" bis_skin_checked="1">
+                    <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      Program Beasiswa untuk Siswa Berprestasi
+                    </h3>
+                    <div
+                      class="flex items-center justify-between text-sm"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-gray-500" bis_skin_checked="1">
+                        1 Jun 2023
+                      </div>
+                      <span class="category-badge bg-green-100 text-green-800"
+                        >Publik</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between mt-4"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-xs text-gray-500" bis_skin_checked="1">
+                        <i class="fas fa-user mr-1"></i> Kepala Sekolah
+                      </div>
+                      <div class="relative" bis_skin_checked="1">
+                        <button
+                          class="action-btn text-gray-500 hover:text-gray-700 focus:outline-none"
+                          data-id="4"
+                        >
+                          <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div
+                          class="dropdown-menu"
+                          id="dropdown-4"
+                          bis_skin_checked="1"
+                        >
+                          <a
+                            href="#"
+                            class="dropdown-item view-btn"
+                            data-id="4"
+                          >
+                            <i class="fas fa-eye"></i> Lihat Detail
+                          </a>
+
+                          <a
+                            href="#"
+                            class="dropdown-item edit-btn"
+                            data-id="4"
+                          >
+                            <i class="fas fa-edit"></i> Ubah
+                          </a>
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item delete-btn text-red-600"
+                            data-id="4"
+                          >
+                            <i class="fas fa-trash-alt"></i> Hapus
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="highlight-card bg-white rounded-lg overflow-hidden shadow-md relative"
+                  bis_skin_checked="1"
+                >
+                  <img
+                    src="https://images.unsplash.com/photo-1544531585-9847b68c8c86?ixlib=rb-4.0.3&amp;ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&amp;auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+                    alt="Workshop Pengembangan Kompetensi Guru"
+                    class="card-image w-full"
+                  />
+
+                  <div class="p-4" bis_skin_checked="1">
+                    <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">
+                      Workshop Pengembangan Kompetensi Guru
+                    </h3>
+                    <div
+                      class="flex items-center justify-between text-sm"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-gray-500" bis_skin_checked="1">
+                        25 Mei 2023
+                      </div>
+                      <span class="category-badge bg-blue-100 text-blue-800"
+                        >Internal</span
+                      >
+                    </div>
+                    <div
+                      class="flex items-center justify-between mt-4"
+                      bis_skin_checked="1"
+                    >
+                      <div class="text-xs text-gray-500" bis_skin_checked="1">
+                        <i class="fas fa-user mr-1"></i> Admin
+                      </div>
+                      <div class="relative" bis_skin_checked="1">
+                        <button
+                          class="action-btn text-gray-500 hover:text-gray-700 focus:outline-none"
+                          data-id="5"
+                        >
+                          <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div
+                          class="dropdown-menu"
+                          id="dropdown-5"
+                          bis_skin_checked="1"
+                        >
+                          <a
+                            href="#"
+                            class="dropdown-item view-btn"
+                            data-id="5"
+                          >
+                            <i class="fas fa-eye"></i> Lihat Detail
+                          </a>
+
+                          <a
+                            href="#"
+                            class="dropdown-item edit-btn"
+                            data-id="5"
+                          >
+                            <i class="fas fa-edit"></i> Ubah
+                          </a>
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item delete-btn text-red-600"
+                            data-id="5"
+                          >
+                            <i class="fas fa-trash-alt"></i> Hapus
+                          </a>
+
+                          <div
+                            class="dropdown-divider"
+                            bis_skin_checked="1"
+                          ></div>
+                          <a
+                            href="#"
+                            class="dropdown-item feature-btn text-yellow-600"
+                            data-id="5"
+                          >
+                            <i class="fas fa-star"></i> Jadikan Unggulan
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Empty State -->
+              <div
+                id="emptyState"
+                class="hidden py-8 text-center"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-4"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-newspaper text-2xl text-indigo-500"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">
+                  Tidak ada sorotan
+                </h3>
+                <p class="text-sm text-gray-500">
+                  Belum ada artikel sorotan yang diterbitkan atau sesuai dengan
+                  filter yang dipilih
+                </p>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div
+      id="confirmModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 transform transition-all duration-300 scale-95 opacity-0"
+        id="confirmModalContent"
+        bis_skin_checked="1"
+      >
+        <div class="text-center mb-6" bis_skin_checked="1">
+          <div
+            class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-4"
+            bis_skin_checked="1"
+          >
+            <i class="fas fa-info-circle text-2xl text-indigo-600"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">
+            Konfirmasi Pengiriman
+          </h3>
+          <p class="text-sm text-gray-500">
+            Apakah Anda yakin semua informasi sudah lengkap dan benar?
+          </p>
+        </div>
+
+        <div class="flex justify-center space-x-3" bis_skin_checked="1">
+          <button id="cancelConfirm" class="btn-secondary">
+            Periksa Kembali
+          </button>
+          <button id="confirmSubmit" class="btn-primary">Ya, Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div
+      id="detailModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-xl w-full max-w-3xl p-6 transform transition-all duration-300 scale-95 opacity-0"
+        id="detailModalContent"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h2 class="text-xl font-bold text-gray-800" id="detailTitle">
+            Detail Sorotan
+          </h2>
+          <button
+            id="closeDetail"
+            class="text-gray-500 hover:text-gray-700 focus:outline-none"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <div class="space-y-4" bis_skin_checked="1">
+          <div class="relative" bis_skin_checked="1">
+            <img
+              id="detailImage"
+              class="w-full h-64 object-cover rounded-lg"
+              src=""
+              alt="Detail Image"
+            />
+            <div
+              id="detailFeaturedBadge"
+              class="absolute top-4 right-4 bg-yellow-300 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold"
+              bis_skin_checked="1"
+            >
+              Artikel Unggulan
+            </div>
+          </div>
+
+          <div bis_skin_checked="1">
+            <h3
+              class="text-2xl font-semibold text-gray-900"
+              id="detailTitleContent"
+            ></h3>
+            <div
+              class="flex items-center mt-2 text-sm text-gray-500"
+              bis_skin_checked="1"
+            >
+              <span id="detailPublisher"></span>
+              <span class="mx-2">•</span>
+              <span id="detailPublishDate"></span>
+              <span class="mx-2">•</span>
+              <span id="detailCategory" class="category-badge"></span>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-200 pt-4" bis_skin_checked="1">
+            <div
+              id="detailContent"
+              class="prose max-w-none"
+              bis_skin_checked="1"
+            ></div>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end" bis_skin_checked="1">
+          <button id="closeDetailBtn" class="btn-secondary">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div
+      id="editModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-xl w-full max-w-3xl p-6 transform transition-all duration-300 scale-95 opacity-0"
+        id="editModalContent"
+        bis_skin_checked="1"
+      >
+        <div
+          class="flex justify-between items-center mb-4"
+          bis_skin_checked="1"
+        >
+          <h2 class="text-xl font-bold text-gray-800">Edit Sorotan</h2>
+          <button
+            id="closeEdit"
+            class="text-gray-500 hover:text-gray-700 focus:outline-none"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form id="editForm">
+          <input type="hidden" id="editId" />
+          <div class="space-y-6" bis_skin_checked="1">
+            <div bis_skin_checked="1">
+              <label for="editTitle" class="form-label"
+                >Judul <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="editTitle"
+                name="editTitle"
+                class="form-input"
+                required=""
+              />
+            </div>
+
+            <div bis_skin_checked="1">
+              <label for="editImage" class="form-label">Gambar Utama</label>
+              <div class="relative" bis_skin_checked="1">
+                <img
+                  id="editImagePreview"
+                  class="w-full h-48 object-cover rounded-lg"
+                  src=""
+                  alt="Edit Preview"
+                />
+                <button
+                  type="button"
+                  id="changeImage"
+                  class="absolute bottom-2 right-2 bg-indigo-500 text-white rounded-lg px-3 py-1 text-sm hover:bg-indigo-600"
+                >
+                  Ganti Gambar
+                </button>
+                <input
+                  type="file"
+                  id="editImageInput"
+                  name="editImage"
+                  class="hidden"
+                  accept="image/*"
+                />
+              </div>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label for="editContent" class="form-label"
+                >Isi Artikel <span class="text-red-500">*</span></label
+              >
+              <div class="ql-toolbar ql-snow" bis_skin_checked="1">
+                <span class="ql-formats"
+                  ><span class="ql-header ql-picker"
+                    ><span
+                      class="ql-picker-label"
+                      tabindex="0"
+                      role="button"
+                      aria-expanded="false"
+                      aria-controls="ql-picker-options-1"
+                      ><svg viewBox="0 0 18 18">
+                        <polygon
+                          class="ql-stroke"
+                          points="7 11 9 13 11 11 7 11"
+                        ></polygon>
+                        <polygon
+                          class="ql-stroke"
+                          points="7 7 9 5 11 7 7 7"
+                        ></polygon></svg></span
+                    ><span
+                      class="ql-picker-options"
+                      aria-hidden="true"
+                      tabindex="-1"
+                      id="ql-picker-options-1"
+                      ><span
+                        tabindex="0"
+                        role="button"
+                        class="ql-picker-item"
+                        data-value="1"
+                      ></span
+                      ><span
+                        tabindex="0"
+                        role="button"
+                        class="ql-picker-item"
+                        data-value="2"
+                      ></span
+                      ><span
+                        tabindex="0"
+                        role="button"
+                        class="ql-picker-item"
+                        data-value="3"
+                      ></span
+                      ><span
+                        tabindex="0"
+                        role="button"
+                        class="ql-picker-item ql-selected"
+                      ></span></span></span
+                  ><select class="ql-header" style="display: none">
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option selected="selected"></option></select></span
+                ><span class="ql-formats"
+                  ><button type="button" class="ql-bold">
+                    <svg viewBox="0 0 18 18">
+                      <path
+                        class="ql-stroke"
+                        d="M5,4H9.5A2.5,2.5,0,0,1,12,6.5v0A2.5,2.5,0,0,1,9.5,9H5A0,0,0,0,1,5,9V4A0,0,0,0,1,5,4Z"
+                      ></path>
+                      <path
+                        class="ql-stroke"
+                        d="M5,9h5.5A2.5,2.5,0,0,1,13,11.5v0A2.5,2.5,0,0,1,10.5,14H5a0,0,0,0,1,0,0V9A0,0,0,0,1,5,9Z"
+                      ></path>
+                    </svg></button
+                  ><button type="button" class="ql-italic">
+                    <svg viewBox="0 0 18 18">
+                      <line
+                        class="ql-stroke"
+                        x1="7"
+                        x2="13"
+                        y1="4"
+                        y2="4"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="5"
+                        x2="11"
+                        y1="14"
+                        y2="14"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="8"
+                        x2="10"
+                        y1="14"
+                        y2="4"
+                      ></line>
+                    </svg></button
+                  ><button type="button" class="ql-underline">
+                    <svg viewBox="0 0 18 18">
+                      <path
+                        class="ql-stroke"
+                        d="M5,3V9a4.012,4.012,0,0,0,4,4H9a4.012,4.012,0,0,0,4-4V3"
+                      ></path>
+                      <rect
+                        class="ql-fill"
+                        height="1"
+                        rx="0.5"
+                        ry="0.5"
+                        width="12"
+                        x="3"
+                        y="15"
+                      ></rect>
+                    </svg></button
+                  ><button type="button" class="ql-strike">
+                    <svg viewBox="0 0 18 18">
+                      <line
+                        class="ql-stroke ql-thin"
+                        x1="15.5"
+                        x2="2.5"
+                        y1="8.5"
+                        y2="9.5"
+                      ></line>
+                      <path
+                        class="ql-fill"
+                        d="M9.007,8C6.542,7.791,6,7.519,6,6.5,6,5.792,7.283,5,9,5c1.571,0,2.765.679,2.969,1.309a1,1,0,0,0,1.9-.617C13.356,4.106,11.354,3,9,3,6.2,3,4,4.538,4,6.5a3.2,3.2,0,0,0,.5,1.843Z"
+                      ></path>
+                      <path
+                        class="ql-fill"
+                        d="M8.984,10C11.457,10.208,12,10.479,12,11.5c0,0.708-1.283,1.5-3,1.5-1.571,0-2.765-.679-2.969-1.309a1,1,0,1,0-1.9.617C4.644,13.894,6.646,15,9,15c2.8,0,5-1.538,5-3.5a3.2,3.2,0,0,0-.5-1.843Z"
+                      ></path>
+                    </svg></button></span
+                ><span class="ql-formats"
+                  ><button type="button" class="ql-list" value="ordered">
+                    <svg viewBox="0 0 18 18">
+                      <line
+                        class="ql-stroke"
+                        x1="7"
+                        x2="15"
+                        y1="4"
+                        y2="4"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="7"
+                        x2="15"
+                        y1="9"
+                        y2="9"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="7"
+                        x2="15"
+                        y1="14"
+                        y2="14"
+                      ></line>
+                      <line
+                        class="ql-stroke ql-thin"
+                        x1="2.5"
+                        x2="4.5"
+                        y1="5.5"
+                        y2="5.5"
+                      ></line>
+                      <path
+                        class="ql-fill"
+                        d="M3.5,6A0.5,0.5,0,0,1,3,5.5V3.085l-0.276.138A0.5,0.5,0,0,1,2.053,3c-0.124-.247-0.023-0.324.224-0.447l1-.5A0.5,0.5,0,0,1,4,2.5v3A0.5,0.5,0,0,1,3.5,6Z"
+                      ></path>
+                      <path
+                        class="ql-stroke ql-thin"
+                        d="M4.5,10.5h-2c0-.234,1.85-1.076,1.85-2.234A0.959,0.959,0,0,0,2.5,8.156"
+                      ></path>
+                      <path
+                        class="ql-stroke ql-thin"
+                        d="M2.5,14.846a0.959,0.959,0,0,0,1.85-.109A0.7,0.7,0,0,0,3.75,14a0.688,0.688,0,0,0,.6-0.736,0.959,0.959,0,0,0-1.85-.109"
+                      ></path>
+                    </svg></button
+                  ><button type="button" class="ql-list" value="bullet">
+                    <svg viewBox="0 0 18 18">
+                      <line
+                        class="ql-stroke"
+                        x1="6"
+                        x2="15"
+                        y1="4"
+                        y2="4"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="6"
+                        x2="15"
+                        y1="9"
+                        y2="9"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="6"
+                        x2="15"
+                        y1="14"
+                        y2="14"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="3"
+                        x2="3"
+                        y1="4"
+                        y2="4"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="3"
+                        x2="3"
+                        y1="9"
+                        y2="9"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="3"
+                        x2="3"
+                        y1="14"
+                        y2="14"
+                      ></line>
+                    </svg></button></span
+                ><span class="ql-formats"
+                  ><button type="button" class="ql-link">
+                    <svg viewBox="0 0 18 18">
+                      <line
+                        class="ql-stroke"
+                        x1="7"
+                        x2="11"
+                        y1="7"
+                        y2="11"
+                      ></line>
+                      <path
+                        class="ql-even ql-stroke"
+                        d="M8.9,4.577a3.476,3.476,0,0,1,.36,4.679A3.476,3.476,0,0,1,4.577,8.9C3.185,7.5,2.035,6.4,4.217,4.217S7.5,3.185,8.9,4.577Z"
+                      ></path>
+                      <path
+                        class="ql-even ql-stroke"
+                        d="M13.423,9.1a3.476,3.476,0,0,0-4.679-.36,3.476,3.476,0,0,0,.36,4.679c1.392,1.392,2.5,2.542,4.679.36S14.815,10.5,13.423,9.1Z"
+                      ></path>
+                    </svg></button
+                  ><button type="button" class="ql-image">
+                    <svg viewBox="0 0 18 18">
+                      <rect
+                        class="ql-stroke"
+                        height="10"
+                        width="12"
+                        x="3"
+                        y="4"
+                      ></rect>
+                      <circle class="ql-fill" cx="6" cy="7" r="1"></circle>
+                      <polyline
+                        class="ql-even ql-fill"
+                        points="5 12 5 11 7 9 8 10 11 7 13 9 13 12 5 12"
+                      ></polyline>
+                    </svg></button></span
+                ><span class="ql-formats"
+                  ><button type="button" class="ql-clean">
+                    <svg class="" viewBox="0 0 18 18">
+                      <line
+                        class="ql-stroke"
+                        x1="5"
+                        x2="13"
+                        y1="3"
+                        y2="3"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="6"
+                        x2="9.35"
+                        y1="12"
+                        y2="3"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="11"
+                        x2="15"
+                        y1="11"
+                        y2="15"
+                      ></line>
+                      <line
+                        class="ql-stroke"
+                        x1="15"
+                        x2="11"
+                        y1="11"
+                        y2="15"
+                      ></line>
+                      <rect
+                        class="ql-fill"
+                        height="1"
+                        rx="0.5"
+                        ry="0.5"
+                        width="7"
+                        x="2"
+                        y="14"
+                      ></rect>
+                    </svg></button
+                ></span>
+              </div>
+              <div
+                id="editEditor"
+                class="ql-container ql-snow"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="ql-editor ql-blank"
+                  data-gramm="false"
+                  contenteditable="true"
+                  bis_skin_checked="1"
+                >
+                  <p><br /></p>
+                </div>
+                <div
+                  class="ql-clipboard"
+                  contenteditable="true"
+                  tabindex="-1"
+                  bis_skin_checked="1"
+                ></div>
+                <div class="ql-tooltip ql-hidden" bis_skin_checked="1">
+                  <a class="ql-preview" target="_blank" href="about:blank"></a
+                  ><input
+                    type="text"
+                    data-formula="e=mc^2"
+                    data-link="https://quilljs.com"
+                    data-video="Embed URL"
+                  /><a class="ql-action"></a><a class="ql-remove"></a>
+                </div>
+              </div>
+              <input type="hidden" id="editContentInput" name="editContent" />
+            </div>
+
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 gap-6"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <label for="editCategory" class="form-label"
+                  >Kategori Penerima <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="editCategory"
+                  name="editCategory"
+                  class="form-select"
+                  required=""
+                >
+                  <option value="Publik">Publik</option>
+                  <option value="Internal">Internal</option>
+                </select>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label for="editFeatured" class="form-label"
+                  >Jadikan Artikel Unggulan</label
+                >
+                <div
+                  class="flex items-center space-x-4 mt-2"
+                  bis_skin_checked="1"
+                >
+                  <label class="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="editFeatured"
+                      value="Ya"
+                      class="form-radio text-indigo-600"
+                    />
+                    <span class="ml-2 text-gray-700">Ya</span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input
+                      type="radio"
+                      name="editFeatured"
+                      value="Tidak"
+                      class="form-radio text-indigo-600"
+                    />
+                    <span class="ml-2 text-gray-700">Tidak</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-3" bis_skin_checked="1">
+              <button type="button" id="cancelEdit" class="btn-secondary">
+                Batal
+              </button>
+              <button type="submit" class="btn-primary">
+                Simpan Perubahan
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div
+      id="deleteModal"
+      class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 invisible"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 transform transition-all duration-300 scale-95 opacity-0"
+        id="deleteModalContent"
+        bis_skin_checked="1"
+      >
+        <div class="text-center mb-6" bis_skin_checked="1">
+          <div
+            class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4"
+            bis_skin_checked="1"
+          >
+            <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
+          </div>
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Hapus Sorotan</h3>
+          <p class="text-sm text-gray-500">
+            Apakah Anda yakin ingin menghapus sorotan ini? Tindakan ini tidak
+            dapat dibatalkan.
+          </p>
+          <p class="text-sm font-medium mt-2" id="deleteHighlightTitle"></p>
+        </div>
+
+        <div class="flex justify-center space-x-3" bis_skin_checked="1">
+          <button id="cancelDelete" class="btn-secondary">Batal</button>
+          <button id="confirmDelete" class="btn-danger">Ya, Hapus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include Quill.js for rich text editor -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <script>
+      // Sample data
+      let highlights = [
+        {
+          id: 1,
+          title: "Prestasi Gemilang Siswa dalam Olimpiade Sains Nasional",
+          image:
+            "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+          content:
+            "<p>Dengan bangga kami mengumumkan bahwa siswa-siswi kami telah meraih prestasi gemilang dalam Olimpiade Sains Nasional yang baru saja diselenggarakan di Jakarta. Tim kami berhasil membawa pulang 3 medali emas, 5 medali perak, dan 4 medali perunggu.</p><p>Prestasi ini merupakan hasil dari kerja keras dan dedikasi para siswa serta bimbingan intensif dari para guru. Kami mengucapkan selamat kepada seluruh peserta dan pembimbing atas pencapaian luar biasa ini.</p><h3>Daftar Peraih Medali:</h3><ul><li>Ahmad Fauzi - Medali Emas (Fisika)</li><li>Siti Nurhaliza - Medali Emas (Matematika)</li><li>Budi Santoso - Medali Emas (Kimia)</li></ul>",
+          category: "Publik",
+          featured: "Ya",
+          publishDate: "2023-06-15",
+          publisher: "Kepala Sekolah",
+        },
+        {
+          id: 2,
+          title: "Pembangunan Fasilitas Olahraga Baru",
+          image:
+            "https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+          content:
+            "<p>Kami dengan senang hati mengumumkan bahwa pembangunan fasilitas olahraga baru telah dimulai dan diperkirakan akan selesai pada akhir semester ini. Fasilitas baru ini akan mencakup lapangan basket indoor, kolam renang standar olimpiade, dan pusat kebugaran modern.</p><p>Pembangunan ini merupakan bagian dari komitmen kami untuk menyediakan fasilitas terbaik bagi pengembangan bakat dan potensi siswa di bidang olahraga.</p><h3>Fasilitas yang akan dibangun:</h3><ul><li>Lapangan basket indoor</li><li>Kolam renang standar olimpiade</li><li>Pusat kebugaran modern</li></ul>",
+          category: "Internal",
+          featured: "Ya",
+          publishDate: "2023-06-10",
+          publisher: "Admin",
+        },
+        {
+          id: 3,
+          title: "Kunjungan Menteri Pendidikan",
+          image:
+            "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+          content:
+            "<p>Pada hari Senin, 5 Juni 2023, sekolah kita mendapat kehormatan dengan kunjungan Menteri Pendidikan dan Kebudayaan. Dalam kunjungannya, beliau mengapresiasi berbagai program inovatif yang telah kita implementasikan dan menyatakan bahwa sekolah kita dapat menjadi model bagi pengembangan pendidikan di Indonesia.</p><p>Menteri juga meresmikan laboratorium teknologi baru yang telah kita bangun dengan dukungan dari berbagai pihak. Laboratorium ini dilengkapi dengan peralatan canggih yang akan mendukung pembelajaran STEM (Science, Technology, Engineering, and Mathematics).</p>",
+          category: "Publik",
+          featured: "Tidak",
+          publishDate: "2023-06-05",
+          publisher: "Wakil Kepala Sekolah",
+        },
+        {
+          id: 4,
+          title: "Program Beasiswa untuk Siswa Berprestasi",
+          image:
+            "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+          content:
+            "<p>Kami dengan bangga mengumumkan program beasiswa baru untuk siswa berprestasi yang akan dimulai pada tahun ajaran mendatang. Program ini akan memberikan kesempatan bagi siswa-siswi yang memiliki prestasi akademik maupun non-akademik untuk mendapatkan dukungan finansial dalam menempuh pendidikan di sekolah kita.</p><p>Beasiswa ini mencakup biaya SPP, biaya kegiatan ekstrakurikuler, dan bantuan pembelian buku pelajaran. Kami berharap program ini dapat memotivasi siswa untuk terus berprestasi dan mengembangkan potensi mereka secara maksimal.</p><h3>Persyaratan Beasiswa:</h3><ul><li>Memiliki nilai akademik minimal 85</li><li>Aktif dalam kegiatan ekstrakurikuler</li><li>Memiliki prestasi di tingkat kota/kabupaten</li></ul>",
+          category: "Publik",
+          featured: "Ya",
+          publishDate: "2023-06-01",
+          publisher: "Kepala Sekolah",
+        },
+        {
+          id: 5,
+          title: "Workshop Pengembangan Kompetensi Guru",
+          image:
+            "https://images.unsplash.com/photo-1544531585-9847b68c8c86?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+          content:
+            "<p>Dalam rangka meningkatkan kualitas pembelajaran, sekolah kita akan menyelenggarakan workshop pengembangan kompetensi guru pada tanggal 20-22 Juni 2023. Workshop ini akan difasilitasi oleh para ahli pendidikan dari berbagai universitas terkemuka di Indonesia.</p><p>Materi yang akan dibahas dalam workshop ini meliputi metode pembelajaran inovatif, integrasi teknologi dalam pembelajaran, dan pengembangan asesmen berbasis kompetensi. Seluruh guru diwajibkan untuk mengikuti workshop ini.</p><h3>Jadwal Workshop:</h3><ul><li>20 Juni: Metode Pembelajaran Inovatif</li><li>21 Juni: Integrasi Teknologi dalam Pembelajaran</li><li>22 Juni: Pengembangan Asesmen Berbasis Kompetensi</li></ul>",
+          category: "Internal",
+          featured: "Tidak",
+          publishDate: "2023-05-25",
+          publisher: "Admin",
+        },
+      ];
+
+      // Current user (for demo purposes)
+      const currentUser = {
+        name: "Admin",
+        role: "Administrator",
+      };
+
+      // Initialize Quill editor
+      const quill = new Quill("#editor", {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["link", "image"],
+            ["clean"],
+          ],
+        },
+        placeholder: "Tulis artikel di sini...",
+      });
+
+      // Initialize edit Quill editor
+      const editQuill = new Quill("#editEditor", {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline", "strike"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            ["link", "image"],
+            ["clean"],
+          ],
+        },
+      });
+
+      // DOM Elements
+      const highlightForm = document.getElementById("highlightForm");
+      const dropArea = document.getElementById("dropArea");
+      const imageInput = document.getElementById("image");
+      const imagePreview = document.getElementById("imagePreview");
+      const previewImg = document.getElementById("previewImg");
+      const removeImage = document.getElementById("removeImage");
+      const publishDate = document.getElementById("publishDate");
+      const publisher = document.getElementById("publisher");
+      const highlightsGrid = document.getElementById("highlightsGrid");
+      const emptyState = document.getElementById("emptyState");
+      const searchInput = document.getElementById("searchInput");
+      const filterCategory = document.getElementById("filterCategory");
+      const filterPublisher = document.getElementById("filterPublisher");
+      const confirmModal = document.getElementById("confirmModal");
+      const confirmModalContent = document.getElementById(
+        "confirmModalContent"
+      );
+      const cancelConfirm = document.getElementById("cancelConfirm");
+      const confirmSubmit = document.getElementById("confirmSubmit");
+      const detailModal = document.getElementById("detailModal");
+      const detailModalContent = document.getElementById("detailModalContent");
+      const closeDetail = document.getElementById("closeDetail");
+      const closeDetailBtn = document.getElementById("closeDetailBtn");
+      const detailTitle = document.getElementById("detailTitleContent");
+      const detailImage = document.getElementById("detailImage");
+      const detailFeaturedBadge = document.getElementById(
+        "detailFeaturedBadge"
+      );
+      const detailContent = document.getElementById("detailContent");
+      const detailCategory = document.getElementById("detailCategory");
+      const detailPublisher = document.getElementById("detailPublisher");
+      const detailPublishDate = document.getElementById("detailPublishDate");
+      const editModal = document.getElementById("editModal");
+      const editModalContent = document.getElementById("editModalContent");
+      const closeEdit = document.getElementById("closeEdit");
+      const cancelEdit = document.getElementById("cancelEdit");
+      const editForm = document.getElementById("editForm");
+      const editId = document.getElementById("editId");
+      const editTitle = document.getElementById("editTitle");
+      const editImagePreview = document.getElementById("editImagePreview");
+      const changeImage = document.getElementById("changeImage");
+      const editImageInput = document.getElementById("editImageInput");
+      const editCategory = document.getElementById("editCategory");
+      const editContentInput = document.getElementById("editContentInput");
+      const deleteModal = document.getElementById("deleteModal");
+      const deleteModalContent = document.getElementById("deleteModalContent");
+      const deleteHighlightTitle = document.getElementById(
+        "deleteHighlightTitle"
+      );
+      const cancelDelete = document.getElementById("cancelDelete");
+      const confirmDelete = document.getElementById("confirmDelete");
+
+      // Initialize
+      initForm();
+      updateHighlightsGrid();
+
+      // Event Listeners
+      highlightForm.addEventListener("submit", handleFormSubmit);
+      dropArea.addEventListener("click", () => imageInput.click());
+      imageInput.addEventListener("change", handleImageSelect);
+      removeImage.addEventListener("click", removeSelectedImage);
+      searchInput.addEventListener("input", updateHighlightsGrid);
+      filterCategory.addEventListener("change", updateHighlightsGrid);
+      filterPublisher.addEventListener("change", updateHighlightsGrid);
+      cancelConfirm.addEventListener("click", closeConfirmModal);
+      confirmSubmit.addEventListener("click", submitHighlight);
+      closeDetail.addEventListener("click", closeDetailModal);
+      closeDetailBtn.addEventListener("click", closeDetailModal);
+      closeEdit.addEventListener("click", closeEditModal);
+      cancelEdit.addEventListener("click", closeEditModal);
+      editForm.addEventListener("submit", handleEditSubmit);
+      changeImage.addEventListener("click", () => editImageInput.click());
+      editImageInput.addEventListener("change", handleEditImageSelect);
+      cancelDelete.addEventListener("click", closeDeleteModal);
+      confirmDelete.addEventListener("click", handleDeleteConfirm);
+
+      // Drag and drop functionality
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight() {
+        dropArea.classList.add("border-indigo-500", "bg-indigo-50");
+      }
+
+      function unhighlight() {
+        dropArea.classList.remove("border-indigo-500", "bg-indigo-50");
+      }
+
+      dropArea.addEventListener("drop", handleDrop, false);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const file = dt.files[0];
+        handleImage(file);
+      }
+
+      // Functions
+      function initForm() {
+        // Set today's date as publish date
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0];
+        publishDate.value = formattedDate;
+
+        // Set current user as publisher
+        publisher.value = currentUser.name;
+      }
+
+      function handleImageSelect(e) {
+        const file = e.target.files[0];
+        handleImage(file);
+      }
+
+      function handleImage(file) {
+        if (!file) return;
+
+        const validTypes = ["image/jpeg", "image/png", "image/gif"];
+
+        if (!validTypes.includes(file.type)) {
+          alert(
+            "Format file tidak didukung. Silakan pilih file gambar (JPG, PNG, GIF)."
+          );
+          imageInput.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImg.src = e.target.result;
+          imagePreview.classList.remove("hidden");
+          dropArea.classList.add("hidden");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function removeSelectedImage() {
+        imageInput.value = "";
+        imagePreview.classList.add("hidden");
+        dropArea.classList.remove("hidden");
+      }
+
+      function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const file = imageInput.files[0];
+        const content = quill.root.innerHTML;
+        const category = document.getElementById("category").value;
+
+        if (
+          !title ||
+          !file ||
+          quill.getText().trim().length === 0 ||
+          !category
+        ) {
+          alert("Silakan lengkapi semua field yang diperlukan.");
+          return;
+        }
+
+        // Set content to hidden input
+        document.getElementById("content").value = content;
+
+        // Show confirmation modal
+        openConfirmModal();
+      }
+
+      function openConfirmModal() {
+        confirmModal.classList.remove("invisible", "opacity-0");
+        setTimeout(() => {
+          confirmModalContent.classList.remove("scale-95", "opacity-0");
+        }, 10);
+      }
+
+      function closeConfirmModal() {
+        confirmModalContent.classList.add("scale-95", "opacity-0");
+        setTimeout(() => {
+          confirmModal.classList.add("invisible", "opacity-0");
+        }, 300);
+      }
+
+      function submitHighlight() {
+        const title = document.getElementById("title").value;
+        const file = imageInput.files[0];
+        const content = document.getElementById("content").value;
+        const category = document.getElementById("category").value;
+        const featured = document.querySelector(
+          'input[name="featured"]:checked'
+        ).value;
+        const publishDateValue = document.getElementById("publishDate").value;
+        const publisherValue = document.getElementById("publisher").value;
+
+        // Create new highlight object
+        const newHighlight = {
+          id: highlights.length + 1,
+          title: title,
+          // In a real app, we would upload the image to a server and get a URL
+          // For demo purposes, we'll use FileReader to get a data URL
+          image: previewImg.src,
+          content: content,
+          category: category,
+          featured: featured,
+          publishDate: publishDateValue,
+          publisher: publisherValue,
+        };
+
+        // Add to highlights array
+        highlights.unshift(newHighlight);
+
+        // Update display
+        updateHighlightsGrid();
+
+        // Close modal
+        closeConfirmModal();
+
+        // Reset form
+        highlightForm.reset();
+        quill.root.innerHTML = "";
+        initForm();
+        imagePreview.classList.add("hidden");
+        dropArea.classList.remove("hidden");
+
+        // Show success message
+        showToast("Artikel sorotan berhasil diterbitkan!");
+      }
+
+      function updateHighlightsGrid() {
+        // Apply filters
+        let filteredHighlights = [...highlights];
+
+        // Search filter
+        const searchTerm = searchInput.value.toLowerCase();
+        if (searchTerm) {
+          filteredHighlights = filteredHighlights.filter(
+            (highlight) =>
+              highlight.title.toLowerCase().includes(searchTerm) ||
+              highlight.category.toLowerCase().includes(searchTerm) ||
+              highlight.publisher.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        // Category filter
+        if (filterCategory.value) {
+          filteredHighlights = filteredHighlights.filter(
+            (highlight) => highlight.category === filterCategory.value
+          );
+        }
+
+        // Publisher filter
+        if (filterPublisher.value) {
+          filteredHighlights = filteredHighlights.filter(
+            (highlight) => highlight.publisher === filterPublisher.value
+          );
+        }
+
+        // Clear container
+        highlightsGrid.innerHTML = "";
+
+        // Show empty state if no highlights
+        if (filteredHighlights.length === 0) {
+          emptyState.classList.remove("hidden");
+        } else {
+          emptyState.classList.add("hidden");
+
+          // Generate highlight cards
+          filteredHighlights.forEach((highlight) => {
+            const card = createHighlightCard(highlight);
+            highlightsGrid.appendChild(card);
+          });
+        }
+      }
+
+      function createHighlightCard(highlight) {
+        const card = document.createElement("div");
+        card.className =
+          "highlight-card bg-white rounded-lg overflow-hidden shadow-md relative";
+
+        // Format date
+        const publishDate = new Date(highlight.publishDate);
+        const formattedDate = publishDate.toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+
+        // Check if current user can edit/delete this highlight
+        const canModify =
+          currentUser.name === highlight.publisher ||
+          currentUser.role === "Administrator";
+
+        // Create category badge
+        let badgeColor =
+          highlight.category === "Publik"
+            ? "bg-green-100 text-green-800"
+            : "bg-blue-100 text-blue-800";
+
+        // Create HTML content
+        card.innerHTML = `
+             <img src="${highlight.image}" alt="${
+          highlight.title
+        }" class="card-image w-full">
+             ${
+               highlight.featured === "Ya"
+                 ? '<div class="featured-badge">Unggulan</div>'
+                 : ""
+             }
+             <div class="p-4">
+                 <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2">${
+                   highlight.title
+                 }</h3>
+                 <div class="flex items-center justify-between text-sm">
+                     <div class="text-gray-500">${formattedDate}</div>
+                     <span class="category-badge ${badgeColor}">${
+          highlight.category
+        }</span>
+                 </div>
+                 <div class="flex items-center justify-between mt-4">
+                     <div class="text-xs text-gray-500">
+                         <i class="fas fa-user mr-1"></i> ${highlight.publisher}
+                     </div>
+                     <div class="relative">
+                         <button class="action-btn text-gray-500 hover:text-gray-700 focus:outline-none" data-id="${
+                           highlight.id
+                         }">
+                             <i class="fas fa-ellipsis-v"></i>
+                         </button>
+                         <div class="dropdown-menu" id="dropdown-${
+                           highlight.id
+                         }">
+                             <a href="#" class="dropdown-item view-btn" data-id="${
+                               highlight.id
+                             }">
+                                 <i class="fas fa-eye"></i> Lihat Detail
+                             </a>
+                             ${
+                               canModify
+                                 ? `
+                             <a href="#" class="dropdown-item edit-btn" data-id="${highlight.id}">
+                                 <i class="fas fa-edit"></i> Ubah
+                             </a>
+                             <div class="dropdown-divider"></div>
+                             <a href="#" class="dropdown-item delete-btn text-red-600" data-id="${highlight.id}">
+                                 <i class="fas fa-trash-alt"></i> Hapus
+                             </a>
+                             `
+                                 : ""
+                             }
+                             ${
+                               highlight.featured === "Tidak" && canModify
+                                 ? `
+                             <div class="dropdown-divider"></div>
+                             <a href="#" class="dropdown-item feature-btn text-yellow-600" data-id="${highlight.id}">
+                                 <i class="fas fa-star"></i> Jadikan Unggulan
+                             </a>
+                             `
+                                 : ""
+                             }
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         `;
+
+        // Add event listeners
+        setTimeout(() => {
+          const actionBtn = card.querySelector(".action-btn");
+          const dropdown = card.querySelector(".dropdown-menu");
+          const viewBtn = card.querySelector(".view-btn");
+          const editBtn = card.querySelector(".edit-btn");
+          const deleteBtn = card.querySelector(".delete-btn");
+          const featureBtn = card.querySelector(".feature-btn");
+
+          actionBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+
+            // Close all other dropdowns
+            document
+              .querySelectorAll(".dropdown-menu.active")
+              .forEach((menu) => {
+                if (menu !== dropdown) {
+                  menu.classList.remove("active");
+                }
+              });
+
+            // Toggle current dropdown
+            dropdown.classList.toggle("active");
+          });
+
+          viewBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            openDetailModal(highlight);
+            dropdown.classList.remove("active");
+          });
+
+          if (editBtn) {
+            editBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              openEditModal(highlight);
+              dropdown.classList.remove("active");
+            });
+          }
+
+          if (deleteBtn) {
+            deleteBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              openDeleteModal(highlight);
+              dropdown.classList.remove("active");
+            });
+          }
+
+          if (featureBtn) {
+            featureBtn.addEventListener("click", (e) => {
+              e.preventDefault();
+              makeHighlightFeatured(highlight.id);
+              dropdown.classList.remove("active");
+            });
+          }
+        }, 0);
+
+        return card;
+      }
+
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".action-btn")) {
+          document.querySelectorAll(".dropdown-menu.active").forEach((menu) => {
+            menu.classList.remove("active");
+          });
+        }
+      });
+
+      function openDetailModal(highlight) {
+        // Format date
+        const publishDate = new Date(highlight.publishDate);
+        const formattedDate = publishDate.toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+
+        // Set category badge color
+        let badgeColor =
+          highlight.category === "Publik"
+            ? "bg-green-100 text-green-800"
+            : "bg-blue-100 text-blue-800";
+
+        // Populate modal content
+        detailTitle.textContent = highlight.title;
+        detailImage.src = highlight.image;
+        detailContent.innerHTML = highlight.content;
+        detailCategory.textContent = highlight.category;
+        detailCategory.className = `category-badge ${badgeColor}`;
+        detailPublisher.textContent = highlight.publisher;
+        detailPublishDate.textContent = formattedDate;
+
+        // Show/hide featured badge
+        if (highlight.featured === "Ya") {
+          detailFeaturedBadge.classList.remove("hidden");
+        } else {
+          detailFeaturedBadge.classList.add("hidden");
+        }
+
+        // Show modal
+        detailModal.classList.remove("invisible", "opacity-0");
+        setTimeout(() => {
+          detailModalContent.classList.remove("scale-95", "opacity-0");
+        }, 10);
+      }
+
+      function closeDetailModal() {
+        detailModalContent.classList.add("scale-95", "opacity-0");
+        setTimeout(() => {
+          detailModal.classList.add("invisible", "opacity-0");
+        }, 300);
+      }
+
+      function openEditModal(highlight) {
+        // Populate form fields
+        editId.value = highlight.id;
+        editTitle.value = highlight.title;
+        editImagePreview.src = highlight.image;
+        editQuill.root.innerHTML = highlight.content;
+        editCategory.value = highlight.category;
+
+        // Set featured radio button
+        document.querySelector(
+          `input[name="editFeatured"][value="${highlight.featured}"]`
+        ).checked = true;
+
+        // Show modal
+        editModal.classList.remove("invisible", "opacity-0");
+        setTimeout(() => {
+          editModalContent.classList.remove("scale-95", "opacity-0");
+        }, 10);
+      }
+
+      function closeEditModal() {
+        editModalContent.classList.add("scale-95", "opacity-0");
+        setTimeout(() => {
+          editModal.classList.add("invisible", "opacity-0");
+        }, 300);
+      }
+
+      function handleEditImageSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const validTypes = ["image/jpeg", "image/png", "image/gif"];
+
+        if (!validTypes.includes(file.type)) {
+          alert(
+            "Format file tidak didukung. Silakan pilih file gambar (JPG, PNG, GIF)."
+          );
+          editImageInput.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          editImagePreview.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function handleEditSubmit(e) {
+        e.preventDefault();
+
+        const id = parseInt(editId.value);
+        const title = editTitle.value;
+        const content = editQuill.root.innerHTML;
+        const category = editCategory.value;
+        const featured = document.querySelector(
+          'input[name="editFeatured"]:checked'
+        ).value;
+
+        if (!title || !content || !category) {
+          alert("Silakan lengkapi semua field yang diperlukan.");
+          return;
+        }
+
+        // Find highlight in array
+        const highlightIndex = highlights.findIndex(
+          (highlight) => highlight.id === id
+        );
+        if (highlightIndex !== -1) {
+          // Update highlight
+          highlights[highlightIndex].title = title;
+
+          // Update image if changed
+          if (editImageInput.files[0]) {
+            highlights[highlightIndex].image = editImagePreview.src;
+          }
+
+          highlights[highlightIndex].content = content;
+          highlights[highlightIndex].category = category;
+          highlights[highlightIndex].featured = featured;
+
+          // Update display
+          updateHighlightsGrid();
+
+          // Close modal
+          closeEditModal();
+
+          // Show success message
+          showToast("Artikel sorotan berhasil diperbarui!");
+        }
+      }
+
+      function openDeleteModal(highlight) {
+        deleteHighlightTitle.textContent = highlight.title;
+        confirmDelete.setAttribute("data-id", highlight.id);
+
+        deleteModal.classList.remove("invisible", "opacity-0");
+        setTimeout(() => {
+          deleteModalContent.classList.remove("scale-95", "opacity-0");
+        }, 10);
+      }
+
+      function closeDeleteModal() {
+        deleteModalContent.classList.add("scale-95", "opacity-0");
+        setTimeout(() => {
+          deleteModal.classList.add("invisible", "opacity-0");
+        }, 300);
+      }
+
+      function handleDeleteConfirm() {
+        const highlightId = parseInt(confirmDelete.getAttribute("data-id"));
+
+        // Find highlight in array
+        const highlightIndex = highlights.findIndex(
+          (highlight) => highlight.id === highlightId
+        );
+        if (highlightIndex !== -1) {
+          // Remove highlight
+          highlights.splice(highlightIndex, 1);
+
+          // Update display
+          updateHighlightsGrid();
+
+          // Close modal
+          closeDeleteModal();
+
+          // Show success message
+          showToast("Artikel sorotan berhasil dihapus!");
+        }
+      }
+
+      function makeHighlightFeatured(id) {
+        // Find highlight in array
+        const highlightIndex = highlights.findIndex(
+          (highlight) => highlight.id === id
+        );
+        if (highlightIndex !== -1) {
+          // Update featured status
+          highlights[highlightIndex].featured = "Ya";
+
+          // Update display
+          updateHighlightsGrid();
+
+          // Show success message
+          showToast("Artikel berhasil dijadikan unggulan!");
+        }
+      }
+
+      function showToast(message) {
+        // Create toast element
+        const toast = document.createElement("div");
+        toast.className =
+          "fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform transition-all duration-300 translate-y-4 opacity-0";
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        // Show toast
+        setTimeout(() => {
+          toast.classList.remove("translate-y-4", "opacity-0");
+        }, 10);
+
+        // Hide toast after 3 seconds
+        setTimeout(() => {
+          toast.classList.add("translate-y-4", "opacity-0");
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9418731634f987e1',t:'MTc0NzU0MDg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <iframe
+      height="1"
+      width="1"
+      style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: medium;
+        visibility: hidden;
+      "
+    ></iframe>
+
+    <!-- Do Not Delete -->
+    <script>
+      // Update current date and time
+      function updateDateTime() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        document.getElementById("current-datetime").textContent =
+          now.toLocaleDateString("id-ID", options);
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 60000); // Update every minute
+
+      // Toggle sidebar on mobile
+      document
+        .getElementById("sidebar-toggle")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("open");
+        });
+
+      // Toggle submenu
+      function toggleSubmenu(id) {
+        const submenu = document.getElementById(id);
+        const icon = document.getElementById(id.split("-")[0] + "-icon");
+
+        if (submenu.classList.contains("active")) {
+          submenu.classList.remove("active");
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          submenu.classList.add("active");
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+      // Toggle profile dropdown
+      document
+        .getElementById("profile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("profile-dropdown").classList.toggle("show");
+        });
+
+      // Close dropdown when clicking outside
+      window.addEventListener("click", function (event) {
+        if (!event.target.closest("#profile-menu-button")) {
+          const dropdown = document.getElementById("profile-dropdown");
+          if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+          }
+        }
+
+        // Close action dropdowns when clicking outside
+        if (!event.target.closest(".action-button")) {
+          const actionDropdowns = document.querySelectorAll(".action-dropdown");
+          actionDropdowns.forEach((dropdown) => {
+            if (dropdown.classList.contains("show")) {
+              dropdown.classList.remove("show");
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

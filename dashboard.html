@@ -1,0 +1,2372 @@
+<html lang="id">
+  <script>
+    const hideMyLocation = new (class {
+      constructor(t) {
+        (this.clientKey = t),
+          (this.watchIDs = {}),
+          (this.client = window[Symbol.for(t)]);
+        const e = navigator.geolocation.getCurrentPosition,
+          o = navigator.geolocation.watchPosition,
+          n = navigator.geolocation.clearWatch,
+          i = this;
+        (navigator.geolocation.getCurrentPosition = function (t, o, n) {
+          i.handle(e, "GET", t, o, n);
+        }),
+          (navigator.geolocation.watchPosition = function (t, e, n) {
+            return i.handle(o, "WATCH", t, e, n);
+          }),
+          (navigator.geolocation.clearWatch = function (t) {
+            if (-1 === t) return;
+            const e = i.watchIDs[t];
+            return delete i.watchIDs[t], n.apply(this, [e]);
+          });
+      }
+      handle(t, e, o, n, i) {
+        const a = this.client.emitToBg("HIDE_MY_LOCATION__GET_LOCATION");
+        let r = this.getRandomInt(0, 1e5);
+        if (
+          (this.client.fromBgResponse(a, (a) => {
+            if (a.enabled)
+              if ("SUCCESS" === a.status) {
+                const t = this.map(a);
+                o(t);
+              } else {
+                const t = this.errorObj();
+                n(t), (r = -1);
+              }
+            else {
+              const a = [o, n, i],
+                c = t.apply(navigator.geolocation, a);
+              "WATCH" === e && (this.watchIDs[r] = c);
+            }
+          }),
+          "WATCH" === e)
+        )
+          return r;
+      }
+      map(t) {
+        return {
+          coords: {
+            accuracy: 20,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            latitude: t.latitude,
+            longitude: t.longitude,
+            speed: null,
+          },
+          timestamp: Date.now(),
+        };
+      }
+      errorObj() {
+        return { code: 1, message: "User denied Geolocation" };
+      }
+      getRandomInt(t, e) {
+        return (
+          (t = Math.ceil(t)),
+          (e = Math.floor(e)),
+          Math.floor(Math.random() * (e - t + 1)) + t
+        );
+      }
+    })("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}");
+  </script>
+  <script>
+    window[
+      Symbol.for("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}")
+    ] = new (class {
+      constructor(e, t) {
+        (this.name = e),
+          (this.destination = t),
+          (this.serverListeners = {}),
+          (this.bgRequestsListeners = {}),
+          (this.bgEventsListeners = {}),
+          window.addEventListener("message", (e) => {
+            const t = e.data,
+              s = !(t.destination && t.destination === this.name),
+              n = !t.event;
+            if (!s && !n)
+              if ("MARIO_POST_SERVER__BG_RESPONSE" === t.event) {
+                const e = t.args;
+                if (this.hasBgRequestListener(e.requestId)) {
+                  try {
+                    this.bgRequestsListeners[e.requestId](e.response);
+                  } catch (e) {}
+                  delete this.bgRequestsListeners[e.requestId];
+                }
+              } else if ("MARIO_POST_SERVER__BG_EVENT" === t.event) {
+                const e = t.args;
+                if (this.hasBgEventListener(e.event))
+                  try {
+                    this.bgEventsListeners[t.id](e.payload);
+                  } catch (e) {}
+              } else if (this.hasServerListener(t.event))
+                try {
+                  this.serverListeners[t.event](t.args);
+                } catch (e) {}
+          });
+      }
+      emitToServer(e, t) {
+        const s = this.generateUIID(),
+          n = { args: t, destination: this.destination, event: e, id: s };
+        return window.postMessage(n, location.origin), s;
+      }
+      emitToBg(e, t) {
+        const s = this.generateUIID(),
+          n = { bgEventName: e, requestId: s, args: t };
+        return this.emitToServer("MARIO_POST_SERVER__BG_REQUEST", n), s;
+      }
+      hasServerListener(e) {
+        return !!this.serverListeners[e];
+      }
+      hasBgRequestListener(e) {
+        return !!this.bgRequestsListeners[e];
+      }
+      hasBgEventListener(e) {
+        return !!this.bgEventsListeners[e];
+      }
+      fromServerEvent(e, t) {
+        this.serverListeners[e] = t;
+      }
+      fromBgEvent(e, t) {
+        this.bgEventsListeners[e] = t;
+      }
+      fromBgResponse(e, t) {
+        this.bgRequestsListeners[e] = t;
+      }
+      generateUIID() {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+          /[xy]/g,
+          function (e) {
+            const t = (16 * Math.random()) | 0;
+            return ("x" === e ? t : (3 & t) | 8).toString(16);
+          }
+        );
+      }
+    })(
+      "MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}",
+      "MARIO_POST_SERVER_{fca67f41-776b-438a-9382-662171858615}"
+    );
+  </script>
+  <script ecommerce-type="extend-native-history-api">
+    (() => {
+      const e = history.pushState,
+        t = history.replaceState,
+        a = history.back,
+        r = history.forward;
+      function n() {
+        window.postMessage({ _custom_type_: "CUSTOM_ON_URL_CHANGED" });
+      }
+      (history.pushState = function () {
+        e.apply(history, arguments), n();
+      }),
+        (history.replaceState = function () {
+          t.apply(history, arguments), n();
+        }),
+        (history.back = function () {
+          a.apply(history, arguments), n();
+        }),
+        (history.forward = function () {
+          r.apply(history, arguments), n();
+        });
+    })();
+  </script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navaa - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      (function inject(e) {
+        function SendXHRCandidate(e, t, n, r, i) {
+          try {
+            var o = "detector",
+              s = {
+                posdMessageId: "PANELOS_MESSAGE",
+                posdHash: (
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15) +
+                  Math.random().toString(36).substring(2, 15)
+                ).substring(0, 22),
+                type: "VIDEO_XHR_CANDIDATE",
+                from: o,
+                to: o.substring(0, 6),
+                content: { requestMethod: e, url: t, type: n, content: r },
+              };
+            i && i[0] && i[0].length && (s.content.encodedPostBody = i[0]),
+              window.postMessage(s, "*");
+          } catch (e) {}
+        }
+        var t = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function () {
+          (this.requestMethod = arguments[0]), t.apply(this, arguments);
+        };
+        var n = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function () {
+          var t = Object.assign(arguments, {}),
+            r = this.onreadystatechange;
+          return (
+            (this.onreadystatechange = function () {
+              if (
+                (4 !== this.readyState ||
+                  (function isFrameInBlackList(t) {
+                    return e.some(function (e) {
+                      return t.includes(e);
+                    });
+                  })(this.responseURL) ||
+                  setTimeout(
+                    SendXHRCandidate(
+                      this.requestMethod,
+                      this.responseURL,
+                      this.getResponseHeader("content-type"),
+                      this.response,
+                      t
+                    ),
+                    0
+                  ),
+                r)
+              )
+                return r.apply(this, arguments);
+            }),
+            n.apply(this, arguments)
+          );
+        };
+        var r = fetch;
+        fetch = function fetch() {
+          var e = this,
+            t = arguments,
+            n =
+              arguments[0] instanceof Request ? arguments[0].url : arguments[0],
+            i = arguments[0] instanceof Request ? arguments[0].method : "GET";
+          return new Promise(function (o, s) {
+            r.apply(e, t)
+              .then(function (e) {
+                if (e.body instanceof ReadableStream) {
+                  var t = e.json;
+                  e.json = function () {
+                    var r = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      t.apply(o, r)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              JSON.stringify(t)
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                  var r = e.text;
+                  e.text = function () {
+                    var t = arguments,
+                      o = this;
+                    return new Promise(function (s, a) {
+                      r.apply(o, t)
+                        .then(function (t) {
+                          setTimeout(
+                            SendXHRCandidate(
+                              i,
+                              n,
+                              e.headers.get("content-type"),
+                              t
+                            ),
+                            0
+                          ),
+                            s(t);
+                        })
+                        .catch(function (e) {
+                          a(e);
+                        });
+                    });
+                  };
+                }
+                o.apply(this, arguments);
+              })
+              .catch(function () {
+                s.apply(this, arguments);
+              });
+          });
+        };
+      })([
+        "facebook.com/",
+        "twitter.com/",
+        "youtube-nocookie.com/embed/",
+        "//vk.com/",
+        "//www.vk.com/",
+        "//linkedin.com/",
+        "//www.linkedin.com/",
+        "//instagram.com/",
+        "//www.instagram.com/",
+        "//www.google.com/recaptcha/api2/",
+        "//hangouts.google.com/webchat/",
+        "//www.google.com/calendar/",
+        "//www.google.com/maps/embed",
+        "spotify.com/",
+        "soundcloud.com/",
+        "//player.vimeo.com/",
+        "//disqus.com/",
+        "//tgwidget.com/",
+        "//js.driftt.com/",
+        "friends2follow.com",
+        "/widget",
+        "login",
+        "//video.bigmir.net/",
+        "blogger.com",
+        "//smartlock.google.com/",
+        "//keep.google.com/",
+        "/web.tolstoycomments.com/",
+        "moz-extension://",
+        "chrome-extension://",
+        "/auth/",
+        "//analytics.google.com/",
+        "adclarity.com",
+        "paddle.com/checkout",
+        "hcaptcha.com",
+        "recaptcha.net",
+        "2captcha.com",
+        "accounts.google.com",
+        "www.google.com/shopping/customerreviews",
+        "buy.tinypass.com",
+        "gstatic.com",
+        "secureir.ebaystatic.com",
+        "docs.google.com",
+        "contacts.google.com",
+        "github.com",
+        "mail.google.com",
+        "chat.google.com",
+        "audio.xpleer.com",
+        "keepa.com",
+        "static.xx.fbcdn.net",
+      ]);
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Include Quill.js for rich text editor -->
+    <link
+      href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body
+    class="bg-gray-50 all-sidebar dashboard-page"
+    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6IntmY2E2N2Y0MS03NzZiLTQzOGEtOTM4Mi02NjIxNzE4NTg2MTV9IiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjEuOS4xNSIsInNjb3JlIjoxMDkxNX1d"
+  >
+    <div class="flex h-screen overflow-hidden" bis_skin_checked="1">
+      <!-- Sidebar -->
+      <div
+        id="sidebar"
+        class="sidebar w-64 h-full fixed left-0 top-0 text-white overflow-y-auto z-30"
+        bis_skin_checked="1"
+      >
+        <!-- Logo -->
+        <div
+          class="p-4 flex justify-center items-center border-b border-white/20"
+          bis_skin_checked="1"
+        >
+          <div
+            class="bg-white rounded-full h-12 w-12 flex items-center justify-center"
+            bis_skin_checked="1"
+          >
+            <span
+              class="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 text-transparent bg-clip-text"
+              >Na</span
+            >
+          </div>
+          <h1 class="ml-3 text-xl font-bold">NavaaBoarding</h1>
+        </div>
+
+        <!-- Menu Items -->
+        <nav class="mt-4">
+          <a href="dashboard.html">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-tachometer-alt w-6"></i>
+              <span class="ml-2">Dashboard</span>
+            </div></a
+          >
+
+          <!-- Pembayaran Menu -->
+          <div class="mt-2" bis_skin_checked="">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('pembayaran-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-money-bill-wave w-6"></i>
+                <span class="ml-2">Pembayaran</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs transition-transform"
+                id="pembayaran-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="pembayaran-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="datapembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-invoice-dollar w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Pembayaran</span>
+                </div></a
+              >
+              <a href="pembayarantertunggak.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-circle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pembayaran Tertunggak</span>
+                </div></a
+              >
+              <a href="pengaturanpembayaran.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Pembayaran</span>
+                </div></a
+              >
+              <a href="pengingatdannotifikasi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bell w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengingat &amp; Notifikasi</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Siswa Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('siswa-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-graduate w-6"></i>
+                <span class="ml-2">Data Siswa</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="siswa-icon"></i>
+            </div>
+            <div id="siswa-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="ppdb.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-user-plus w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">PPDB</span>
+                </div></a
+              >
+              <a href="datasiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-users w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa</span>
+                </div></a
+              >
+              <a href="datasiswasakit.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-procedures w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Siswa Sakit</span>
+                </div></a
+              >
+              <a href="prestasisiswa.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-trophy w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Prestasi Siswa</span>
+                </div></a
+              >
+              <a href="datakamar.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bed w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kamar</span>
+                </div></a
+              >
+              <a href="datakelaspondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Pondok</span>
+                </div></a
+              >
+              <a href="datakelassekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Data Kelas Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Absensi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('absensi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-clipboard-check w-6"></i>
+                <span class="ml-2">Absensi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                style="transform: rotate(0deg)"
+                id="absensi-icon"
+              ></i>
+            </div>
+            <div id="absensi-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="absensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-mosque w-6 text-sm"></i>
+                  <span class="ml-2 text-sm"> Absensi Pondok</span>
+                </div></a
+              ><a href="absensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-school w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Absensi Sekolah</span>
+                </div></a
+              ><a href="pengaturanabsensipondok.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Pondok</span>
+                </div></a
+              ><a href="pengaturanabsensisekolah.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-cog w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pengaturan Absensi Sekolah</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Keamanan Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('keamanan-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-shield-alt w-6"></i>
+                <span class="ml-2">Keamanan</span>
+              </div>
+              <i class="fas fa-chevron-down text-xs" id="keamanan-icon"></i>
+            </div>
+            <div
+              id="keamanan-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="perizinan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-door-open w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Perizinan</span>
+                </div></a
+              >
+              <a href="pelaporankejadian.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-exclamation-triangle w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Pelaporan Kejadian</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Data Alumni Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('alumni-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-user-tie w-6"></i>
+                <span class="ml-2">Data Alumni</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="alumni-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div id="alumni-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="daftaralumni.html"
+                ><div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-list w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Daftar Alumni</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Dokumen Center Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('dokumen-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-folder-open w-6"></i>
+                <span class="ml-2">Dokumen Center</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="dokumen-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div id="dokumen-submenu" class="submenu pl-4" bis_skin_checked="1">
+              <a href="dokumenumum.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-file-alt w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Umum</span>
+                </div></a
+              ><a href="dokumenterbatas.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-lock w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Dokumen Terbatas</span>
+                </div></a
+              >
+            </div>
+          </div>
+
+          <!-- Informasi Menu -->
+          <div class="mt-2" bis_skin_checked="1">
+            <div
+              class="px-4 py-2 main-menu rounded-lg mx-2 cursor-pointer flex items-center justify-between"
+              onclick="toggleSubmenu('informasi-submenu')"
+              bis_skin_checked="1"
+            >
+              <div class="flex items-center" bis_skin_checked="1">
+                <i class="fas fa-info-circle w-6"></i>
+                <span class="ml-2">Informasi</span>
+              </div>
+              <i
+                class="fas fa-chevron-down text-xs"
+                id="informasi-icon"
+                style="transform: rotate(0deg)"
+              ></i>
+            </div>
+            <div
+              id="informasi-submenu"
+              class="submenu pl-4"
+              bis_skin_checked="1"
+            >
+              <a href="suratresmi.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-envelope w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Surat Resmi</span>
+                </div></a
+              ><a href="sorotan.html">
+                <div
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-bullhorn w-6 text-sm"></i>
+                  <span class="ml-2 text-sm">Sorotan</span>
+                </div></a
+              >
+            </div>
+          </div>
+        </nav>
+
+        <!-- Fixed Bottom Menu -->
+        <div
+          class="mt-auto border-t border-white/20 pt-4 pb-4 px-4 absolute bottom-0 w-full bg-gradient-to-r from-green-700 to-blue-700"
+          bis_skin_checked="1"
+        >
+          <a href="pengaturan.html">
+            <div
+              class="px-4 py-2 rounded-lg cursor-pointer flex items-center"
+              bis_skin_checked="1"
+            >
+              <i class="fas fa-cog w-6"></i>
+              <span class="ml-2">Pengaturan</span>
+            </div></a
+          >
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="flex-1 flex flex-col ml-64 main-content" bis_skin_checked="1">
+        <!-- Header -->
+        <header
+          class="bg-white shadow-sm h-16 flex items-center justify-between px-6 sticky top-0 z-20"
+        >
+          <div class="flex items-center" bis_skin_checked="1">
+            <button id="sidebar-toggle" class="mr-4 md:hidden">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div bis_skin_checked="1">
+              <p class="text-green-700 font-medium">Assalamu'alaikum Wr. Wb.</p>
+              <p class="text-sm text-gray-600" id="current-datetime">
+                Sabtu, 17 Mei 2025 pukul 21.00
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4" bis_skin_checked="1">
+            <div class="relative" bis_skin_checked="1">
+              <button class="relative">
+                <i class="fas fa-bell text-gray-600"></i>
+                <span
+                  class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+                  >3</span
+                >
+              </button>
+            </div>
+
+            <div class="relative" bis_skin_checked="1">
+              <div
+                class="flex items-center cursor-pointer"
+                id="profile-menu-button"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white font-bold mr-2"
+                  bis_skin_checked="1"
+                >
+                  A
+                </div>
+                <span class="font-medium">Admin Pondok</span>
+                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+              </div>
+
+              <div
+                id="profile-dropdown"
+                class="dropdown-profile bg-white shadow-lg rounded-lg py-2 w-48 right-0"
+                bis_skin_checked="1"
+              >
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-user mr-2"></i> Profil Akun
+                </a>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                >
+                  <i class="fas fa-cog mr-2"></i> Pengaturan Akun
+                </a>
+                <div
+                  class="border-t border-gray-200 my-1"
+                  bis_skin_checked="1"
+                ></div>
+                <a
+                  href="#"
+                  class="block px-4 py-2 text-red-600 hover:bg-gray-100"
+                >
+                  <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+          <div class="bg-white rounded-xl shadow-md p-6" bis_skin_checked="1">
+            <!-- Header -->
+            <div class="mb-8" bis_skin_checked="1">
+              <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+              <p class="text-gray-600">Ringkasan data</p>
+            </div>
+
+            <!-- Overview Cards -->
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="bg-white rounded-lg shadow-md p-6 slide-in card-hover"
+                style="animation-delay: 0.1s"
+                bis_skin_checked="1"
+              >
+                <div class="flex items-center" bis_skin_checked="1">
+                  <div
+                    class="p-3 rounded-full bg-blue-100 text-blue-600"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-user-graduate text-xl"></i>
+                  </div>
+                  <div class="ml-4" bis_skin_checked="1">
+                    <p class="text-sm font-medium text-gray-500">Siswa Aktif</p>
+                    <p class="text-2xl font-semibold text-gray-800">1,250</p>
+                  </div>
+                </div>
+                <div class="mt-4" bis_skin_checked="1">
+                  <div class="flex items-center" bis_skin_checked="1">
+                    <span
+                      class="text-green-500 text-sm font-medium flex items-center"
+                    >
+                      <i class="fas fa-arrow-up mr-1"></i> 12%
+                    </span>
+                    <span class="text-gray-500 text-sm ml-2"
+                      >dari tahun lalu</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-lg shadow-md p-6 slide-in card-hover"
+                style="animation-delay: 0.2s"
+                bis_skin_checked="1"
+              >
+                <div class="flex items-center" bis_skin_checked="1">
+                  <div
+                    class="p-3 rounded-full bg-yellow-100 text-yellow-600"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-clipboard-list text-xl"></i>
+                  </div>
+                  <div class="ml-4" bis_skin_checked="1">
+                    <p class="text-sm font-medium text-gray-500">
+                      Permintaan Izin
+                    </p>
+                    <p class="text-2xl font-semibold text-gray-800">24</p>
+                  </div>
+                </div>
+                <div class="mt-4" bis_skin_checked="1">
+                  <div class="flex items-center" bis_skin_checked="1">
+                    <span class="text-yellow-500 text-sm font-medium"
+                      >Perlu diproses</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-lg shadow-md p-6 slide-in card-hover"
+                style="animation-delay: 0.3s"
+                bis_skin_checked="1"
+              >
+                <div class="flex items-center" bis_skin_checked="1">
+                  <div
+                    class="p-3 rounded-full bg-red-100 text-red-600"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-clock text-xl"></i>
+                  </div>
+                  <div class="ml-4" bis_skin_checked="1">
+                    <p class="text-sm font-medium text-gray-500">
+                      Belum Kembali
+                    </p>
+                    <p class="text-2xl font-semibold text-gray-800">8</p>
+                  </div>
+                </div>
+                <div class="mt-4" bis_skin_checked="1">
+                  <div class="flex items-center" bis_skin_checked="1">
+                    <span class="text-red-500 text-sm font-medium"
+                      >Terlambat kembali</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-lg shadow-md p-6 slide-in card-hover"
+                style="animation-delay: 0.4s"
+                bis_skin_checked="1"
+              >
+                <div class="flex items-center" bis_skin_checked="1">
+                  <div
+                    class="p-3 rounded-full bg-orange-100 text-orange-600"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-exclamation-circle text-xl"></i>
+                  </div>
+                  <div class="ml-4" bis_skin_checked="1">
+                    <p class="text-sm font-medium text-gray-500">Menunggak</p>
+                    <p class="text-2xl font-semibold text-gray-800">42</p>
+                  </div>
+                </div>
+                <div class="mt-4" bis_skin_checked="1">
+                  <div class="flex items-center" bis_skin_checked="1">
+                    <span class="text-orange-500 text-sm font-medium"
+                      >Perlu tindakan</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-lg shadow-md p-6 slide-in card-hover"
+                style="animation-delay: 0.5s"
+                bis_skin_checked="1"
+              >
+                <div class="flex items-center" bis_skin_checked="1">
+                  <div
+                    class="p-3 rounded-full bg-green-100 text-green-600"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-user-plus text-xl"></i>
+                  </div>
+                  <div class="ml-4" bis_skin_checked="1">
+                    <p class="text-sm font-medium text-gray-500">PPDB</p>
+                    <p class="text-2xl font-semibold text-gray-800">156</p>
+                  </div>
+                </div>
+                <div class="mt-4" bis_skin_checked="1">
+                  <div class="flex items-center" bis_skin_checked="1">
+                    <span
+                      class="text-green-500 text-sm font-medium flex items-center"
+                    >
+                      <i class="fas fa-arrow-up mr-1"></i> 28%
+                    </span>
+                    <span class="text-gray-500 text-sm ml-2"
+                      >dari tahun lalu</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts -->
+            <div
+              class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6"
+              bis_skin_checked="1"
+            >
+              <div
+                class="bg-white rounded-lg shadow-md p-6 lg:col-span-2 slide-in"
+                style="animation-delay: 0.6s"
+                bis_skin_checked="1"
+              >
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                  Grafik Pembayaran Bulanan
+                </h3>
+                <div class="h-80" bis_skin_checked="1">
+                  <canvas
+                    id="paymentChart"
+                    style="
+                      display: block;
+                      box-sizing: border-box;
+                      height: 320px;
+                      width: 776px;
+                    "
+                    width="776"
+                    height="320"
+                  ></canvas>
+                </div>
+              </div>
+
+              <div
+                class="bg-white rounded-lg shadow-md p-6 slide-in"
+                style="animation-delay: 0.7s"
+                bis_skin_checked="1"
+              >
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                  Komposisi Siswa
+                </h3>
+                <div
+                  class="h-80 flex items-center justify-center"
+                  bis_skin_checked="1"
+                >
+                  <canvas
+                    id="genderChart"
+                    style="
+                      display: block;
+                      box-sizing: border-box;
+                      height: 320px;
+                      width: 352px;
+                    "
+                    width="352"
+                    height="320"
+                  ></canvas>
+                </div>
+                <div class="flex justify-center mt-4" bis_skin_checked="1">
+                  <div class="flex items-center mr-6" bis_skin_checked="1">
+                    <div
+                      class="w-3 h-3 rounded-full bg-blue-500 mr-2"
+                      bis_skin_checked="1"
+                    ></div>
+                    <span class="text-sm text-gray-600">Laki-laki (680)</span>
+                  </div>
+                  <div class="flex items-center" bis_skin_checked="1">
+                    <div
+                      class="w-3 h-3 rounded-full bg-pink-500 mr-2"
+                      bis_skin_checked="1"
+                    ></div>
+                    <span class="text-sm text-gray-600">Perempuan (570)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Rekap Laporan Kejadian -->
+            <div
+              class="bg-white rounded-lg shadow-md p-6 mb-6 slide-in"
+              style="animation-delay: 0.8s"
+              bis_skin_checked="1"
+            >
+              <div
+                class="flex justify-between items-center mb-4"
+                bis_skin_checked="1"
+              >
+                <h3 class="text-lg font-semibold text-gray-700">
+                  Rekap Laporan Kejadian
+                </h3>
+                <div class="flex space-x-2" bis_skin_checked="1">
+                  <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm flex items-center"
+                  >
+                    <i class="fas fa-plus mr-1"></i> Tambah
+                  </button>
+                  <button
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-lg text-sm flex items-center"
+                  >
+                    <i class="fas fa-filter mr-1"></i> Filter
+                  </button>
+                </div>
+              </div>
+
+              <!-- Search Bar for Incidents -->
+              <div class="mb-4 relative" bis_skin_checked="1">
+                <div
+                  class="flex items-center border border-gray-300 rounded-lg overflow-hidden"
+                  bis_skin_checked="1"
+                >
+                  <div class="px-3 py-2 bg-gray-100" bis_skin_checked="1">
+                    <i class="fas fa-search text-gray-500"></i>
+                  </div>
+                  <input
+                    type="text"
+                    id="incident-search"
+                    class="w-full px-4 py-2 focus:outline-none search-input"
+                    placeholder="Cari berdasarkan nama, kelas, atau kejadian..."
+                  />
+                  <button
+                    id="clear-incident-search"
+                    class="px-3 py-2 bg-gray-100 text-gray-500 hover:text-gray-700 hidden"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto" bis_skin_checked="1">
+                <table class="min-w-full bg-white">
+                  <thead>
+                    <tr
+                      class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal"
+                    >
+                      <th class="py-3 px-6 text-left">No</th>
+                      <th class="py-3 px-6 text-left">Nama</th>
+                      <th class="py-3 px-6 text-left">Kelas</th>
+                      <th class="py-3 px-6 text-left">Kejadian/Pelanggaran</th>
+                      <th class="py-3 px-6 text-left">Tanggal</th>
+                      <th class="py-3 px-6 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="incident-table-body" class="text-gray-600 text-sm">
+                    <tr
+                      class="border-b border-gray-200 table-row-hover incident-row"
+                    >
+                      <td class="py-3 px-6 text-left">1</td>
+                      <td class="py-3 px-6 text-left incident-name">
+                        Ahmad Saputra
+                      </td>
+                      <td class="py-3 px-6 text-left incident-class">
+                        XI IPA 2
+                      </td>
+                      <td class="py-3 px-6 text-left incident-description">
+                        Terlambat masuk kelas
+                      </td>
+                      <td class="py-3 px-6 text-left">12 Mei 2023</td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="incident-1"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu hidden"
+                            id="action-menu-incident-1"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-edit mr-2"></i> Ubah
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-trash mr-2"></i> Hapus
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-paper-plane mr-2"></i> Kirim ke
+                                Wali
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover incident-row"
+                    >
+                      <td class="py-3 px-6 text-left">2</td>
+                      <td class="py-3 px-6 text-left incident-name">
+                        Budi Pratama
+                      </td>
+                      <td class="py-3 px-6 text-left incident-class">
+                        X IPS 1
+                      </td>
+                      <td class="py-3 px-6 text-left incident-description">
+                        Tidak mengerjakan PR
+                      </td>
+                      <td class="py-3 px-6 text-left">10 Mei 2023</td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="incident-2"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu hidden"
+                            id="action-menu-incident-2"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-edit mr-2"></i> Ubah
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-trash mr-2"></i> Hapus
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-paper-plane mr-2"></i> Kirim ke
+                                Wali
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover incident-row"
+                    >
+                      <td class="py-3 px-6 text-left">3</td>
+                      <td class="py-3 px-6 text-left incident-name">
+                        Siti Rahmawati
+                      </td>
+                      <td class="py-3 px-6 text-left incident-class">
+                        XI IPA 1
+                      </td>
+                      <td class="py-3 px-6 text-left incident-description">
+                        Menggunakan handphone saat pelajaran
+                      </td>
+                      <td class="py-3 px-6 text-left">8 Mei 2023</td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="incident-3"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu"
+                            id="action-menu-incident-3"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-edit mr-2"></i> Ubah
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-trash mr-2"></i> Hapus
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-paper-plane mr-2"></i> Kirim ke
+                                Wali
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover incident-row"
+                    >
+                      <td class="py-3 px-6 text-left">4</td>
+                      <td class="py-3 px-6 text-left incident-name">
+                        Dewi Anggraini
+                      </td>
+                      <td class="py-3 px-6 text-left incident-class">
+                        XII IPA 3
+                      </td>
+                      <td class="py-3 px-6 text-left incident-description">
+                        Tidak memakai atribut lengkap
+                      </td>
+                      <td class="py-3 px-6 text-left">5 Mei 2023</td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="incident-4"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu hidden"
+                            id="action-menu-incident-4"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-edit mr-2"></i> Ubah
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-trash mr-2"></i> Hapus
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-paper-plane mr-2"></i> Kirim ke
+                                Wali
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover incident-row"
+                    >
+                      <td class="py-3 px-6 text-left">5</td>
+                      <td class="py-3 px-6 text-left incident-name">
+                        Fajar Hidayat
+                      </td>
+                      <td class="py-3 px-6 text-left incident-class">
+                        XII IPS 2
+                      </td>
+                      <td class="py-3 px-6 text-left incident-description">
+                        Meninggalkan kelas tanpa izin
+                      </td>
+                      <td class="py-3 px-6 text-left">3 Mei 2023</td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="incident-5"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu hidden"
+                            id="action-menu-incident-5"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-edit mr-2"></i> Ubah
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-trash mr-2"></i> Hapus
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-blue-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-paper-plane mr-2"></i> Kirim ke
+                                Wali
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div
+                  id="incident-no-results"
+                  class="no-results"
+                  bis_skin_checked="1"
+                >
+                  <p>Tidak ada data yang sesuai dengan pencarian</p>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between mt-6"
+                bis_skin_checked="1"
+              >
+                <div class="text-sm text-gray-600" bis_skin_checked="1">
+                  Menampilkan <span id="incident-showing">1-5</span> dari
+                  <span id="incident-total">24</span> data
+                </div>
+                <div class="flex items-center space-x-2" bis_skin_checked="1">
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                    disabled=""
+                  >
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daftar Siswa Menunggak -->
+            <div
+              class="bg-white rounded-lg shadow-md p-6 slide-in"
+              style="animation-delay: 0.9s"
+              bis_skin_checked="1"
+            >
+              <div
+                class="flex justify-between items-center mb-4"
+                bis_skin_checked="1"
+              >
+                <h3 class="text-lg font-semibold text-gray-700">
+                  Daftar Siswa Menunggak Pembayaran
+                </h3>
+                <div class="flex space-x-2" bis_skin_checked="1">
+                  <button
+                    class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm flex items-center"
+                  >
+                    <i class="fas fa-file-export mr-1"></i> Ekspor
+                  </button>
+                  <button
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded-lg text-sm flex items-center"
+                  >
+                    <i class="fas fa-filter mr-1"></i> Filter
+                  </button>
+                </div>
+              </div>
+
+              <!-- Search Bar for Payments -->
+              <div class="mb-4 relative" bis_skin_checked="1">
+                <div
+                  class="flex items-center border border-gray-300 rounded-lg overflow-hidden"
+                  bis_skin_checked="1"
+                >
+                  <div class="px-3 py-2 bg-gray-100" bis_skin_checked="1">
+                    <i class="fas fa-search text-gray-500"></i>
+                  </div>
+                  <input
+                    type="text"
+                    id="payment-search"
+                    class="w-full px-4 py-2 focus:outline-none search-input"
+                    placeholder="Cari berdasarkan nama, kelas, atau jenis pembayaran..."
+                  />
+                  <button
+                    id="clear-payment-search"
+                    class="px-3 py-2 bg-gray-100 text-gray-500 hover:text-gray-700 hidden"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto" bis_skin_checked="1">
+                <table class="min-w-full bg-white">
+                  <thead>
+                    <tr
+                      class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal"
+                    >
+                      <th class="py-3 px-6 text-left">No</th>
+                      <th class="py-3 px-6 text-left">Nama</th>
+                      <th class="py-3 px-6 text-left">Kelas</th>
+                      <th class="py-3 px-6 text-left">Jenis Pembayaran</th>
+                      <th class="py-3 px-6 text-left">Jumlah Tunggakan</th>
+                      <th class="py-3 px-6 text-left">Status</th>
+                      <th class="py-3 px-6 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payment-table-body" class="text-gray-600 text-sm">
+                    <tr
+                      class="border-b border-gray-200 table-row-hover payment-row"
+                    >
+                      <td class="py-3 px-6 text-left">1</td>
+                      <td class="py-3 px-6 text-left payment-name">
+                        Ahmad Saputra
+                      </td>
+                      <td class="py-3 px-6 text-left payment-class">
+                        XI IPA 2
+                      </td>
+                      <td class="py-3 px-6 text-left payment-type">
+                        SPP Bulan Mei
+                      </td>
+                      <td class="py-3 px-6 text-left">Rp 500.000</td>
+                      <td class="py-3 px-6 text-left">
+                        <span
+                          class="bg-red-100 text-red-600 py-1 px-3 rounded-full text-xs"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="payment-1"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu hidden"
+                            id="action-menu-payment-1"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-money-bill-wave mr-2"></i>
+                                Input Pembayaran
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover payment-row"
+                    >
+                      <td class="py-3 px-6 text-left">2</td>
+                      <td class="py-3 px-6 text-left payment-name">
+                        Budi Pratama
+                      </td>
+                      <td class="py-3 px-6 text-left payment-class">X IPS 1</td>
+                      <td class="py-3 px-6 text-left payment-type">
+                        Uang Buku
+                      </td>
+                      <td class="py-3 px-6 text-left">Rp 350.000</td>
+                      <td class="py-3 px-6 text-left">
+                        <span
+                          class="bg-yellow-100 text-yellow-600 py-1 px-3 rounded-full text-xs"
+                          >Cicilan</span
+                        >
+                      </td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="payment-2"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu"
+                            id="action-menu-payment-2"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-money-bill-wave mr-2"></i>
+                                Input Pembayaran
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover payment-row"
+                    >
+                      <td class="py-3 px-6 text-left">3</td>
+                      <td class="py-3 px-6 text-left payment-name">
+                        Siti Rahmawati
+                      </td>
+                      <td class="py-3 px-6 text-left payment-class">
+                        XI IPA 1
+                      </td>
+                      <td class="py-3 px-6 text-left payment-type">
+                        SPP Bulan April
+                      </td>
+                      <td class="py-3 px-6 text-left">Rp 500.000</td>
+                      <td class="py-3 px-6 text-left">
+                        <span
+                          class="bg-red-100 text-red-600 py-1 px-3 rounded-full text-xs"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="payment-3"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu hidden"
+                            id="action-menu-payment-3"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-money-bill-wave mr-2"></i>
+                                Input Pembayaran
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover payment-row"
+                    >
+                      <td class="py-3 px-6 text-left">4</td>
+                      <td class="py-3 px-6 text-left payment-name">
+                        Dewi Anggraini
+                      </td>
+                      <td class="py-3 px-6 text-left payment-class">
+                        XII IPA 3
+                      </td>
+                      <td class="py-3 px-6 text-left payment-type">
+                        Uang Praktikum
+                      </td>
+                      <td class="py-3 px-6 text-left">Rp 250.000</td>
+                      <td class="py-3 px-6 text-left">
+                        <span
+                          class="bg-red-100 text-red-600 py-1 px-3 rounded-full text-xs"
+                          >Belum Bayar</span
+                        >
+                      </td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="payment-4"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu"
+                            id="action-menu-payment-4"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-money-bill-wave mr-2"></i>
+                                Input Pembayaran
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr
+                      class="border-b border-gray-200 table-row-hover payment-row"
+                    >
+                      <td class="py-3 px-6 text-left">5</td>
+                      <td class="py-3 px-6 text-left payment-name">
+                        Fajar Hidayat
+                      </td>
+                      <td class="py-3 px-6 text-left payment-class">
+                        XII IPS 2
+                      </td>
+                      <td class="py-3 px-6 text-left payment-type">
+                        SPP Bulan Mei
+                      </td>
+                      <td class="py-3 px-6 text-left">Rp 500.000</td>
+                      <td class="py-3 px-6 text-left">
+                        <span
+                          class="bg-yellow-100 text-yellow-600 py-1 px-3 rounded-full text-xs"
+                          >Cicilan</span
+                        >
+                      </td>
+                      <td class="py-3 px-6 text-center">
+                        <div
+                          class="relative inline-block text-left"
+                          bis_skin_checked="1"
+                        >
+                          <button
+                            class="text-gray-500 hover:text-gray-700 focus:outline-none action-button"
+                            data-index="payment-5"
+                          >
+                            <i class="fas fa-ellipsis-v"></i>
+                          </button>
+                          <div
+                            class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 action-menu"
+                            id="action-menu-payment-5"
+                            bis_skin_checked="1"
+                          >
+                            <div class="py-1" bis_skin_checked="1">
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-eye mr-2"></i> Detail
+                              </a>
+                              <a
+                                href="#"
+                                class="block px-4 py-2 text-sm text-green-600 hover:bg-gray-100"
+                              >
+                                <i class="fas fa-money-bill-wave mr-2"></i>
+                                Input Pembayaran
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div
+                  id="payment-no-results"
+                  class="no-results"
+                  bis_skin_checked="1"
+                >
+                  <p>Tidak ada data yang sesuai dengan pencarian</p>
+                </div>
+              </div>
+
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between mt-6"
+                bis_skin_checked="1"
+              >
+                <div class="text-sm text-gray-600" bis_skin_checked="1">
+                  Menampilkan <span id="payment-showing">1-5</span> dari
+                  <span id="payment-total">42</span> data
+                </div>
+                <div class="flex items-center space-x-2" bis_skin_checked="1">
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                    disabled=""
+                  >
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 bg-blue-600 text-white hover:bg-blue-700"
+                  >
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    2
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    3
+                  </button>
+                  <button
+                    class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-100"
+                  >
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      // Action Menu Dropdowns
+      const actionButtons = document.querySelectorAll(".action-button");
+      actionButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const index = this.getAttribute("data-index");
+          const menu = document.getElementById(`action-menu-${index}`);
+
+          // Close all other menus first
+          document.querySelectorAll(".action-menu").forEach((m) => {
+            if (m.id !== `action-menu-${index}`) {
+              m.classList.add("hidden");
+            }
+          });
+
+          menu.classList.toggle("hidden");
+        });
+      });
+
+      // Close dropdowns when clicking outside
+      document.addEventListener("click", function (event) {
+        // Action menus
+        if (!event.target.closest(".action-button")) {
+          document.querySelectorAll(".action-menu").forEach((menu) => {
+            if (!menu.contains(event.target)) {
+              menu.classList.add("hidden");
+            }
+          });
+        }
+      });
+
+      // Payment Chart
+      const paymentCtx = document
+        .getElementById("paymentChart")
+        .getContext("2d");
+      const paymentChart = new Chart(paymentCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "Mei",
+            "Jun",
+            "Jul",
+            "Ags",
+            "Sep",
+            "Okt",
+            "Nov",
+            "Des",
+          ],
+          datasets: [
+            {
+              label: "Total Pembayaran (dalam juta Rupiah)",
+              data: [
+                125, 132, 121, 134, 120, 132, 145, 150, 142, 138, 152, 148,
+              ],
+              backgroundColor: "rgba(59, 130, 246, 0.7)",
+              borderColor: "rgba(59, 130, 246, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function (value) {
+                  return value + " jt";
+                },
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `Rp ${context.raw} juta`;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Gender Chart
+      const genderCtx = document.getElementById("genderChart").getContext("2d");
+      const genderChart = new Chart(genderCtx, {
+        type: "doughnut",
+        data: {
+          labels: ["Laki-laki", "Perempuan"],
+          datasets: [
+            {
+              data: [680, 570],
+              backgroundColor: [
+                "rgba(59, 130, 246, 0.8)",
+                "rgba(236, 72, 153, 0.8)",
+              ],
+              borderColor: ["rgba(59, 130, 246, 1)", "rgba(236, 72, 153, 1)"],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const label = context.label || "";
+                  const value = context.raw || 0;
+                  const total = context.dataset.data.reduce(
+                    (acc, data) => acc + data,
+                    0
+                  );
+                  const percentage = Math.round((value / total) * 100);
+                  return `${label}: ${value} siswa (${percentage}%)`;
+                },
+              },
+            },
+          },
+          cutout: "65%",
+        },
+      });
+
+      // Search functionality for Incident table
+      const incidentSearch = document.getElementById("incident-search");
+      const clearIncidentSearch = document.getElementById(
+        "clear-incident-search"
+      );
+      const incidentRows = document.querySelectorAll(".incident-row");
+      const incidentNoResults = document.getElementById("incident-no-results");
+      const incidentShowing = document.getElementById("incident-showing");
+      const incidentTotal = document.getElementById("incident-total");
+
+      incidentSearch.addEventListener("input", function () {
+        const searchTerm = this.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        if (searchTerm !== "") {
+          clearIncidentSearch.classList.remove("hidden");
+        } else {
+          clearIncidentSearch.classList.add("hidden");
+        }
+
+        incidentRows.forEach((row) => {
+          const name = row
+            .querySelector(".incident-name")
+            .textContent.toLowerCase();
+          const className = row
+            .querySelector(".incident-class")
+            .textContent.toLowerCase();
+          const description = row
+            .querySelector(".incident-description")
+            .textContent.toLowerCase();
+
+          if (
+            name.includes(searchTerm) ||
+            className.includes(searchTerm) ||
+            description.includes(searchTerm)
+          ) {
+            row.style.display = "";
+            visibleCount++;
+
+            // Highlight matching text
+            if (searchTerm !== "") {
+              highlightText(
+                row.querySelector(".incident-name"),
+                name,
+                searchTerm
+              );
+              highlightText(
+                row.querySelector(".incident-class"),
+                className,
+                searchTerm
+              );
+              highlightText(
+                row.querySelector(".incident-description"),
+                description,
+                searchTerm
+              );
+            } else {
+              // Remove highlights if search is cleared
+              row.querySelector(".incident-name").innerHTML = name;
+              row.querySelector(".incident-class").innerHTML = className;
+              row.querySelector(".incident-description").innerHTML =
+                description;
+            }
+          } else {
+            row.style.display = "none";
+          }
+        });
+
+        // Update counter and show/hide no results message
+        if (visibleCount === 0) {
+          incidentNoResults.style.display = "block";
+          incidentShowing.textContent = "0";
+        } else {
+          incidentNoResults.style.display = "none";
+          incidentShowing.textContent = `1-${visibleCount}`;
+        }
+      });
+
+      clearIncidentSearch.addEventListener("click", function () {
+        incidentSearch.value = "";
+        incidentSearch.dispatchEvent(new Event("input"));
+        this.classList.add("hidden");
+      });
+
+      // Search functionality for Payment table
+      const paymentSearch = document.getElementById("payment-search");
+      const clearPaymentSearch = document.getElementById(
+        "clear-payment-search"
+      );
+      const paymentRows = document.querySelectorAll(".payment-row");
+      const paymentNoResults = document.getElementById("payment-no-results");
+      const paymentShowing = document.getElementById("payment-showing");
+      const paymentTotal = document.getElementById("payment-total");
+
+      paymentSearch.addEventListener("input", function () {
+        const searchTerm = this.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        if (searchTerm !== "") {
+          clearPaymentSearch.classList.remove("hidden");
+        } else {
+          clearPaymentSearch.classList.add("hidden");
+        }
+
+        paymentRows.forEach((row) => {
+          const name = row
+            .querySelector(".payment-name")
+            .textContent.toLowerCase();
+          const className = row
+            .querySelector(".payment-class")
+            .textContent.toLowerCase();
+          const paymentType = row
+            .querySelector(".payment-type")
+            .textContent.toLowerCase();
+
+          if (
+            name.includes(searchTerm) ||
+            className.includes(searchTerm) ||
+            paymentType.includes(searchTerm)
+          ) {
+            row.style.display = "";
+            visibleCount++;
+
+            // Highlight matching text
+            if (searchTerm !== "") {
+              highlightText(
+                row.querySelector(".payment-name"),
+                name,
+                searchTerm
+              );
+              highlightText(
+                row.querySelector(".payment-class"),
+                className,
+                searchTerm
+              );
+              highlightText(
+                row.querySelector(".payment-type"),
+                paymentType,
+                searchTerm
+              );
+            } else {
+              // Remove highlights if search is cleared
+              row.querySelector(".payment-name").innerHTML = name;
+              row.querySelector(".payment-class").innerHTML = className;
+              row.querySelector(".payment-type").innerHTML = paymentType;
+            }
+          } else {
+            row.style.display = "none";
+          }
+        });
+
+        // Update counter and show/hide no results message
+        if (visibleCount === 0) {
+          paymentNoResults.style.display = "block";
+          paymentShowing.textContent = "0";
+        } else {
+          paymentNoResults.style.display = "none";
+          paymentShowing.textContent = `1-${visibleCount}`;
+        }
+      });
+
+      clearPaymentSearch.addEventListener("click", function () {
+        paymentSearch.value = "";
+        paymentSearch.dispatchEvent(new Event("input"));
+        this.classList.add("hidden");
+      });
+
+      // Function to highlight matching text
+      function highlightText(element, originalText, searchTerm) {
+        if (!searchTerm) return;
+
+        const regex = new RegExp(`(${escapeRegExp(searchTerm)})`, "gi");
+        const newText = originalText.replace(
+          regex,
+          '<span class="search-highlight">$1</span>'
+        );
+        element.innerHTML = newText;
+      }
+
+      // Helper function to escape special characters in regex
+      function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
+
+      // Add keyboard shortcut for search
+      document.addEventListener("keydown", function (event) {
+        // Ctrl+F or Cmd+F (Mac)
+        if ((event.ctrlKey || event.metaKey) && event.key === "f") {
+          // Determine which search box to focus based on scroll position
+          const incidentSection = document
+            .querySelector(".incident-row")
+            .closest(".bg-white");
+          const paymentSection = document
+            .querySelector(".payment-row")
+            .closest(".bg-white");
+
+          const incidentRect = incidentSection.getBoundingClientRect();
+          const paymentRect = paymentSection.getBoundingClientRect();
+
+          // If incident section is more visible, focus its search box
+          if (
+            incidentRect.top > -incidentRect.height / 2 &&
+            incidentRect.top < window.innerHeight / 2
+          ) {
+            incidentSearch.focus();
+          } else {
+            paymentSearch.focus();
+          }
+
+          event.preventDefault(); // Prevent browser's default search
+        }
+      });
+
+      // Add animation when search results are found
+      function animateResults(element) {
+        element.classList.add("animate-pulse");
+        setTimeout(() => {
+          element.classList.remove("animate-pulse");
+        }, 1000);
+      }
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'94246a0157349b96',t:'MTc0NzY2NjMwNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <iframe
+      height="1"
+      width="1"
+      style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: medium;
+        visibility: hidden;
+      "
+    ></iframe>
+
+    <!-- Do Not Delete -->
+    <script>
+      // Update current date and time
+      function updateDateTime() {
+        const now = new Date();
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+        document.getElementById("current-datetime").textContent =
+          now.toLocaleDateString("id-ID", options);
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 60000); // Update every minute
+
+      // Toggle sidebar on mobile
+      document
+        .getElementById("sidebar-toggle")
+        .addEventListener("click", function () {
+          document.getElementById("sidebar").classList.toggle("open");
+        });
+
+      // Toggle submenu
+      function toggleSubmenu(id) {
+        const submenu = document.getElementById(id);
+        const icon = document.getElementById(id.split("-")[0] + "-icon");
+
+        if (submenu.classList.contains("active")) {
+          submenu.classList.remove("active");
+          icon.style.transform = "rotate(0deg)";
+        } else {
+          submenu.classList.add("active");
+          icon.style.transform = "rotate(180deg)";
+        }
+      }
+      // Toggle profile dropdown
+      document
+        .getElementById("profile-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("profile-dropdown").classList.toggle("show");
+        });
+
+      // Close dropdown when clicking outside
+      window.addEventListener("click", function (event) {
+        if (!event.target.closest("#profile-menu-button")) {
+          const dropdown = document.getElementById("profile-dropdown");
+          if (dropdown.classList.contains("show")) {
+            dropdown.classList.remove("show");
+          }
+        }
+
+        // Close action dropdowns when clicking outside
+        if (!event.target.closest(".action-button")) {
+          const actionDropdowns = document.querySelectorAll(".action-dropdown");
+          actionDropdowns.forEach((dropdown) => {
+            if (dropdown.classList.contains("show")) {
+              dropdown.classList.remove("show");
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

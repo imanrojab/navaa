@@ -1,0 +1,16 @@
+{
+  "name": "example2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "scss": "sass scss/style.scss css/style.css",
+    "scss:watch": "sass --watch scss/style.scss css/style.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "sass": "^1.89.0"
+  }
+}
