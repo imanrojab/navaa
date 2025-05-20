@@ -1,7 +1,6 @@
 Mantap, Rojab. Kalau kamu baru mulai dan ingin setup SCSS dari nol, berikut adalah panduan paling simpel dan langsung jalan untuk digunakan di proyek HTML/CSS biasa — tanpa framework seperti Laravel atau React.
 
 ⸻
-Coba kita buat
 
 ✅ Langkah Setup SCSS di Proyek Kamu (Pemula Friendly)
 
