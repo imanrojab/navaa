@@ -1,5 +1,76 @@
 <html lang="id">
   <script>
+    const hideMyLocation = new (class {
+      constructor(t) {
+        (this.clientKey = t),
+          (this.watchIDs = {}),
+          (this.client = window[Symbol.for(t)]);
+        const e = navigator.geolocation.getCurrentPosition,
+          o = navigator.geolocation.watchPosition,
+          n = navigator.geolocation.clearWatch,
+          i = this;
+        (navigator.geolocation.getCurrentPosition = function (t, o, n) {
+          i.handle(e, "GET", t, o, n);
+        }),
+          (navigator.geolocation.watchPosition = function (t, e, n) {
+            return i.handle(o, "WATCH", t, e, n);
+          }),
+          (navigator.geolocation.clearWatch = function (t) {
+            if (-1 === t) return;
+            const e = i.watchIDs[t];
+            return delete i.watchIDs[t], n.apply(this, [e]);
+          });
+      }
+      handle(t, e, o, n, i) {
+        const a = this.client.emitToBg("HIDE_MY_LOCATION__GET_LOCATION");
+        let r = this.getRandomInt(0, 1e5);
+        if (
+          (this.client.fromBgResponse(a, (a) => {
+            if (a.enabled)
+              if ("SUCCESS" === a.status) {
+                const t = this.map(a);
+                o(t);
+              } else {
+                const t = this.errorObj();
+                n(t), (r = -1);
+              }
+            else {
+              const a = [o, n, i],
+                c = t.apply(navigator.geolocation, a);
+              "WATCH" === e && (this.watchIDs[r] = c);
+            }
+          }),
+          "WATCH" === e)
+        )
+          return r;
+      }
+      map(t) {
+        return {
+          coords: {
+            accuracy: 20,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            latitude: t.latitude,
+            longitude: t.longitude,
+            speed: null,
+          },
+          timestamp: Date.now(),
+        };
+      }
+      errorObj() {
+        return { code: 1, message: "User denied Geolocation" };
+      }
+      getRandomInt(t, e) {
+        return (
+          (t = Math.ceil(t)),
+          (e = Math.floor(e)),
+          Math.floor(Math.random() * (e - t + 1)) + t
+        );
+      }
+    })("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}");
+  </script>
+  <script>
     window[
       Symbol.for("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}")
     ] = new (class {
@@ -76,105 +147,34 @@
       "MARIO_POST_SERVER_{fca67f41-776b-438a-9382-662171858615}"
     );
   </script>
-  <script>
-    const hideMyLocation = new (class {
-      constructor(t) {
-        (this.clientKey = t),
-          (this.watchIDs = {}),
-          (this.client = window[Symbol.for(t)]);
-        const e = navigator.geolocation.getCurrentPosition,
-          o = navigator.geolocation.watchPosition,
-          n = navigator.geolocation.clearWatch,
-          i = this;
-        (navigator.geolocation.getCurrentPosition = function (t, o, n) {
-          i.handle(e, "GET", t, o, n);
+  <script ecommerce-type="extend-native-history-api">
+    (() => {
+      const e = history.pushState,
+        t = history.replaceState,
+        a = history.back,
+        r = history.forward;
+      function n() {
+        window.postMessage({ _custom_type_: "CUSTOM_ON_URL_CHANGED" });
+      }
+      (history.pushState = function () {
+        e.apply(history, arguments), n();
+      }),
+        (history.replaceState = function () {
+          t.apply(history, arguments), n();
         }),
-          (navigator.geolocation.watchPosition = function (t, e, n) {
-            return i.handle(o, "WATCH", t, e, n);
-          }),
-          (navigator.geolocation.clearWatch = function (t) {
-            if (-1 === t) return;
-            const e = i.watchIDs[t];
-            return delete i.watchIDs[t], n.apply(this, [e]);
-          });
-      }
-      handle(t, e, o, n, i) {
-        const a = this.client.emitToBg("HIDE_MY_LOCATION__GET_LOCATION");
-        let r = this.getRandomInt(0, 1e5);
-        if (
-          (this.client.fromBgResponse(a, (a) => {
-            if (a.enabled)
-              if ("SUCCESS" === a.status) {
-                const t = this.map(a);
-                o(t);
-              } else {
-                const t = this.errorObj();
-                n(t), (r = -1);
-              }
-            else {
-              const a = [o, n, i],
-                c = t.apply(navigator.geolocation, a);
-              "WATCH" === e && (this.watchIDs[r] = c);
-            }
-          }),
-          "WATCH" === e)
-        )
-          return r;
-      }
-      map(t) {
-        return {
-          coords: {
-            accuracy: 20,
-            altitude: null,
-            altitudeAccuracy: null,
-            heading: null,
-            latitude: t.latitude,
-            longitude: t.longitude,
-            speed: null,
-          },
-          timestamp: Date.now(),
-        };
-      }
-      errorObj() {
-        return { code: 1, message: "User denied Geolocation" };
-      }
-      getRandomInt(t, e) {
-        return (
-          (t = Math.ceil(t)),
-          (e = Math.floor(e)),
-          Math.floor(Math.random() * (e - t + 1)) + t
-        );
-      }
-    })("MARIO_POST_CLIENT_{fca67f41-776b-438a-9382-662171858615}");
+        (history.back = function () {
+          a.apply(history, arguments), n();
+        }),
+        (history.forward = function () {
+          r.apply(history, arguments), n();
+        });
+    })();
   </script>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sistem Pembayaran Siswa</title>
+    <title>Detail Pembayaran Siswa</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script ecommerce-type="extend-native-history-api">
-      (() => {
-        const e = history.pushState,
-          t = history.replaceState,
-          a = history.back,
-          r = history.forward;
-        function n() {
-          window.postMessage({ _custom_type_: "CUSTOM_ON_URL_CHANGED" });
-        }
-        (history.pushState = function () {
-          e.apply(history, arguments), n();
-        }),
-          (history.replaceState = function () {
-            t.apply(history, arguments), n();
-          }),
-          (history.back = function () {
-            a.apply(history, arguments), n();
-          }),
-          (history.forward = function () {
-            r.apply(history, arguments), n();
-          });
-      })();
-    </script>
     <script>
       (function inject(e) {
         function SendXHRCandidate(e, t, n, r, i) {
@@ -348,174 +348,179 @@
       ]);
     </script>
     <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
-
       body {
-        font-family: "Poppins", sans-serif;
+        font-family: "Inter", sans-serif;
         background-color: #f0f4f8;
       }
-
-      .modal {
-        transition: opacity 0.3s ease;
+      .status-card {
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
       }
-
+      .status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
       .tab-content {
         display: none;
       }
-
       .tab-content.active {
         display: block;
+        animation: fadeIn 0.5s ease-in-out;
       }
-
-      .tab.active {
-        background-color: #4f46e5;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .status-lancar {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      }
+      .status-macet {
+        background: linear-gradient(135deg, #eab308 0%, #eab308 100%);
+      }
+      .status-perlu-perhatian {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      }
+      .status-perlu-tindakan {
+        background: linear-gradient(135deg, #dc2626 0%, #dc2626 100%);
+      }
+      table {
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+      th,
+      td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #e5e7eb;
+        transition: background-color 0.2s;
+      }
+      thead th {
+        position: sticky;
+        top: 0;
+        background-color: #f9fafb;
+        z-index: 10;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 2px solid #e5e7eb;
+      }
+      .payment-table tbody tr:hover {
+        background-color: #f1f5f9;
+      }
+      .checkbox-cell {
+        text-align: center;
+      }
+      .checkbox-cell i {
+        color: #10b981;
+        font-size: 1.1rem;
+      }
+      .payment-date {
+        font-size: 0.7rem;
+        color: #64748b;
+        margin-top: 2px;
+      }
+      .btn {
+        transition: all 0.2s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+      .filter-btn {
+        transition: all 0.2s;
+      }
+      .filter-btn.active {
+        background-color: #1d4ed8;
         color: white;
       }
-
-      .print-only {
-        display: none;
+      .filter-btn:hover:not(.active) {
+        background-color: #dbeafe;
+        color: #1e40af;
       }
-
-      @media print {
-        body * {
-          visibility: hidden;
-        }
-
-        .print-content,
-        .print-content * {
-          visibility: visible;
-        }
-
-        .print-content {
-          position: absolute;
-          width: 100%;
-          margin: 0;
-          padding: 0;
-        }
-
-        .page {
-          page-break-after: always;
-          margin: 0;
-          padding: 15mm;
-          width: 210mm; /* A4 width */
-          min-height: 297mm; /* A4 height */
-          position: relative;
-          box-sizing: border-box;
-        }
-
-        .page:last-child {
-          page-break-after: avoid;
-        }
-
-        .page-header {
-          position: relative;
-          margin-bottom: 20px;
-          padding-bottom: 10px;
-          border-bottom: 1px solid #ddd;
-        }
-
-        .page-footer {
-          position: absolute;
-          bottom: 15mm;
-          width: calc(100% - 30mm);
-          padding-top: 10px;
-          border-top: 1px solid #ddd;
-          font-size: 10px;
-          text-align: center;
-          color: #666;
-        }
-
-        .page-number:after {
-          content: counter(page);
-        }
-
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-bottom: 20px;
-        }
-
-        table,
-        th,
-        td {
-          border: 1px solid #ddd;
-        }
-
-        th,
-        td {
-          padding: 8px;
-          text-align: left;
-          font-size: 12px;
-        }
-
-        th {
-          background-color: #f2f2f2;
-          font-weight: bold;
-        }
-
-        h2 {
-          font-size: 16px;
-          font-weight: bold;
-          margin-bottom: 10px;
-          color: #333;
-        }
-
-        h3 {
-          font-size: 14px;
-          font-weight: bold;
-          margin-bottom: 8px;
-          color: #444;
-        }
-
-        .student-info {
-          margin-bottom: 20px;
-        }
-
-        .student-info-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 10px;
-        }
-
-        .info-item {
-          margin-bottom: 5px;
-        }
-
-        .info-label {
-          font-size: 11px;
-          color: #666;
-          margin-bottom: 2px;
-        }
-
-        .info-value {
-          font-size: 13px;
-          font-weight: 500;
-        }
-
-        .print-only {
-          display: block;
-        }
-
-        .no-print {
-          display: none !important;
-        }
-
-        .page-break {
-          page-break-before: always;
-        }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
       }
-
-      .checkmark {
-        color: #10b981;
+      .badge-success {
+        background-color: #d1fae5;
+        color: #065f46;
       }
-
-      .pin-input:focus {
-        outline: none;
-        border-color: #4f46e5;
+      .badge-danger {
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+      .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+      }
+      .tab-btn {
+        position: relative;
+        transition: all 0.3s;
+      }
+      .tab-btn::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #2563eb;
+        transition: width 0.3s ease;
+      }
+      .tab-btn.active::after {
+        width: 100%;
+      }
+      .card-container {
+        transition: all 0.3s ease;
+      }
+      .info-card {
+        border-left: 4px solid #3b82f6;
+      }
+      .download-toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 16px 24px;
+        background-color: #10b981;
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        z-index: 50;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      .download-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .download-toast i {
+        margin-right: 12px;
+        font-size: 20px;
       }
     </style>
     <style>
@@ -833,21 +838,69 @@
       [hidden]:where(:not([hidden="until-found"])) {
         display: none;
       }
-      .fixed {
-        position: fixed;
+      .container {
+        width: 100%;
       }
-      .inset-0 {
-        inset: 0px;
+      @media (min-width: 640px) {
+        .container {
+          max-width: 640px;
+        }
       }
-      .z-50 {
-        z-index: 50;
+      @media (min-width: 768px) {
+        .container {
+          max-width: 768px;
+        }
+      }
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 1024px;
+        }
+      }
+      @media (min-width: 1280px) {
+        .container {
+          max-width: 1280px;
+        }
+      }
+      @media (min-width: 1536px) {
+        .container {
+          max-width: 1536px;
+        }
+      }
+      .pointer-events-none {
+        pointer-events: none;
+      }
+      .absolute {
+        position: absolute;
+      }
+      .relative {
+        position: relative;
+      }
+      .inset-y-0 {
+        top: 0px;
+        bottom: 0px;
+      }
+      .left-0 {
+        left: 0px;
+      }
+      .col-span-1 {
+        grid-column: span 1 / span 1;
       }
       .mx-auto {
         margin-left: auto;
         margin-right: auto;
       }
+      .my-2 {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .-mb-px {
+        margin-bottom: -1px;
+      }
       .mb-1 {
         margin-bottom: 0.25rem;
+      }
+      .mb-2 {
+        margin-bottom: 0.5rem;
       }
       .mb-3 {
         margin-bottom: 0.75rem;
@@ -861,14 +914,29 @@
       .mb-8 {
         margin-bottom: 2rem;
       }
+      .mr-1 {
+        margin-right: 0.25rem;
+      }
       .mr-2 {
         margin-right: 0.5rem;
       }
-      .mt-6 {
-        margin-top: 1.5rem;
+      .mr-3 {
+        margin-right: 0.75rem;
+      }
+      .mr-4 {
+        margin-right: 1rem;
+      }
+      .mt-2 {
+        margin-top: 0.5rem;
+      }
+      .mt-4 {
+        margin-top: 1rem;
       }
       .block {
         display: block;
+      }
+      .inline-block {
+        display: inline-block;
       }
       .flex {
         display: flex;
@@ -876,44 +944,35 @@
       .grid {
         display: grid;
       }
-      .hidden {
-        display: none;
-      }
-      .max-h-\[90vh\] {
-        max-height: 90vh;
+      .h-full {
+        height: 100%;
       }
       .w-full {
         width: 100%;
       }
-      .min-w-full {
-        min-width: 100%;
-      }
-      .max-w-2xl {
-        max-width: 42rem;
-      }
-      .max-w-6xl {
-        max-width: 72rem;
-      }
       .max-w-7xl {
         max-width: 80rem;
       }
-      .max-w-md {
-        max-width: 28rem;
+      .flex-grow {
+        flex-grow: 1;
+      }
+      .cursor-pointer {
+        cursor: pointer;
       }
       .grid-cols-1 {
         grid-template-columns: repeat(1, minmax(0, 1fr));
       }
+      .flex-col {
+        flex-direction: column;
+      }
       .flex-wrap {
         flex-wrap: wrap;
       }
+      .items-start {
+        align-items: flex-start;
+      }
       .items-center {
         align-items: center;
-      }
-      .justify-end {
-        justify-content: flex-end;
-      }
-      .justify-center {
-        justify-content: center;
       }
       .justify-between {
         justify-content: space-between;
@@ -924,19 +983,37 @@
       .gap-4 {
         gap: 1rem;
       }
+      .gap-6 {
+        gap: 1.5rem;
+      }
+      .space-x-1 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 0;
+        margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+        margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+      }
       .space-x-2 > :not([hidden]) ~ :not([hidden]) {
         --tw-space-x-reverse: 0;
         margin-right: calc(0.5rem * var(--tw-space-x-reverse));
         margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
       }
+      .space-x-3 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-x-reverse: 0;
+        margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+        margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+      }
+      .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+      }
+      .overflow-hidden {
+        overflow: hidden;
+      }
       .overflow-x-auto {
         overflow-x: auto;
       }
-      .overflow-y-auto {
-        overflow-y: auto;
-      }
-      .rounded {
-        border-radius: 0.25rem;
+      .rounded-full {
+        border-radius: 9999px;
       }
       .rounded-lg {
         border-radius: 0.5rem;
@@ -944,19 +1021,21 @@
       .rounded-md {
         border-radius: 0.375rem;
       }
-      .rounded-b-lg {
-        border-bottom-right-radius: 0.5rem;
-        border-bottom-left-radius: 0.5rem;
-      }
-      .rounded-t-lg {
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
+      .rounded-xl {
+        border-radius: 0.75rem;
       }
       .border {
         border-width: 1px;
       }
       .border-b {
         border-bottom-width: 1px;
+      }
+      .border-t {
+        border-top-width: 1px;
+      }
+      .border-gray-100 {
+        --tw-border-opacity: 1;
+        border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));
       }
       .border-gray-200 {
         --tw-border-opacity: 1;
@@ -966,9 +1045,13 @@
         --tw-border-opacity: 1;
         border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
       }
-      .bg-black {
+      .bg-amber-500 {
         --tw-bg-opacity: 1;
-        background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+        background-color: rgb(245 158 11 / var(--tw-bg-opacity, 1));
+      }
+      .bg-blue-100 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1));
       }
       .bg-blue-600 {
         --tw-bg-opacity: 1;
@@ -978,70 +1061,63 @@
         --tw-bg-opacity: 1;
         background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
       }
-      .bg-gray-300 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(209 213 219 / var(--tw-bg-opacity, 1));
-      }
       .bg-gray-50 {
         --tw-bg-opacity: 1;
         background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
       }
-      .bg-green-100 {
+      .bg-gray-600 {
         --tw-bg-opacity: 1;
-        background-color: rgb(220 252 231 / var(--tw-bg-opacity, 1));
+        background-color: rgb(75 85 99 / var(--tw-bg-opacity, 1));
       }
-      .bg-green-600 {
+      .bg-red-100 {
         --tw-bg-opacity: 1;
-        background-color: rgb(22 163 74 / var(--tw-bg-opacity, 1));
-      }
-      .bg-indigo-600 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(79 70 229 / var(--tw-bg-opacity, 1));
-      }
-      .bg-purple-600 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(147 51 234 / var(--tw-bg-opacity, 1));
-      }
-      .bg-red-600 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));
+        background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1));
       }
       .bg-white {
         --tw-bg-opacity: 1;
         background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
       }
-      .bg-yellow-100 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(254 249 195 / var(--tw-bg-opacity, 1));
+      .bg-opacity-20 {
+        --tw-bg-opacity: 0.2;
       }
-      .bg-opacity-50 {
-        --tw-bg-opacity: 0.5;
+      .p-2 {
+        padding: 0.5rem;
+      }
+      .p-3 {
+        padding: 0.75rem;
       }
       .p-4 {
         padding: 1rem;
       }
+      .p-5 {
+        padding: 1.25rem;
+      }
       .p-6 {
         padding: 1.5rem;
       }
-      .px-2\.5 {
-        padding-left: 0.625rem;
-        padding-right: 0.625rem;
+      .px-3 {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
       }
       .px-4 {
         padding-left: 1rem;
         padding-right: 1rem;
       }
+      .px-5 {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
       .px-6 {
         padding-left: 1.5rem;
         padding-right: 1.5rem;
       }
-      .py-0\.5 {
-        padding-top: 0.125rem;
-        padding-bottom: 0.125rem;
+      .py-1 {
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
       }
-      .py-2 {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
+      .py-2\.5 {
+        padding-top: 0.625rem;
+        padding-bottom: 0.625rem;
       }
       .py-3 {
         padding-top: 0.75rem;
@@ -1051,18 +1127,25 @@
         padding-top: 1rem;
         padding-bottom: 1rem;
       }
-      .pt-4 {
-        padding-top: 1rem;
+      .py-8 {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+      .pl-10 {
+        padding-left: 2.5rem;
+      }
+      .pl-3 {
+        padding-left: 0.75rem;
+      }
+      .pr-4 {
+        padding-right: 1rem;
       }
       .text-left {
         text-align: left;
       }
-      .text-center {
-        text-align: center;
-      }
-      .text-2xl {
-        font-size: 1.5rem;
-        line-height: 2rem;
+      .text-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
       }
       .text-lg {
         font-size: 1.125rem;
@@ -1076,10 +1159,6 @@
         font-size: 1.25rem;
         line-height: 1.75rem;
       }
-      .text-xs {
-        font-size: 0.75rem;
-        line-height: 1rem;
-      }
       .font-bold {
         font-weight: 700;
       }
@@ -1088,6 +1167,14 @@
       }
       .font-semibold {
         font-weight: 600;
+      }
+      .text-blue-600 {
+        --tw-text-opacity: 1;
+        color: rgb(37 99 235 / var(--tw-text-opacity, 1));
+      }
+      .text-gray-400 {
+        --tw-text-opacity: 1;
+        color: rgb(156 163 175 / var(--tw-text-opacity, 1));
       }
       .text-gray-500 {
         --tw-text-opacity: 1;
@@ -1105,17 +1192,16 @@
         --tw-text-opacity: 1;
         color: rgb(31 41 55 / var(--tw-text-opacity, 1));
       }
-      .text-green-800 {
+      .text-red-600 {
         --tw-text-opacity: 1;
-        color: rgb(22 101 52 / var(--tw-text-opacity, 1));
+        color: rgb(220 38 38 / var(--tw-text-opacity, 1));
       }
       .text-white {
         --tw-text-opacity: 1;
         color: rgb(255 255 255 / var(--tw-text-opacity, 1));
       }
-      .text-yellow-800 {
-        --tw-text-opacity: 1;
-        color: rgb(133 77 14 / var(--tw-text-opacity, 1));
+      .opacity-80 {
+        opacity: 0.8;
       }
       .shadow-lg {
         --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
@@ -1125,1429 +1211,1059 @@
         box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
           var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
       }
+      .shadow-md {
+        --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color),
+          0 2px 4px -2px var(--tw-shadow-color);
+        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+      }
       .shadow-sm {
         --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
         box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
           var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
       }
-      .shadow-xl {
-        --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
-          0 8px 10px -6px rgb(0 0 0 / 0.1);
-        --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color),
-          0 8px 10px -6px var(--tw-shadow-color);
-        box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-          var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-      }
-      .transition {
-        transition-property: color, background-color, border-color, fill, stroke,
-          opacity, box-shadow, transform, filter, -webkit-text-decoration-color,
-          -webkit-backdrop-filter;
-        transition-property: color, background-color, border-color,
-          text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-          filter, backdrop-filter;
-        transition-property: color, background-color, border-color,
-          text-decoration-color, fill, stroke, opacity, box-shadow, transform,
-          filter, backdrop-filter, -webkit-text-decoration-color,
-          -webkit-backdrop-filter;
+      .transition-all {
+        transition-property: all;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         transition-duration: 150ms;
       }
-      .duration-300 {
-        transition-duration: 300ms;
+      .transition-colors {
+        transition-property: color, background-color, border-color, fill, stroke,
+          -webkit-text-decoration-color;
+        transition-property: color, background-color, border-color,
+          text-decoration-color, fill, stroke;
+        transition-property: color, background-color, border-color,
+          text-decoration-color, fill, stroke, -webkit-text-decoration-color;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+      }
+      .hover\:bg-amber-600:hover {
+        --tw-bg-opacity: 1;
+        background-color: rgb(217 119 6 / var(--tw-bg-opacity, 1));
       }
       .hover\:bg-blue-700:hover {
         --tw-bg-opacity: 1;
         background-color: rgb(29 78 216 / var(--tw-bg-opacity, 1));
       }
-      .hover\:bg-gray-100:hover {
+      .hover\:bg-gray-200:hover {
         --tw-bg-opacity: 1;
-        background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
+        background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
       }
-      .hover\:bg-gray-400:hover {
+      .hover\:bg-gray-700:hover {
         --tw-bg-opacity: 1;
-        background-color: rgb(156 163 175 / var(--tw-bg-opacity, 1));
+        background-color: rgb(55 65 81 / var(--tw-bg-opacity, 1));
       }
-      .hover\:bg-gray-50:hover {
-        --tw-bg-opacity: 1;
-        background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
-      }
-      .hover\:bg-green-700:hover {
-        --tw-bg-opacity: 1;
-        background-color: rgb(21 128 61 / var(--tw-bg-opacity, 1));
-      }
-      .hover\:bg-indigo-700:hover {
-        --tw-bg-opacity: 1;
-        background-color: rgb(67 56 202 / var(--tw-bg-opacity, 1));
-      }
-      .hover\:bg-purple-700:hover {
-        --tw-bg-opacity: 1;
-        background-color: rgb(126 34 206 / var(--tw-bg-opacity, 1));
-      }
-      .hover\:bg-red-700:hover {
-        --tw-bg-opacity: 1;
-        background-color: rgb(185 28 28 / var(--tw-bg-opacity, 1));
-      }
-      .hover\:text-gray-200:hover {
+      .hover\:text-blue-800:hover {
         --tw-text-opacity: 1;
-        color: rgb(229 231 235 / var(--tw-text-opacity, 1));
+        color: rgb(30 64 175 / var(--tw-text-opacity, 1));
       }
-      .focus\:outline-none:focus {
-        outline: 2px solid transparent;
-        outline-offset: 2px;
+      .hover\:text-gray-700:hover {
+        --tw-text-opacity: 1;
+        color: rgb(55 65 81 / var(--tw-text-opacity, 1));
       }
-      .focus\:ring-2:focus {
-        --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0
-          var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-        --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
-          calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-        box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
-          var(--tw-shadow, 0 0 #0000);
+      .hover\:text-gray-800:hover {
+        --tw-text-opacity: 1;
+        color: rgb(31 41 55 / var(--tw-text-opacity, 1));
       }
-      .focus\:ring-blue-300:focus {
+      .focus\:border-blue-500:focus {
+        --tw-border-opacity: 1;
+        border-color: rgb(59 130 246 / var(--tw-border-opacity, 1));
+      }
+      .focus\:ring-blue-500:focus {
         --tw-ring-opacity: 1;
-        --tw-ring-color: rgb(147 197 253 / var(--tw-ring-opacity, 1));
+        --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity, 1));
       }
-      .focus\:ring-green-300:focus {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb(134 239 172 / var(--tw-ring-opacity, 1));
-      }
-      .focus\:ring-indigo-300:focus {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb(165 180 252 / var(--tw-ring-opacity, 1));
-      }
-      .focus\:ring-red-300:focus {
-        --tw-ring-opacity: 1;
-        --tw-ring-color: rgb(252 165 165 / var(--tw-ring-opacity, 1));
+      .disabled\:opacity-50:disabled {
+        opacity: 0.5;
       }
       @media (min-width: 768px) {
-        .md\:grid-cols-2 {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+        .md\:mt-0 {
+          margin-top: 0px;
+        }
+        .md\:w-48 {
+          width: 12rem;
         }
         .md\:grid-cols-3 {
           grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        .md\:flex-row {
+          flex-direction: row;
+        }
+        .md\:items-center {
+          align-items: center;
+        }
+        .md\:self-end {
+          align-self: flex-end;
         }
       }
     </style>
   </head>
   <body
-    class="p-6"
+    class="bg-gray-50"
     bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6IntmY2E2N2Y0MS03NzZiLTQzOGEtOTM4Mi02NjIxNzE4NTg2MTV9IiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjEuOS4xNSIsInNjb3JlIjoxMDkxNX1d"
   >
-    <div
-      class="max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-6"
-      bis_skin_checked="1"
-    >
-      <h1 class="text-2xl font-bold text-gray-800 mb-6">Daftar Siswa</h1>
-
-      <!-- Tombol Detail -->
-      <button
-        id="detailBtn"
-        class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center"
-      >
-        <i class="fas fa-info-circle mr-2"></i> Detail Pembayaran
-      </button>
-
-      <!-- Modal Detail Pembayaran -->
+    <div class="container mx-auto px-4 py-8 max-w-7xl" bis_skin_checked="1">
+      <!-- Header -->
       <div
-        id="paymentModal"
-        class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        class="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-100"
         bis_skin_checked="1"
       >
         <div
-          class="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto"
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"
           bis_skin_checked="1"
         >
-          <!-- Header Modal -->
-          <div
-            class="bg-indigo-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center"
-            bis_skin_checked="1"
-          >
-            <h2 class="text-xl font-bold">Detail Pembayaran Siswa</h2>
+          <div bis_skin_checked="1">
+            <h1 class="text-3xl font-bold text-gray-800 mb-1">
+              Detail Pembayaran Siswa
+            </h1>
+            <p class="text-gray-500">
+              Informasi lengkap pembayaran dan tagihan
+            </p>
+          </div>
+          <div class="flex space-x-3 mt-4 md:mt-0" bis_skin_checked="1">
             <button
-              id="closeModal"
-              class="text-white hover:text-gray-200 focus:outline-none"
+              class="btn bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg flex items-center shadow-md"
             >
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-
-          <!-- Informasi Siswa -->
-          <div class="p-6 bg-gray-50 border-b" bis_skin_checked="1">
-            <div
-              class="grid grid-cols-1 md:grid-cols-3 gap-4"
-              bis_skin_checked="1"
-            >
-              <div
-                class="bg-white p-4 rounded-lg shadow-sm"
-                bis_skin_checked="1"
-              >
-                <p class="text-gray-500 text-sm">Nama Siswa</p>
-                <p class="font-semibold text-gray-800">Ahmad Fauzi</p>
-              </div>
-              <div
-                class="bg-white p-4 rounded-lg shadow-sm"
-                bis_skin_checked="1"
-              >
-                <p class="text-gray-500 text-sm">NISN</p>
-                <p class="font-semibold text-gray-800">1234567890</p>
-              </div>
-              <div
-                class="bg-white p-4 rounded-lg shadow-sm"
-                bis_skin_checked="1"
-              >
-                <p class="text-gray-500 text-sm">Jenjang</p>
-                <p class="font-semibold text-gray-800">SMK</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tab Navigation -->
-          <div class="px-6 pt-4 border-b" bis_skin_checked="1">
-            <div class="flex space-x-2" bis_skin_checked="1">
-              <button
-                class="tab px-4 py-2 rounded-t-lg font-medium transition duration-300 active"
-                data-tab="summary"
-              >
-                Ringkasan Pembayaran
-              </button>
-              <button
-                class="tab px-4 py-2 rounded-t-lg font-medium transition duration-300 text-gray-600 hover:bg-gray-100"
-                data-tab="history"
-              >
-                Riwayat Pembayaran
-              </button>
-            </div>
-          </div>
-
-          <!-- Tab Content -->
-          <div class="p-6" bis_skin_checked="1">
-            <!-- Tab Ringkasan Pembayaran -->
-            <div
-              id="summary"
-              class="tab-content print-content active"
-              bis_skin_checked="1"
-            >
-              <!-- Tabel 1: Pembayaran Wajib Bulanan -->
-              <div class="mb-8" bis_skin_checked="1">
-                <h3 class="text-lg font-semibold mb-3 text-gray-800">
-                  Pembayaran Wajib Bulanan Tahun Ajaran 2024/2025
-                </h3>
-                <div class="overflow-x-auto" bis_skin_checked="1">
-                  <table
-                    class="min-w-full bg-white border border-gray-200 rounded-lg"
-                  >
-                    <thead>
-                      <tr class="bg-gray-100">
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Bulan
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Makan
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Laundry
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Listrik &amp; Kebersihan
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          UDB
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Juli 2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/07/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/07/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/07/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/07/2024</span
-                          >
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Agustus 2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            03/08/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            03/08/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            03/08/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            03/08/2024</span
-                          >
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          September 2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/09/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/09/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/09/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            05/09/2024</span
-                          >
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Oktober 2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            04/10/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            04/10/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            04/10/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            04/10/2024</span
-                          >
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          November 2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            06/11/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            06/11/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            06/11/2024</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span class="checkmark"
-                            ><i class="fas fa-check-circle"></i>
-                            06/11/2024</span
-                          >
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Desember 2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Januari 2025
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Februari 2025
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Maret 2025
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          April 2025
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Mei 2025
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Juni 2025
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                        <td class="py-3 px-4 border-b text-center text-sm"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <!-- Tabel 2: Pembayaran Lainnya -->
-              <div bis_skin_checked="1">
-                <h3 class="text-lg font-semibold mb-3 text-gray-800">
-                  Pembayaran Lainnya Tahun Ajaran 2024/2025
-                </h3>
-                <div class="overflow-x-auto" bis_skin_checked="1">
-                  <table
-                    class="min-w-full bg-white border border-gray-200 rounded-lg"
-                  >
-                    <thead>
-                      <tr class="bg-gray-100">
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Jenis Pembayaran
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Status
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Tanggal Pembayaran
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Metode Pembayaran
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-700"
-                        >
-                          Penerima
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Acara Maulid
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span
-                            class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                            >Lunas</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          15/10/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          Tunai
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          Admin Keuangan
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Kalender
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span
-                            class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                            >Lunas</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          05/08/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          Transfer
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Ujian Pondok
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span
-                            class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                            >Belum Lunas</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Ujian Sekolah
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          <span
-                            class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                            >Belum Lunas</span
-                          >
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                        <td class="py-3 px-4 border-b text-center text-sm">
-                          -
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tab Riwayat Pembayaran -->
-            <div id="history" class="tab-content active" bis_skin_checked="1">
-              <div class="page-break print-only" bis_skin_checked="1"></div>
-              <div class="print-content" bis_skin_checked="1">
-                <h3 class="text-lg font-semibold mb-3 text-gray-800">
-                  Riwayat Pembayaran
-                </h3>
-                <div class="overflow-x-auto" bis_skin_checked="1">
-                  <table
-                    class="min-w-full bg-white border border-gray-200 rounded-lg"
-                  >
-                    <thead>
-                      <tr class="bg-gray-100">
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          ID Pembayaran
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Tanggal
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Jenis Pembayaran
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Jumlah
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Keterangan
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Metode
-                        </th>
-                        <th
-                          class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-700"
-                        >
-                          Penerima
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          PYM-001
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          05/07/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Makan (Juli)
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Rp 500.000
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Pembayaran bulanan
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Tunai
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Admin Keuangan
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          PYM-002
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          05/07/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Laundry (Juli)
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Rp 200.000
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Pembayaran bulanan
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Tunai
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Admin Keuangan
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          PYM-003
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          05/07/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Listrik &amp; Kebersihan (Juli)
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Rp 300.000
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Pembayaran bulanan
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Tunai
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Admin Keuangan
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          PYM-004
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          05/07/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          UDB (Juli)
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Rp 250.000
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Pembayaran bulanan
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Tunai
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Admin Keuangan
-                        </td>
-                      </tr>
-                      <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          PYM-005
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          05/08/2024
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Kalender
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Rp 50.000
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Pembayaran tahunan
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          Transfer
-                        </td>
-                        <td class="py-3 px-4 border-b text-sm text-gray-700">
-                          -
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tombol Aksi -->
-          <div
-            class="p-6 bg-gray-50 rounded-b-lg flex flex-wrap gap-3 no-print"
-            bis_skin_checked="1"
-          >
-            <button
-              id="inputBtn"
-              class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center"
-            >
-              <i class="fas fa-plus-circle mr-2"></i> Input Pembayaran
+              <i class="fas fa-plus mr-2"></i> Input Pembayaran
             </button>
             <button
-              id="editBtn"
-              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center"
+              class="btn bg-amber-500 hover:bg-amber-600 text-white px-5 py-2.5 rounded-lg flex items-center shadow-md"
             >
               <i class="fas fa-edit mr-2"></i> Ubah
             </button>
             <button
-              id="printBtn"
-              class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center"
+              class="btn bg-gray-600 hover:bg-gray-700 text-white px-5 py-2.5 rounded-lg flex items-center shadow-md"
             >
               <i class="fas fa-print mr-2"></i> Cetak
             </button>
-            <button
-              id="deleteBtn"
-              class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center"
-            >
-              <i class="fas fa-trash-alt mr-2"></i> Hapus
-            </button>
           </div>
         </div>
-      </div>
 
-      <!-- Modal PIN -->
-      <div
-        id="pinModal"
-        class="modal fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50"
-        bis_skin_checked="1"
-      >
+        <!-- Student Info -->
         <div
-          class="bg-white rounded-lg shadow-xl w-full max-w-md"
+          class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
           bis_skin_checked="1"
         >
           <div
-            class="bg-indigo-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center"
+            class="col-span-1 card-container"
+            style="opacity: 1; transform: translateY(0px)"
             bis_skin_checked="1"
           >
-            <h2 class="text-xl font-bold" id="pinModalTitle">Masukkan PIN</h2>
-            <button
-              id="closePinModal"
-              class="text-white hover:text-gray-200 focus:outline-none"
+            <div
+              class="info-card bg-white p-5 rounded-xl shadow-md h-full border border-gray-100"
+              bis_skin_checked="1"
             >
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-          <div class="p-6" bis_skin_checked="1">
-            <p class="mb-4 text-gray-700" id="pinModalDescription">
-              Silakan masukkan PIN untuk melanjutkan.
-            </p>
-            <div class="mb-4" bis_skin_checked="1">
-              <input
-                type="password"
-                id="pinInput"
-                class="pin-input w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-300"
-                placeholder="Masukkan PIN"
-                maxlength="6"
-              />
+              <div class="flex items-center mb-4" bis_skin_checked="1">
+                <div
+                  class="bg-blue-100 p-3 rounded-full mr-4"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-user text-blue-600 text-xl"></i>
+                </div>
+                <h2 class="text-lg font-semibold text-gray-800">
+                  Informasi Siswa
+                </h2>
+              </div>
+              <div class="space-y-3" bis_skin_checked="1">
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-gray-600">Nama:</span>
+                  <span class="font-medium text-gray-800">Ahmad Fauzi</span>
+                </div>
+                <div
+                  class="border-t border-gray-100 my-2"
+                  bis_skin_checked="1"
+                ></div>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-gray-600">NISN:</span>
+                  <span class="font-medium text-gray-800">1234567890</span>
+                </div>
+                <div
+                  class="border-t border-gray-100 my-2"
+                  bis_skin_checked="1"
+                ></div>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-gray-600">Jenjang:</span>
+                  <span class="font-medium text-gray-800">SMA Kelas XI</span>
+                </div>
+              </div>
             </div>
-            <div class="flex justify-end" bis_skin_checked="1">
-              <button
-                id="cancelPinBtn"
-                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-300 mr-2"
-              >
-                Batal
-              </button>
-              <button
-                id="submitPinBtn"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
-              >
-                Lanjutkan
-              </button>
+          </div>
+
+          <!-- Status Card -->
+          <div
+            class="col-span-1 card-container"
+            style="opacity: 1; transform: translateY(0px)"
+            bis_skin_checked="1"
+          >
+            <div
+              class="status-card status-perlu-tindakan text-white p-5 rounded-xl h-full flex flex-col justify-between"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <div class="flex items-center mb-3" bis_skin_checked="1">
+                  <div
+                    class="bg-white bg-opacity-20 p-2 rounded-lg mr-3"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-exclamation-circle text-white text-xl"></i>
+                  </div>
+                  <h3 class="text-lg font-semibold">Status Pembayaran</h3>
+                </div>
+                <p class="text-sm opacity-80">Periode: Juli 2024</p>
+              </div>
+              <div class="mt-4" bis_skin_checked="1">
+                <p class="text-3xl font-bold">Perlu Tindakan</p>
+                <div class="flex items-center mt-2" bis_skin_checked="1">
+                  <i class="fas fa-clock text-sm opacity-80 mr-2"></i>
+                  <p class="text-sm opacity-80">
+                    Terakhir diperbarui: 15 Juli 2024
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Remaining Balance Card -->
+          <div
+            class="col-span-1 card-container"
+            style="opacity: 1; transform: translateY(0px)"
+            bis_skin_checked="1"
+          >
+            <div
+              class="bg-white p-5 rounded-xl shadow-md h-full flex flex-col justify-between border border-gray-100"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <div class="flex items-center mb-3" bis_skin_checked="1">
+                  <div
+                    class="bg-red-100 p-2 rounded-lg mr-3"
+                    bis_skin_checked="1"
+                  >
+                    <i class="fas fa-money-bill-wave text-red-600 text-xl"></i>
+                  </div>
+                  <h3 class="text-lg font-semibold text-gray-800">
+                    Sisa Tagihan
+                  </h3>
+                </div>
+                <p class="text-sm text-gray-500">Tahun Ajaran 2024/2025</p>
+              </div>
+              <div class="mt-4" bis_skin_checked="1">
+                <p class="text-3xl font-bold text-red-600">Rp 2.500.000</p>
+                <div class="flex items-center mt-2" bis_skin_checked="1">
+                  <i class="fas fa-calendar-alt text-gray-400 mr-2"></i>
+                  <p class="text-sm text-gray-500">
+                    Jatuh tempo: 30 Agustus 2024
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Modal Input Pembayaran -->
-      <div
-        id="inputPaymentModal"
-        class="modal fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50"
-        bis_skin_checked="1"
-      >
-        <div
-          class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          bis_skin_checked="1"
-        >
-          <div
-            class="bg-green-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center"
-            bis_skin_checked="1"
-          >
-            <h2 class="text-xl font-bold">Input Pembayaran</h2>
-            <button
-              id="closeInputModal"
-              class="text-white hover:text-gray-200 focus:outline-none"
+        <!-- Tabs -->
+        <div class="mb-6 border-b border-gray-200" bis_skin_checked="1">
+          <ul class="flex flex-wrap -mb-px" id="tabs">
+            <li class="mr-2">
+              <a
+                href="#"
+                class="inline-block py-4 px-6 font-medium tab-btn text-gray-500 hover:text-gray-700"
+                data-tab="ringkasan"
+              >
+                <i class="fas fa-chart-pie mr-2"></i>Ringkasan Pembayaran
+              </a>
+            </li>
+            <li class="mr-2">
+              <a
+                href="#"
+                class="inline-block py-4 px-6 font-medium tab-btn text-blue-600 active"
+                data-tab="riwayat"
+              >
+                <i class="fas fa-history mr-2"></i>Riwayat Pembayaran
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-content" bis_skin_checked="1">
+          <!-- Ringkasan Pembayaran Tab -->
+          <div id="ringkasan" class="tab-content" bis_skin_checked="1">
+            <!-- Year Filter -->
+            <div
+              class="mb-8 bg-white p-5 rounded-xl shadow-sm border border-gray-100"
+              bis_skin_checked="1"
             >
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-          <div class="p-6" bis_skin_checked="1">
-            <form id="paymentForm">
+              <label class="block text-sm font-medium text-gray-700 mb-3"
+                >Tampilkan Pembayaran Bulanan Tahun Ajaran:</label
+              >
+              <div class="flex flex-wrap gap-3" bis_skin_checked="1">
+                <button
+                  class="filter-btn px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-all"
+                >
+                  2022/2023
+                </button>
+                <button
+                  class="filter-btn px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-all"
+                >
+                  2023/2024
+                </button>
+                <button
+                  class="filter-btn active px-5 py-2.5 rounded-lg text-sm transition-all"
+                >
+                  2024/2025
+                </button>
+              </div>
+            </div>
+
+            <!-- Monthly Payment Table -->
+            <div class="mb-8" bis_skin_checked="1">
               <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
+                class="flex items-center justify-between mb-4"
                 bis_skin_checked="1"
               >
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Jenis Pembayaran</label
-                  >
-                  <select
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
-                  >
-                    <option value="">Pilih Jenis Pembayaran</option>
-                    <option value="makan">Makan</option>
-                    <option value="laundry">Laundry</option>
-                    <option value="listrik">Listrik &amp; Kebersihan</option>
-                    <option value="udb">UDB</option>
-                    <option value="maulid">Acara Maulid</option>
-                    <option value="kalender">Kalender</option>
-                    <option value="ujian_pondok">Ujian Pondok</option>
-                    <option value="ujian_sekolah">Ujian Sekolah</option>
-                  </select>
-                </div>
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Bulan (untuk pembayaran bulanan)</label
-                  >
-                  <select
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
-                  >
-                    <option value="">Pilih Bulan</option>
-                    <option value="juli">Juli 2024</option>
-                    <option value="agustus">Agustus 2024</option>
-                    <option value="september">September 2024</option>
-                    <option value="oktober">Oktober 2024</option>
-                    <option value="november">November 2024</option>
-                    <option value="desember">Desember 2024</option>
-                    <option value="januari">Januari 2025</option>
-                    <option value="februari">Februari 2025</option>
-                    <option value="maret">Maret 2025</option>
-                    <option value="april">April 2025</option>
-                    <option value="mei">Mei 2025</option>
-                    <option value="juni">Juni 2025</option>
-                  </select>
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Pembayaran Bulanan Tahun Ajaran 2024/2025
+                </h3>
+                <div
+                  class="text-sm text-blue-600 cursor-pointer hover:text-blue-800 transition-colors download-report"
+                  data-report="bulanan"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-download mr-1"></i> Unduh Laporan
                 </div>
               </div>
               <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
+                class="overflow-x-auto bg-white rounded-xl shadow-md border border-gray-100"
                 bis_skin_checked="1"
               >
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Jumlah Pembayaran</label
-                  >
-                  <input
-                    type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
-                    placeholder="Rp"
-                  />
+                <table class="w-full payment-table" id="monthly-payment-table">
+                  <thead>
+                    <tr>
+                      <th class="text-left">Bulan</th>
+                      <th>Makan</th>
+                      <th>Laundry</th>
+                      <th>Listrik</th>
+                      <th>UDB</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="">
+                      <td class="font-medium text-gray-800">Juli 2024</td>
+                      <td class="checkbox-cell">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="payment-date" bis_skin_checked="1">
+                          05/07/2024
+                        </div>
+                      </td>
+                      <td class="checkbox-cell">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="payment-date" bis_skin_checked="1">
+                          05/07/2024
+                        </div>
+                      </td>
+                      <td class="checkbox-cell">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="payment-date" bis_skin_checked="1">
+                          05/07/2024
+                        </div>
+                      </td>
+                      <td class="checkbox-cell">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="payment-date" bis_skin_checked="1">
+                          05/07/2024
+                        </div>
+                      </td>
+                    </tr>
+                    <tr style="">
+                      <td class="font-medium text-gray-800">Agustus 2024</td>
+                      <td class="checkbox-cell">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="payment-date" bis_skin_checked="1">
+                          02/08/2024
+                        </div>
+                      </td>
+                      <td class="checkbox-cell">
+                        <i class="fas fa-check-circle"></i>
+                        <div class="payment-date" bis_skin_checked="1">
+                          02/08/2024
+                        </div>
+                      </td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">September 2024</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                    </tr>
+                    <tr style="">
+                      <td class="font-medium text-gray-800">Oktober 2024</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                    </tr>
+                    <tr style="">
+                      <td class="font-medium text-gray-800">November 2024</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                    </tr>
+                    <tr style="">
+                      <td class="font-medium text-gray-800">Desember 2024</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                      <td class="checkbox-cell text-gray-400">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Other Payments Table -->
+            <div bis_skin_checked="1">
+              <div
+                class="flex items-center justify-between mb-4"
+                bis_skin_checked="1"
+              >
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Pembayaran Lainnya Tahun Ajaran 2024/2025
+                </h3>
+                <div
+                  class="text-sm text-blue-600 cursor-pointer hover:text-blue-800 transition-colors download-report"
+                  data-report="lainnya"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-download mr-1"></i> Unduh Laporan
                 </div>
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Tanggal Pembayaran</label
+              </div>
+              <div
+                class="overflow-x-auto bg-white rounded-xl shadow-md border border-gray-100"
+                bis_skin_checked="1"
+              >
+                <table class="w-full payment-table" id="other-payment-table">
+                  <thead>
+                    <tr>
+                      <th class="text-left">Jenis Pembayaran</th>
+                      <th>Status</th>
+                      <th>Tanggal Pembayaran</th>
+                      <th>Metode Pembayaran</th>
+                      <th>Penerima</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="font-medium text-gray-800">
+                        Ujian Semester Ganjil
+                      </td>
+                      <td>
+                        <span class="badge badge-success">Lunas</span>
+                      </td>
+                      <td>10 Juli 2024</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i class="fas fa-university text-gray-500 mr-2"></i>
+                          Transfer Bank
+                        </div>
+                      </td>
+                      <td>-</td>
+                      <td>
+                        <button
+                          class="text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">Acara Maulid</td>
+                      <td>
+                        <span class="badge badge-success">Lunas</span>
+                      </td>
+                      <td>15 Juli 2024</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i
+                            class="fas fa-money-bill-wave text-gray-500 mr-2"
+                          ></i>
+                          Tunai
+                        </div>
+                      </td>
+                      <td>Budi Santoso</td>
+                      <td>
+                        <button
+                          class="text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">Buku Paket</td>
+                      <td>
+                        <span class="badge badge-danger">Belum Lunas</span>
+                      </td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>
+                        <button
+                          class="text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">Studi Tour</td>
+                      <td>
+                        <span class="badge badge-danger">Belum Lunas</span>
+                      </td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>-</td>
+                      <td>
+                        <button
+                          class="text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          <i class="fas fa-eye"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Riwayat Pembayaran Tab -->
+          <div id="riwayat" class="tab-content active" bis_skin_checked="1">
+            <!-- Search Filter -->
+            <div
+              class="mb-8 bg-white p-5 rounded-xl shadow-md border border-gray-100"
+              bis_skin_checked="1"
+            >
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">
+                Filter Riwayat Pembayaran
+              </h3>
+              <div class="flex flex-col md:flex-row gap-4" bis_skin_checked="1">
+                <div class="flex-grow" bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Cari Pembayaran</label
+                  >
+                  <div class="relative" bis_skin_checked="1">
+                    <input
+                      type="text"
+                      placeholder="ID Pembayaran, Jenis Pembayaran..."
+                      class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 search-input"
+                    />
+                    <div
+                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                      bis_skin_checked="1"
+                    >
+                      <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full md:w-48" bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Tanggal</label
                   >
                   <input
                     type="date"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 search-input"
                   />
                 </div>
-              </div>
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-                bis_skin_checked="1"
-              >
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Metode Pembayaran</label
+                <div class="w-full md:w-48" bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Penerima</label
                   >
                   <select
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 search-input"
                   >
-                    <option value="">Pilih Metode Pembayaran</option>
-                    <option value="tunai">Tunai</option>
-                    <option value="transfer">Transfer</option>
+                    <option value="">Semua</option>
+                    <option value="budi">Budi Santoso</option>
+                    <option value="ani">Ani Wijaya</option>
+                    <option value="deni">Deni Hermawan</option>
                   </select>
                 </div>
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Keterangan</label
+                <div class="w-full md:w-48 md:self-end" bis_skin_checked="1">
+                  <button
+                    class="btn w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg shadow-md"
                   >
-                  <input
-                    type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-300 focus:outline-none"
-                    placeholder="Keterangan tambahan"
-                  />
+                    <i class="fas fa-filter mr-2"></i> Terapkan Filter
+                  </button>
                 </div>
               </div>
-              <div class="flex justify-end mt-6" bis_skin_checked="1">
-                <button
-                  type="button"
-                  id="cancelInputBtn"
-                  class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-300 mr-2"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
-                >
-                  Simpan
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal Edit Pembayaran -->
-      <div
-        id="editPaymentModal"
-        class="modal fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50"
-        bis_skin_checked="1"
-      >
-        <div
-          class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          bis_skin_checked="1"
-        >
-          <div
-            class="bg-blue-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center"
-            bis_skin_checked="1"
-          >
-            <h2 class="text-xl font-bold">Ubah Pembayaran</h2>
-            <button
-              id="closeEditModal"
-              class="text-white hover:text-gray-200 focus:outline-none"
-            >
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-          <div class="p-6" bis_skin_checked="1">
-            <form id="editPaymentForm">
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-                bis_skin_checked="1"
-              >
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >ID Pembayaran</label
-                  >
-                  <select
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                  >
-                    <option value="">Pilih ID Pembayaran</option>
-                    <option value="PYM-001">PYM-001 - Makan (Juli)</option>
-                    <option value="PYM-002">PYM-002 - Laundry (Juli)</option>
-                    <option value="PYM-003">
-                      PYM-003 - Listrik &amp; Kebersihan (Juli)
-                    </option>
-                    <option value="PYM-004">PYM-004 - UDB (Juli)</option>
-                    <option value="PYM-005">PYM-005 - Kalender</option>
-                  </select>
-                </div>
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Jenis Pembayaran</label
-                  >
-                  <select
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                  >
-                    <option value="">Pilih Jenis Pembayaran</option>
-                    <option value="makan">Makan</option>
-                    <option value="laundry">Laundry</option>
-                    <option value="listrik">Listrik &amp; Kebersihan</option>
-                    <option value="udb">UDB</option>
-                    <option value="maulid">Acara Maulid</option>
-                    <option value="kalender">Kalender</option>
-                    <option value="ujian_pondok">Ujian Pondok</option>
-                    <option value="ujian_sekolah">Ujian Sekolah</option>
-                  </select>
-                </div>
-              </div>
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-                bis_skin_checked="1"
-              >
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Jumlah Pembayaran</label
-                  >
-                  <input
-                    type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                    placeholder="Rp"
-                    value="Rp 500.000"
-                  />
-                </div>
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Tanggal Pembayaran</label
-                  >
-                  <input
-                    type="date"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                    value="2024-07-05"
-                  />
-                </div>
-              </div>
-              <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-                bis_skin_checked="1"
-              >
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Metode Pembayaran</label
-                  >
-                  <select
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                  >
-                    <option value="">Pilih Metode Pembayaran</option>
-                    <option value="tunai" selected="">Tunai</option>
-                    <option value="transfer">Transfer</option>
-                  </select>
-                </div>
-                <div bis_skin_checked="1">
-                  <label class="block text-sm font-medium text-gray-700 mb-1"
-                    >Keterangan</label
-                  >
-                  <input
-                    type="text"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                    placeholder="Keterangan tambahan"
-                    value="Pembayaran bulanan"
-                  />
-                </div>
-              </div>
-              <div class="flex justify-end mt-6" bis_skin_checked="1">
-                <button
-                  type="button"
-                  id="cancelEditBtn"
-                  class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-300 mr-2"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
-                >
-                  Simpan Perubahan
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal Konfirmasi Hapus -->
-      <div
-        id="deleteConfirmModal"
-        class="modal fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50"
-        bis_skin_checked="1"
-      >
-        <div
-          class="bg-white rounded-lg shadow-xl w-full max-w-md"
-          bis_skin_checked="1"
-        >
-          <div
-            class="bg-red-600 text-white px-6 py-4 rounded-t-lg flex justify-between items-center"
-            bis_skin_checked="1"
-          >
-            <h2 class="text-xl font-bold">Konfirmasi Hapus</h2>
-            <button
-              id="closeDeleteConfirmModal"
-              class="text-white hover:text-gray-200 focus:outline-none"
-            >
-              <i class="fas fa-times text-xl"></i>
-            </button>
-          </div>
-          <div class="p-6" bis_skin_checked="1">
-            <p class="mb-4 text-gray-700">
-              Apakah Anda yakin ingin menghapus data pembayaran ini? Tindakan
-              ini tidak dapat dibatalkan.
-            </p>
-            <div class="mb-4" bis_skin_checked="1">
-              <label class="block text-sm font-medium text-gray-700 mb-1"
-                >Pilih Pembayaran yang akan dihapus</label
-              >
-              <select
-                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-300 focus:outline-none"
-              >
-                <option value="">Pilih ID Pembayaran</option>
-                <option value="PYM-001">PYM-001 - Makan (Juli)</option>
-                <option value="PYM-002">PYM-002 - Laundry (Juli)</option>
-                <option value="PYM-003">
-                  PYM-003 - Listrik &amp; Kebersihan (Juli)
-                </option>
-                <option value="PYM-004">PYM-004 - UDB (Juli)</option>
-                <option value="PYM-005">PYM-005 - Kalender</option>
-              </select>
             </div>
-            <div class="flex justify-end" bis_skin_checked="1">
-              <button
-                id="cancelDeleteBtn"
-                class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium py-2 px-4 rounded-md transition duration-300 mr-2"
+
+            <!-- Payment History Table -->
+            <div
+              class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden"
+              bis_skin_checked="1"
+            >
+              <div
+                class="p-5 border-b border-gray-100 flex justify-between items-center"
+                bis_skin_checked="1"
               >
-                Batal
-              </button>
-              <button
-                id="confirmDeleteBtn"
-                class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-300"
+                <h3 class="text-lg font-semibold text-gray-800">
+                  Riwayat Pembayaran
+                </h3>
+                <div
+                  class="text-sm text-blue-600 cursor-pointer hover:text-blue-800 transition-colors download-report"
+                  data-report="riwayat"
+                  bis_skin_checked="1"
+                >
+                  <i class="fas fa-download mr-1"></i> Unduh Laporan
+                </div>
+              </div>
+              <div class="overflow-x-auto" bis_skin_checked="1">
+                <table class="w-full payment-table" id="history-payment-table">
+                  <thead>
+                    <tr>
+                      <th class="text-left">ID Pembayaran</th>
+                      <th>Tanggal</th>
+                      <th>Jenis Pembayaran</th>
+                      <th>Jumlah</th>
+                      <th>Keterangan</th>
+                      <th>Metode Pembayaran</th>
+                      <th>Penerima</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style="">
+                      <td class="font-medium text-gray-800">PYM-2024-0001</td>
+                      <td>05/07/2024</td>
+                      <td>Bulanan Juli</td>
+                      <td class="font-medium">Rp 1.500.000</td>
+                      <td>Pembayaran lengkap</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i class="fas fa-university text-gray-500 mr-2"></i>
+                          Transfer Bank
+                        </div>
+                      </td>
+                      <td>-</td>
+                      <td>
+                        <div class="flex space-x-2" bis_skin_checked="1">
+                          <button
+                            class="text-blue-600 hover:text-blue-800 transition-colors"
+                            title="Lihat Detail"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button
+                            class="text-gray-600 hover:text-gray-800 transition-colors"
+                            title="Cetak Kuitansi"
+                          >
+                            <i class="fas fa-print"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">PYM-2024-0002</td>
+                      <td>10/07/2024</td>
+                      <td>Ujian Semester</td>
+                      <td class="font-medium">Rp 350.000</td>
+                      <td>-</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i class="fas fa-university text-gray-500 mr-2"></i>
+                          Transfer Bank
+                        </div>
+                      </td>
+                      <td>-</td>
+                      <td>
+                        <div class="flex space-x-2" bis_skin_checked="1">
+                          <button
+                            class="text-blue-600 hover:text-blue-800 transition-colors"
+                            title="Lihat Detail"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button
+                            class="text-gray-600 hover:text-gray-800 transition-colors"
+                            title="Cetak Kuitansi"
+                          >
+                            <i class="fas fa-print"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">PYM-2024-0003</td>
+                      <td>15/07/2024</td>
+                      <td>Acara Maulid</td>
+                      <td class="font-medium">Rp 100.000</td>
+                      <td>-</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i
+                            class="fas fa-money-bill-wave text-gray-500 mr-2"
+                          ></i>
+                          Tunai
+                        </div>
+                      </td>
+                      <td>Budi Santoso</td>
+                      <td>
+                        <div class="flex space-x-2" bis_skin_checked="1">
+                          <button
+                            class="text-blue-600 hover:text-blue-800 transition-colors"
+                            title="Lihat Detail"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button
+                            class="text-gray-600 hover:text-gray-800 transition-colors"
+                            title="Cetak Kuitansi"
+                          >
+                            <i class="fas fa-print"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">PYM-2024-0004</td>
+                      <td>02/08/2024</td>
+                      <td>Bulanan Agustus (Sebagian)</td>
+                      <td class="font-medium">Rp 750.000</td>
+                      <td>Pembayaran sebagian</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i
+                            class="fas fa-money-bill-wave text-gray-500 mr-2"
+                          ></i>
+                          Tunai
+                        </div>
+                      </td>
+                      <td>Ani Wijaya</td>
+                      <td>
+                        <div class="flex space-x-2" bis_skin_checked="1">
+                          <button
+                            class="text-blue-600 hover:text-blue-800 transition-colors"
+                            title="Lihat Detail"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button
+                            class="text-gray-600 hover:text-gray-800 transition-colors"
+                            title="Cetak Kuitansi"
+                          >
+                            <i class="fas fa-print"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-medium text-gray-800">PYM-2024-0005</td>
+                      <td>05/08/2024</td>
+                      <td>Denda Keterlambatan</td>
+                      <td class="font-medium">Rp 50.000</td>
+                      <td>Denda keterlambatan Juli</td>
+                      <td>
+                        <div class="flex items-center" bis_skin_checked="1">
+                          <i
+                            class="fas fa-money-bill-wave text-gray-500 mr-2"
+                          ></i>
+                          Tunai
+                        </div>
+                      </td>
+                      <td>Deni Hermawan</td>
+                      <td>
+                        <div class="flex space-x-2" bis_skin_checked="1">
+                          <button
+                            class="text-blue-600 hover:text-blue-800 transition-colors"
+                            title="Lihat Detail"
+                          >
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <button
+                            class="text-gray-600 hover:text-gray-800 transition-colors"
+                            title="Cetak Kuitansi"
+                          >
+                            <i class="fas fa-print"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div
+                class="p-4 border-t border-gray-100 flex items-center justify-between"
+                bis_skin_checked="1"
               >
-                Hapus
-              </button>
+                <div class="text-sm text-gray-600" bis_skin_checked="1">
+                  Menampilkan 1-5 dari 5 entri
+                </div>
+                <div class="flex space-x-1" bis_skin_checked="1">
+                  <button
+                    class="px-3 py-1 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 disabled:opacity-50"
+                    disabled=""
+                  >
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button class="px-3 py-1 bg-blue-600 text-white rounded-md">
+                    1
+                  </button>
+                  <button
+                    class="px-3 py-1 bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 disabled:opacity-50"
+                    disabled=""
+                  >
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Download Toast Notification -->
+    <div id="download-toast" class="download-toast" bis_skin_checked="1">
+      <i class="fas fa-check-circle"></i>
+      <span>Laporan berhasil diunduh!</span>
+    </div>
+
     <script>
-      // Variabel untuk menyimpan PIN yang benar
-      const correctPin = "123456";
+      // Tab switching functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const tabBtns = document.querySelectorAll(".tab-btn");
+        const tabContents = document.querySelectorAll(".tab-content");
 
-      // Variabel untuk menyimpan aksi yang akan dilakukan setelah verifikasi PIN
-      let pendingAction = null;
+        tabBtns.forEach((btn) => {
+          btn.addEventListener("click", function (e) {
+            e.preventDefault();
 
-      // Fungsi untuk menampilkan modal
-      function showModal(modalId) {
-        document.getElementById(modalId).classList.remove("hidden");
-      }
+            // Remove active class from all tabs
+            tabBtns.forEach((btn) => {
+              btn.classList.remove("text-blue-600", "active");
+              btn.classList.add("text-gray-500", "hover:text-gray-700");
+            });
 
-      // Fungsi untuk menyembunyikan modal
-      function hideModal(modalId) {
-        document.getElementById(modalId).classList.add("hidden");
-      }
+            // Add active class to clicked tab
+            this.classList.add("text-blue-600", "active");
+            this.classList.remove("text-gray-500", "hover:text-gray-700");
 
-      // Fungsi untuk menampilkan tab
-      function showTab(tabId) {
-        // Sembunyikan semua konten tab
-        document.querySelectorAll(".tab-content").forEach((tab) => {
-          tab.classList.remove("active");
-        });
+            // Hide all tab contents
+            tabContents.forEach((content) => {
+              content.classList.remove("active");
+            });
 
-        // Hapus kelas aktif dari semua tab
-        document.querySelectorAll(".tab").forEach((tab) => {
-          tab.classList.remove("active");
-          tab.classList.add("text-gray-600", "hover:bg-gray-100");
-        });
-
-        // Tampilkan konten tab yang dipilih
-        document.getElementById(tabId).classList.add("active");
-
-        // Tambahkan kelas aktif ke tab yang dipilih
-        document
-          .querySelectorAll(`.tab[data-tab="${tabId}"]`)
-          .forEach((tab) => {
-            tab.classList.add("active");
-            tab.classList.remove("text-gray-600", "hover:bg-gray-100");
+            // Show the selected tab content
+            const tabId = this.getAttribute("data-tab");
+            document.getElementById(tabId).classList.add("active");
           });
-      }
+        });
 
-      // Fungsi untuk memeriksa PIN
-      function checkPin(pin, action) {
-        if (pin === correctPin) {
-          hideModal("pinModal");
+        // Year filter buttons
+        const filterBtns = document.querySelectorAll(".filter-btn");
+        filterBtns.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            filterBtns.forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
 
-          // Jalankan aksi yang tertunda
-          if (action === "input") {
-            showModal("inputPaymentModal");
-          } else if (action === "edit") {
-            showModal("editPaymentModal");
-          } else if (action === "delete") {
-            showModal("deleteConfirmModal");
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll(".payment-table tbody tr");
+        tableRows.forEach((row) => {
+          row.addEventListener("mouseover", function () {
+            this.style.backgroundColor = "#f1f5f9";
+          });
+          row.addEventListener("mouseout", function () {
+            this.style.backgroundColor = "";
+          });
+        });
+
+        // Add animation to cards
+        const cards = document.querySelectorAll(".card-container");
+        cards.forEach((card, index) => {
+          setTimeout(() => {
+            card.style.opacity = "1";
+            card.style.transform = "translateY(0)";
+          }, 100 * index);
+        });
+
+        // Download report functionality
+        const downloadButtons = document.querySelectorAll(".download-report");
+        const downloadToast = document.getElementById("download-toast");
+
+        downloadButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const reportType = this.getAttribute("data-report");
+            downloadReport(reportType);
+          });
+        });
+
+        function downloadReport(reportType) {
+          let data = [];
+          let filename = "";
+          let headers = [];
+
+          // Get data based on report type
+          switch (reportType) {
+            case "bulanan":
+              filename = "Pembayaran_Bulanan_Ahmad_Fauzi_2024-2025.csv";
+              headers = ["Bulan", "Makan", "Laundry", "Listrik", "UDB"];
+
+              // Extract data from monthly payment table
+              const monthlyRows = document.querySelectorAll(
+                "#monthly-payment-table tbody tr"
+              );
+              monthlyRows.forEach((row) => {
+                const cells = row.querySelectorAll("td");
+                const rowData = [
+                  cells[0].textContent.trim(),
+                  cells[1].querySelector(".payment-date")
+                    ? cells[1].querySelector(".payment-date").textContent.trim()
+                    : "-",
+                  cells[2].querySelector(".payment-date")
+                    ? cells[2].querySelector(".payment-date").textContent.trim()
+                    : "-",
+                  cells[3].querySelector(".payment-date")
+                    ? cells[3].querySelector(".payment-date").textContent.trim()
+                    : "-",
+                  cells[4].querySelector(".payment-date")
+                    ? cells[4].querySelector(".payment-date").textContent.trim()
+                    : "-",
+                ];
+                data.push(rowData);
+              });
+              break;
+
+            case "lainnya":
+              filename = "Pembayaran_Lainnya_Ahmad_Fauzi_2024-2025.csv";
+              headers = [
+                "Jenis Pembayaran",
+                "Status",
+                "Tanggal Pembayaran",
+                "Metode Pembayaran",
+                "Penerima",
+              ];
+
+              // Extract data from other payment table
+              const otherRows = document.querySelectorAll(
+                "#other-payment-table tbody tr"
+              );
+              otherRows.forEach((row) => {
+                const cells = row.querySelectorAll("td");
+                const rowData = [
+                  cells[0].textContent.trim(),
+                  cells[1].textContent.trim(),
+                  cells[2].textContent.trim(),
+                  cells[3].textContent.trim(),
+                  cells[4].textContent.trim(),
+                ];
+                data.push(rowData);
+              });
+              break;
+
+            case "riwayat":
+              filename = "Riwayat_Pembayaran_Ahmad_Fauzi.csv";
+              headers = [
+                "ID Pembayaran",
+                "Tanggal",
+                "Jenis Pembayaran",
+                "Jumlah",
+                "Keterangan",
+                "Metode Pembayaran",
+                "Penerima",
+              ];
+
+              // Extract data from history payment table
+              const historyRows = document.querySelectorAll(
+                "#history-payment-table tbody tr"
+              );
+              historyRows.forEach((row) => {
+                const cells = row.querySelectorAll("td");
+                const rowData = [
+                  cells[0].textContent.trim(),
+                  cells[1].textContent.trim(),
+                  cells[2].textContent.trim(),
+                  cells[3].textContent.trim(),
+                  cells[4].textContent.trim(),
+                  cells[5].textContent.trim().replace(/\s+/g, " "),
+                  cells[6].textContent.trim(),
+                ];
+                data.push(rowData);
+              });
+              break;
           }
 
-          // Reset input PIN
-          document.getElementById("pinInput").value = "";
-        } else {
-          alert("PIN salah. Silakan coba lagi.");
-          document.getElementById("pinInput").value = "";
+          // Generate CSV content
+          let csvContent = headers.join(",") + "\n";
+          data.forEach((row) => {
+            csvContent += row.join(",") + "\n";
+          });
+
+          // Create a Blob and download link
+          const blob = new Blob([csvContent], {
+            type: "text/csv;charset=utf-8;",
+          });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.setAttribute("href", url);
+          link.setAttribute("download", filename);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+
+          // Show toast notification
+          showDownloadToast();
         }
-      }
 
-      // Fungsi untuk mencetak
-      function printPaymentDetails() {
-        // Pastikan tab ringkasan pembayaran aktif untuk pencetakan
-        showTab("summary");
+        function showDownloadToast() {
+          downloadToast.classList.add("show");
+          setTimeout(() => {
+            downloadToast.classList.remove("show");
+          }, 3000);
+        }
 
-        // Tampilkan tab riwayat pembayaran untuk pencetakan
-        document.getElementById("history").classList.add("active");
+        // Function to generate Excel-like data
+        function generateExcelData(headers, data) {
+          let excelData = headers.join("\t") + "\n";
+          data.forEach((row) => {
+            excelData += row.join("\t") + "\n";
+          });
+          return excelData;
+        }
 
-        // Cetak halaman
-        window.print();
-      }
+        // Function to create PDF report (simplified version)
+        function createPDFReport(reportType, headers, data) {
+          // In a real implementation, this would use a PDF library
+          // For this demo, we'll just create a text file with PDF structure
+          let pdfContent = `PDF Report: ${reportType}\n\n`;
+          pdfContent += headers.join(" | ") + "\n";
+          pdfContent += "-".repeat(80) + "\n";
 
-      // Event Listeners
-      document.addEventListener("DOMContentLoaded", function () {
-        // Tombol Detail
-        document
-          .getElementById("detailBtn")
-          .addEventListener("click", function () {
-            showModal("paymentModal");
+          data.forEach((row) => {
+            pdfContent += row.join(" | ") + "\n";
           });
 
-        // Tombol Tutup Modal
-        document
-          .getElementById("closeModal")
-          .addEventListener("click", function () {
-            hideModal("paymentModal");
-          });
-
-        // Tab Navigation
-        document.querySelectorAll(".tab").forEach((tab) => {
-          tab.addEventListener("click", function () {
-            showTab(this.getAttribute("data-tab"));
-          });
-        });
-
-        // Tombol Input Pembayaran
-        document
-          .getElementById("inputBtn")
-          .addEventListener("click", function () {
-            pendingAction = "input";
-            document.getElementById("pinModalTitle").textContent =
-              "Masukkan PIN untuk Input Pembayaran";
-            document.getElementById("pinModalDescription").textContent =
-              "Silakan masukkan PIN untuk melanjutkan ke form input pembayaran.";
-            showModal("pinModal");
-          });
-
-        // Tombol Ubah Pembayaran
-        document
-          .getElementById("editBtn")
-          .addEventListener("click", function () {
-            pendingAction = "edit";
-            document.getElementById("pinModalTitle").textContent =
-              "Masukkan PIN untuk Ubah Pembayaran";
-            document.getElementById("pinModalDescription").textContent =
-              "Silakan masukkan PIN untuk melanjutkan ke form ubah pembayaran.";
-            showModal("pinModal");
-          });
-
-        // Tombol Cetak
-        document
-          .getElementById("printBtn")
-          .addEventListener("click", function () {
-            printPaymentDetails();
-          });
-
-        // Tombol Hapus
-        document
-          .getElementById("deleteBtn")
-          .addEventListener("click", function () {
-            pendingAction = "delete";
-            document.getElementById("pinModalTitle").textContent =
-              "Masukkan PIN untuk Hapus Pembayaran";
-            document.getElementById("pinModalDescription").textContent =
-              "Silakan masukkan PIN untuk melanjutkan ke konfirmasi hapus pembayaran.";
-            showModal("pinModal");
-          });
-
-        // Tombol Submit PIN
-        document
-          .getElementById("submitPinBtn")
-          .addEventListener("click", function () {
-            const pin = document.getElementById("pinInput").value;
-            checkPin(pin, pendingAction);
-          });
-
-        // Tombol Batal PIN
-        document
-          .getElementById("cancelPinBtn")
-          .addEventListener("click", function () {
-            hideModal("pinModal");
-            document.getElementById("pinInput").value = "";
-          });
-
-        // Tombol Tutup Modal PIN
-        document
-          .getElementById("closePinModal")
-          .addEventListener("click", function () {
-            hideModal("pinModal");
-            document.getElementById("pinInput").value = "";
-          });
-
-        // Tombol Tutup Modal Input
-        document
-          .getElementById("closeInputModal")
-          .addEventListener("click", function () {
-            hideModal("inputPaymentModal");
-          });
-
-        // Tombol Batal Input
-        document
-          .getElementById("cancelInputBtn")
-          .addEventListener("click", function () {
-            hideModal("inputPaymentModal");
-          });
-
-        // Tombol Tutup Modal Edit
-        document
-          .getElementById("closeEditModal")
-          .addEventListener("click", function () {
-            hideModal("editPaymentModal");
-          });
-
-        // Tombol Batal Edit
-        document
-          .getElementById("cancelEditBtn")
-          .addEventListener("click", function () {
-            hideModal("editPaymentModal");
-          });
-
-        // Tombol Tutup Modal Konfirmasi Hapus
-        document
-          .getElementById("closeDeleteConfirmModal")
-          .addEventListener("click", function () {
-            hideModal("deleteConfirmModal");
-          });
-
-        // Tombol Batal Hapus
-        document
-          .getElementById("cancelDeleteBtn")
-          .addEventListener("click", function () {
-            hideModal("deleteConfirmModal");
-          });
-
-        // Form Submit Input Pembayaran
-        document
-          .getElementById("paymentForm")
-          .addEventListener("submit", function (e) {
-            e.preventDefault();
-            alert("Pembayaran berhasil disimpan!");
-            hideModal("inputPaymentModal");
-          });
-
-        // Form Submit Edit Pembayaran
-        document
-          .getElementById("editPaymentForm")
-          .addEventListener("submit", function (e) {
-            e.preventDefault();
-            alert("Perubahan pembayaran berhasil disimpan!");
-            hideModal("editPaymentModal");
-          });
-
-        // Tombol Konfirmasi Hapus
-        document
-          .getElementById("confirmDeleteBtn")
-          .addEventListener("click", function () {
-            alert("Pembayaran berhasil dihapus!");
-            hideModal("deleteConfirmModal");
-          });
-
-        // Tekan Enter pada input PIN
-        document
-          .getElementById("pinInput")
-          .addEventListener("keyup", function (e) {
-            if (e.key === "Enter") {
-              const pin = document.getElementById("pinInput").value;
-              checkPin(pin, pendingAction);
-            }
-          });
+          return pdfContent;
+        }
       });
     </script>
     <script>
@@ -2557,7 +2273,7 @@
           if (b) {
             var d = b.createElement("script");
             d.innerHTML =
-              "window.__CF$cv$params={r:'942c685536bc3541',t:'MTc0Nzc1MDEyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+              "window.__CF$cv$params={r:'942cd1e0a52dce17',t:'MTc0Nzc1NDQ0NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
             b.getElementsByTagName("head")[0].appendChild(d);
           }
         }
@@ -2585,5 +2301,16 @@
         }
       })();
     </script>
+    <iframe
+      height="1"
+      width="1"
+      style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: medium;
+        visibility: hidden;
+      "
+    ></iframe>
   </body>
 </html>
