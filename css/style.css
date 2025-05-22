@@ -1,6 +1,6 @@
 .all-sidebar {
-  /* penting */
-  /* penting */
+  /* important */
+  /* important */
   /* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */
 }
 .all-sidebar * {
@@ -22,17 +22,45 @@
 .all-sidebar .submenu-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
 }
-.all-sidebar .status-lunas {
-  background-color: #10b981;
+.all-sidebar .status-paid {
+  color: white;
+  background: linear-gradient(135deg, #0fae79 0%, #059669 100%);
 }
-.all-sidebar .status-macet {
-  background-color: #ef4444;
+.all-sidebar .status-stuck {
+  background: linear-gradient(135deg, #eab308 0%, #dcca25 100%);
+  color: white;
 }
-.all-sidebar .status-tindak-lanjut {
-  background-color: #f59e0b;
+.all-sidebar .status-need-attention {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
 }
-.all-sidebar .status-khusus {
-  background-color: #6366f1;
+.all-sidebar .status-need-action {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  color: white;
+}
+.all-sidebar .status-unpaid {
+  background-color: rgb(227, 109, 109);
+  color: white;
+}
+.all-sidebar .status-partial {
+  background: linear-gradient(135deg, #eab308 0%, #dcca25 100%);
+  color: white;
+}
+.all-sidebar .status-sent {
+  background-color: rgba(146, 227, 146, 0.799);
+  color: rgb(0, 116, 0);
+}
+.all-sidebar .status-unanswered {
+  background-color: rgba(227, 146, 146, 0.799);
+  color: rgb(116, 0, 0);
+}
+.all-sidebar .gender-male {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+.all-sidebar .gender-female {
+  background-color: #fce7f3;
+  color: #9d174d;
 }
 .all-sidebar .card-stat {
   transition: all 0.3s;
@@ -1021,6 +1049,22 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+.all-sidebar .condition-special {
+  background-color: #f3e8ff; /* bg-purple-100 */
+  color: #6b21a8; /* 6b21a8-purple-800 */
+}
+.all-sidebar .status-healthy {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.all-sidebar .status-sick {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.all-sidebar .status-sick-leave {
+  background-color: #fef3c7;
+  color: #92400e;
+}
 
 .dashboard-page {
   @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
@@ -1910,21 +1954,37 @@
   background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
   z-index: 1;
 }
-.detailpembayaran-page .status-lancar {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.detailpembayaran-page .status-paid {
+  color: white;
+  background: linear-gradient(135deg, #0fae79 0%, #059669 100%);
+}
+.detailpembayaran-page .status-stuck {
+  background: linear-gradient(135deg, #eab308 0%, #dcca25 100%);
   color: white;
 }
-.detailpembayaran-page .status-macet {
-  background: linear-gradient(135deg, #fff9c4 0%, #ffeb3b 100%);
-  color: white;
-}
-.detailpembayaran-page .status-perhatian {
+.detailpembayaran-page .status-need-attention {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: white;
 }
-.detailpembayaran-page .status-tindakan {
+.detailpembayaran-page .status-need-action {
   background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
   color: white;
+}
+.detailpembayaran-page .status-unpaid {
+  background-color: rgb(227, 109, 109);
+  color: white;
+}
+.detailpembayaran-page .status-partial {
+  background: linear-gradient(135deg, #eab308 0%, #dcca25 100%);
+  color: white;
+}
+.detailpembayaran-page .status-sent {
+  background-color: rgba(146, 227, 146, 0.799);
+  color: rgb(0, 116, 0);
+}
+.detailpembayaran-page .status-unanswered {
+  background-color: rgba(227, 146, 146, 0.799);
+  color: rgb(116, 0, 0);
 }
 .detailpembayaran-page .tab-button {
   padding: 0.75rem 1.5rem;
@@ -2243,18 +2303,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-.detailpembayaran-page .status-lancar {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-.detailpembayaran-page .status-macet {
-  background: linear-gradient(135deg, #eab308 0%, #eab308 100%);
-}
-.detailpembayaran-page .status-perlu-perhatian {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-.detailpembayaran-page .status-perlu-tindakan {
-  background: linear-gradient(135deg, #dc2626 0%, #dc2626 100%);
 }
 .detailpembayaran-page .animate-fade-in {
   animation: fadeIn 0.5s ease forwards;
@@ -5518,18 +5566,6 @@
   font-size: 0.75rem;
   font-weight: 500;
 }
-.ppdb-page .status-unpaid {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
-.ppdb-page .status-partial {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-.ppdb-page .status-paid {
-  background-color: #dcfce7;
-  color: #166534;
-}
 .ppdb-page .tooltip {
   position: relative;
   display: inline-block;
@@ -6512,14 +6548,6 @@
   font-size: 0.75rem;
   font-weight: 500;
 }
-.datasiswa-page .gender-male {
-  background-color: #dbeafe;
-  color: #1e40af;
-}
-.datasiswa-page .gender-female {
-  background-color: #fce7f3;
-  color: #9d174d;
-}
 .datasiswa-page .modal-content {
   max-height: 80vh;
   overflow-y: auto;
@@ -7354,18 +7382,6 @@
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
-}
-.datasiswasakit-page .status-healthy {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-.datasiswasakit-page .status-sick {
-  background-color: #fee2e2;
-  color: #991b1b;
-}
-.datasiswasakit-page .status-returned {
-  background-color: #fef3c7;
-  color: #92400e;
 }
 .datasiswasakit-page .tooltip {
   position: relative;

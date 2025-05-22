@@ -1129,7 +1129,7 @@
                     >
                       <div class="tooltip" bis_skin_checked="1">
                         <span
-                          class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                          class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                           >Alergi</span
                         >
                         <span class="tooltip-text"
@@ -1201,7 +1201,7 @@
                     >
                       <div class="tooltip" bis_skin_checked="1">
                         <span
-                          class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                          class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                           >Penyakit Kronis</span
                         >
                         <span class="tooltip-text">Asma</span>
@@ -1272,7 +1272,7 @@
                       <span class="text-gray-500">-</span>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                      <span class="status-badge status-returned"
+                      <span class="status-badge status-sick-leave"
                         >Pulang Karena Sakit</span
                       >
                     </td>
@@ -1337,7 +1337,7 @@
                     >
                       <div class="tooltip" bis_skin_checked="1">
                         <span
-                          class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                          class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                           >Alergi</span
                         >
                         <span class="tooltip-text">Alergi kacang</span>
@@ -1407,7 +1407,7 @@
                     >
                       <div class="tooltip" bis_skin_checked="1">
                         <span
-                          class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                          class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                           >Lainnya</span
                         >
                         <span class="tooltip-text">Diabetes tipe 1</span>
@@ -1478,7 +1478,7 @@
                       <span class="text-gray-500">-</span>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                      <span class="status-badge status-returned"
+                      <span class="status-badge status-sick-leave"
                         >Pulang Karena Sakit</span
                       >
                     </td>
@@ -1607,7 +1607,7 @@
                     >
                       <div class="tooltip" bis_skin_checked="1">
                         <span
-                          class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                          class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                           >Penyakit Kronis</span
                         >
                         <span class="tooltip-text">Epilepsi</span>
@@ -1677,14 +1677,14 @@
                     >
                       <div class="tooltip" bis_skin_checked="1">
                         <span
-                          class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                          class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                           >Alergi</span
                         >
                         <span class="tooltip-text">Alergi obat penisilin</span>
                       </div>
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                      <span class="status-badge status-returned"
+                      <span class="status-badge status-sick-leave"
                         >Pulang Karena Sakit</span
                       >
                     </td>
@@ -1952,7 +1952,7 @@
               <div id="detail-special-treatment-container" bis_skin_checked="1">
                 <div class="bg-purple-50 p-3 rounded-md" bis_skin_checked="1">
                   <span
-                    class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full"
+                    class="condition-special text-xs font-medium px-2 py-0.5 rounded-full"
                     >Alergi</span
                   >
                   <p class="text-sm text-gray-800 mt-2">Alergi kacang</p>
@@ -2335,7 +2335,7 @@
               statusText = "Sakit";
               break;
             case "pulang":
-              statusBadgeClass = "status-returned";
+              statusBadgeClass = "status-sick-leave";
               statusText = "Pulang Karena Sakit";
               break;
           }
@@ -2358,7 +2358,7 @@
 
             specialTreatmentDisplay = `
                       <div class="tooltip">
-                          <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">${typeText}</span>
+                          <span class="condition-special text-xs font-medium px-2 py-0.5 rounded-full">${typeText}</span>
                           <span class="tooltip-text">${student.specialTreatment.details}</span>
                       </div>
                   `;
@@ -2486,7 +2486,7 @@
             statusText = "Sakit";
             break;
           case "pulang":
-            statusBadgeClass = "status-returned";
+            statusBadgeClass = "status-sick-leave";
             statusText = "Pulang Karena Sakit";
             break;
         }
@@ -2537,7 +2537,7 @@
 
           specialTreatmentContainer.innerHTML = `
                   <div class="bg-purple-50 p-3 rounded-md">
-                      <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full">${typeText}</span>
+                      <span class="condition-special text-xs font-medium px-2 py-0.5 rounded-full">${typeText}</span>
                       <p class="text-sm text-gray-800 mt-2">${student.specialTreatment.details}</p>
                   </div>
               `;
