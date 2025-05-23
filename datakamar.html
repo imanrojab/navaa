@@ -1163,7 +1163,7 @@
                         </div>
                       </td>
                       <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="badge badge-male">Putra</span>
+                        <span class="badge gender-male">Putra</span>
                       </td>
                       <td
                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -1231,7 +1231,7 @@
                         </div>
                       </td>
                       <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="badge badge-male">Putra</span>
+                        <span class="badge gender-male">Putra</span>
                       </td>
                       <td
                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -1299,7 +1299,7 @@
                         </div>
                       </td>
                       <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="badge badge-male">Putra</span>
+                        <span class="badge gender-male">Putra</span>
                       </td>
                       <td
                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -1367,7 +1367,7 @@
                         </div>
                       </td>
                       <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="badge badge-female">Putri</span>
+                        <span class="badge gender-female">Putri</span>
                       </td>
                       <td
                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -1435,7 +1435,7 @@
                         </div>
                       </td>
                       <td class="px-4 py-4 whitespace-nowrap">
-                        <span class="badge badge-female">Putri</span>
+                        <span class="badge gender-female">Putri</span>
                       </td>
                       <td
                         class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -3121,7 +3121,7 @@
                 <div bis_skin_checked="1">
                   <p class="text-xs text-gray-500">Jenis Kamar</p>
                   <p id="detail-room-type-container" class="mt-1">
-                    <span class="badge badge-male">Putra</span>
+                    <span class="badge gender-male">Putra</span>
                   </p>
                 </div>
 
@@ -3422,7 +3422,9 @@
                     Gedung A, Lantai 1
                   </p>
                   <div class="flex items-center mt-1" bis_skin_checked="1">
-                    <span id="detail-student-room-type" class="badge badge-male"
+                    <span
+                      id="detail-student-room-type"
+                      class="badge gender-male"
                       >Putra</span
                     >
                     <span
@@ -3728,7 +3730,7 @@
           const row = document.createElement("tr");
           const remaining = room.capacity - room.occupied;
           const typeBadgeClass =
-            room.type === "putra" ? "badge-male" : "badge-female";
+            room.type === "putra" ? "gender-male" : "gender-female";
           const typeText = room.type === "putra" ? "Putra" : "Putri";
 
           row.innerHTML = `
@@ -3932,7 +3934,7 @@
           "detail-room-type-container"
         );
         let typeBadgeClass =
-          room.type === "putra" ? "badge-male" : "badge-female";
+          room.type === "putra" ? "gender-male" : "gender-female";
         let typeText = room.type === "putra" ? "Putra" : "Putri";
         typeContainer.innerHTML = `<span class="badge ${typeBadgeClass}">${typeText}</span>`;
 
@@ -4088,7 +4090,7 @@
           "detail-student-room-type"
         );
         roomTypeBadge.className = `badge ${
-          studentRoom.type === "putra" ? "badge-male" : "badge-female"
+          studentRoom.type === "putra" ? "gender-male" : "gender-female"
         }`;
         roomTypeBadge.textContent =
           studentRoom.type === "putra" ? "Putra" : "Putri";
