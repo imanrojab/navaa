@@ -1398,7 +1398,7 @@
                       XII IPS 1
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                      <span class="badge badge-competition">Lomba</span>
+                      <span class="badge badge-academic">Lomba</span>
                     </td>
                     <td
                       class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -1736,7 +1736,7 @@
                       XI IPS 1
                     </td>
                     <td class="px-4 py-4 whitespace-nowrap">
-                      <span class="badge badge-competition">Lomba</span>
+                      <span class="badge badge-non-academic">Lomba</span>
                     </td>
                     <td
                       class="px-4 py-4 whitespace-nowrap text-sm text-gray-900"
@@ -2609,9 +2609,9 @@
           name: "Ahmad Fauzi",
           photo: "https://randomuser.me/api/portraits/men/1.jpg",
           class: "XI IPA 2",
-          type: "akademik",
+          type: "academic",
           achievementName: "Juara 1 Olimpiade Matematika",
-          level: "nasional",
+          level: "national",
           date: "2023-05-15",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Olimpiade+Matematika",
@@ -2634,9 +2634,9 @@
           name: "Siti Nurhaliza",
           photo: "https://randomuser.me/api/portraits/women/1.jpg",
           class: "X IPA 1",
-          type: "non-akademik",
+          type: "non-academic",
           achievementName: "Juara 2 Lomba Menyanyi Solo",
-          level: "provinsi",
+          level: "province",
           date: "2023-04-20",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Lomba+Menyanyi",
@@ -2658,9 +2658,9 @@
           name: "Muhammad Rizki",
           photo: "https://randomuser.me/api/portraits/men/2.jpg",
           class: "XII IPS 1",
-          type: "lomba",
+          type: "academic",
           achievementName: "Juara 1 Debat Bahasa Inggris",
-          level: "internasional",
+          level: "international",
           date: "2023-03-10",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Debat+Bahasa+Inggris",
@@ -2683,9 +2683,9 @@
           name: "Anisa Rahma",
           photo: "https://randomuser.me/api/portraits/women/2.jpg",
           class: "XI IPA 1",
-          type: "hafalan",
+          type: "non-academic",
           achievementName: "Juara 1 Hafalan Al-Quran 30 Juz",
-          level: "kabupaten",
+          level: "district",
           date: "2023-02-25",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Hafalan+Al-Quran",
@@ -2707,9 +2707,9 @@
           name: "Budi Santoso",
           photo: "https://randomuser.me/api/portraits/men/3.jpg",
           class: "X IPS 2",
-          type: "akademik",
+          type: "academic",
           achievementName: "Juara 3 Olimpiade Ekonomi",
-          level: "sekolah",
+          level: "school",
           date: "2023-01-15",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Olimpiade+Ekonomi",
@@ -2730,9 +2730,9 @@
           name: "Dewi Lestari",
           photo: "https://randomuser.me/api/portraits/women/3.jpg",
           class: "XII IPA 2",
-          type: "non-akademik",
+          type: "non-academic",
           achievementName: "Juara 1 Lomba Tari Tradisional",
-          level: "provinsi",
+          level: "province",
           date: "2022-12-10",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Lomba+Tari",
@@ -2755,9 +2755,9 @@
           name: "Eko Prasetyo",
           photo: "https://randomuser.me/api/portraits/men/4.jpg",
           class: "XI IPS 1",
-          type: "lomba",
+          type: "academic",
           achievementName: "Juara 2 Lomba Karya Tulis Ilmiah",
-          level: "nasional",
+          level: "national",
           date: "2022-11-20",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Karya+Tulis+Ilmiah",
@@ -2779,9 +2779,9 @@
           name: "Fitri Handayani",
           photo: "https://randomuser.me/api/portraits/women/4.jpg",
           class: "X IPA 2",
-          type: "akademik",
+          type: "academic",
           achievementName: "Juara 1 Olimpiade Fisika",
-          level: "kabupaten",
+          level: "district",
           date: "2022-10-15",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Olimpiade+Fisika",
@@ -2803,9 +2803,9 @@
           name: "Gunawan Wibisono",
           photo: "https://randomuser.me/api/portraits/men/5.jpg",
           class: "XII IPA 1",
-          type: "non-akademik",
+          type: "non-academic",
           achievementName: "Juara 3 Lomba Fotografi",
-          level: "nasional",
+          level: "national",
           date: "2022-09-05",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Lomba+Fotografi",
@@ -2827,9 +2827,9 @@
           name: "Hani Permata",
           photo: "https://randomuser.me/api/portraits/women/5.jpg",
           class: "XI IPS 2",
-          type: "hafalan",
+          type: "academic",
           achievementName: "Juara 2 Hafalan Hadits",
-          level: "sekolah",
+          level: "school",
           date: "2022-08-20",
           certificate:
             "https://via.placeholder.com/800x600.png?text=Piagam+Hafalan+Hadits",
@@ -2865,21 +2865,13 @@
           let typeText = "";
 
           switch (achievement.type) {
-            case "akademik":
+            case "academic":
               typeBadgeClass = "badge-academic";
               typeText = "Akademik";
               break;
-            case "non-akademik":
+            case "non-academic":
               typeBadgeClass = "badge-non-academic";
               typeText = "Non-Akademik";
-              break;
-            case "lomba":
-              typeBadgeClass = "badge-competition";
-              typeText = "Lomba";
-              break;
-            case "hafalan":
-              typeBadgeClass = "badge-memorization";
-              typeText = "Hafalan";
               break;
           }
 
@@ -2888,23 +2880,23 @@
           let levelText = "";
 
           switch (achievement.level) {
-            case "sekolah":
+            case "school":
               levelBadgeClass = "badge-school";
               levelText = "Sekolah";
               break;
-            case "kabupaten":
+            case "district":
               levelBadgeClass = "badge-district";
               levelText = "Kabupaten";
               break;
-            case "provinsi":
+            case "province":
               levelBadgeClass = "badge-province";
               levelText = "Provinsi";
               break;
-            case "nasional":
+            case "national":
               levelBadgeClass = "badge-national";
               levelText = "Nasional";
               break;
-            case "internasional":
+            case "international":
               levelBadgeClass = "badge-international";
               levelText = "Internasional";
               break;
@@ -3051,14 +3043,6 @@
             typeBadgeClass = "badge-non-academic";
             typeText = "Non-Akademik";
             break;
-          case "lomba":
-            typeBadgeClass = "badge-competition";
-            typeText = "Lomba";
-            break;
-          case "hafalan":
-            typeBadgeClass = "badge-memorization";
-            typeText = "Hafalan";
-            break;
         }
 
         typeContainer.innerHTML = `<span class="badge ${typeBadgeClass}">${typeText}</span>`;
@@ -3071,23 +3055,23 @@
         let levelText = "";
 
         switch (achievement.level) {
-          case "sekolah":
+          case "school":
             levelBadgeClass = "badge-school";
             levelText = "Sekolah";
             break;
-          case "kabupaten":
+          case "district":
             levelBadgeClass = "badge-district";
             levelText = "Kabupaten";
             break;
-          case "provinsi":
+          case "province":
             levelBadgeClass = "badge-province";
             levelText = "Provinsi";
             break;
-          case "nasional":
+          case "national":
             levelBadgeClass = "badge-national";
             levelText = "Nasional";
             break;
-          case "internasional":
+          case "international":
             levelBadgeClass = "badge-international";
             levelText = "Internasional";
             break;
