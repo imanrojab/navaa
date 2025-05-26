@@ -1072,7 +1072,7 @@ video {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-// For student data page sick
+/* // For student data page sick */
 .condition-special {
   background-color: #f3e8ff; /* bg-purple-100 */
   color: #6b21a8; /* 6b21a8-purple-800 */
