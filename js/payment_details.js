@@ -501,7 +501,8 @@ function populateMonthlyPaymentTable(year) {
                               <div class="unpaid-icon">
                                   <i class="fas fa-minus"></i>
                               </div>
-                              <span class="text-sm text-gray-400">Belum dibayar</span>
+                              <span class="text-sm text-gray-400">Belum dibayar </span>
+                              
                           </div>
                       `;
       }
@@ -801,23 +802,33 @@ populatePaymentHistoryTable();
   }
 })();
 
-const input = document.getElementById("currencyInput");
+// Checkbox functionality payment input
+const tagihanCheckboxes = document.querySelectorAll(".tagihan-checkbox");
+const bulanCheckboxes = document.querySelectorAll(".bulan-checkbox");
+const nominalInput = document.getElementById("currencyInput");
 
-input.addEventListener("input", function () {
-  // Hilangkan semua karakter non-digit
-  let value = this.value.replace(/\D/g, "");
+function updateTotal() {
+  let totalTagihan = 0;
+  let totalBulan = 0;
 
-  // Format ke mata uang Indonesia tanpa simbol Rp
-  this.value = new Intl.NumberFormat("id-ID").format(value);
-});
+  // Hitung total tagihan
+  tagihanCheckboxes.forEach((cb) => {
+    if (cb.checked) {
+      totalTagihan += parseInt(cb.getAttribute("data-nominal"));
+    }
+  });
 
-// Optional: blok input selain angka
-input.addEventListener("keydown", function (e) {
-  const allowedKeys = ["Backspace", "ArrowLeft", "ArrowRight", "Delete"];
-  if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) {
-    e.preventDefault();
-  }
-});
+  // Hitung jumlah bulan dipilih
+  bulanCheckboxes.forEach((cb) => {
+    if (cb.checked) totalBulan++;
+  });
+
+  const total = totalTagihan * totalBulan;
+  nominalInput.value = total.toLocaleString("id-ID");
+}
+
+tagihanCheckboxes.forEach((cb) => cb.addEventListener("change", updateTotal));
+bulanCheckboxes.forEach((cb) => cb.addEventListener("change", updateTotal));
 
 // Atur tanggal hari ini secara otomatis
 document.addEventListener("DOMContentLoaded", function () {

@@ -1,0 +1,77 @@
+<div class="mb-4">
+  <label class="block text-sm font-medium text-gray-700 mb-2">
+    Pilih Jenis Tagihan:
+  </label>
+  <div class="grid grid-cols-2 gap-3">
+    <label class="flex items-center">
+      <input
+        type="checkbox"
+        name="tagihan[]"
+        value="makan"
+        data-nominal="500000"
+        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
+      />
+      <span class="text-sm text-gray-800">Makan (Rp 500.000)</span>
+    </label>
+    <label class="flex items-center">
+      <input
+        type="checkbox"
+        name="tagihan[]"
+        value="laundry"
+        data-nominal="150000"
+        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
+      />
+      <span class="text-sm text-gray-800">Laundry (Rp 150.000)</span>
+    </label>
+    <label class="flex items-center">
+      <input
+        type="checkbox"
+        name="tagihan[]"
+        value="listrik"
+        data-nominal="200000"
+        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
+      />
+      <span class="text-sm text-gray-800">Listrik (Rp 200.000)</span>
+    </label>
+    <label class="flex items-center">
+      <input
+        type="checkbox"
+        name="tagihan[]"
+        value="udb"
+        data-nominal="100000"
+        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
+      />
+      <span class="text-sm text-gray-800">UDB (Rp 100.000)</span>
+    </label>
+  </div>
+</div>
+
+<!-- Input Jumlah Otomatis -->
+<div class="mb-4">
+  <label for="nominal" class="block text-sm font-medium text-gray-700 mb-2">
+    Total Pembayaran (Rp)
+  </label>
+  <input
+    type="text"
+    id="nominal"
+    readonly
+    class="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-800 font-semibold"
+  />
+</div>
+
+<script>
+  const checkboxList = document.querySelectorAll(".tagihan-checkbox");
+  const nominalInput = document.getElementById("nominal");
+
+  function updateTotal() {
+    let total = 0;
+    checkboxList.forEach((cb) => {
+      if (cb.checked) {
+        total += parseInt(cb.getAttribute("data-nominal"));
+      }
+    });
+    nominalInput.value = total.toLocaleString("id-ID"); // Format: 600.000
+  }
+
+  checkboxList.forEach((cb) => cb.addEventListener("change", updateTotal));
+</script>
