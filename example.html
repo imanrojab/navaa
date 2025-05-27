@@ -2,15 +2,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pembayaran - Detail Pembayaran</title>
+    <title>Pembayaran - Pembayaran Tertunggak</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="css/all_page.css" />
-    <link rel="stylesheet" href="css/payment_details.css" />
+    <link rel="stylesheet" href="css/overdue_payments.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -67,7 +66,7 @@
               <i
                 class="fas fa-chevron-down text-xs transition-transform"
                 id="pembayaran-icon"
-                style="transform: rotate(0deg)"
+                style="transform: rotate(180deg)"
               ></i>
             </div>
             <div
@@ -77,7 +76,7 @@
             >
               <a href="payment_data.html">
                 <div
-                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
                   bis_skin_checked="1"
                 >
                   <i class="fas fa-file-invoice-dollar w-6 text-sm"></i>
@@ -86,7 +85,7 @@
               >
               <a href="overdue_payments.html">
                 <div
-                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
                   bis_skin_checked="1"
                 >
                   <i class="fas fa-exclamation-circle w-6 text-sm"></i>
@@ -259,11 +258,7 @@
                 <i class="fas fa-shield-alt w-6"></i>
                 <span class="ml-2">Keamanan</span>
               </div>
-              <i
-                class="fas fa-chevron-down text-xs"
-                id="keamanan-icon"
-                style="transform: rotate(180deg)"
-              ></i>
+              <i class="fas fa-chevron-down text-xs" id="keamanan-icon"></i>
             </div>
             <div
               id="keamanan-submenu"
@@ -494,902 +489,687 @@
 
         <!-- Page Content -->
         <main class="flex-1 p-6 overflow-y-auto">
-          <div class="bg-white rounded-xl shadow-md p-6" bis_skin_checked="1">
-            <!-- Header -->
-            <!-- <div class="bg-white rounded-xl shadow-md p-6" bis_skin_checked="1"> -->
+          <!-- Header -->
+
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+              Pembayaran Tertunggak
+            </h1>
+            <p class="text-gray-600">
+              Kelola dan pantau pembayaran tertunggak siswa
+            </p>
+          </div>
+
+          <!-- Overview Cards -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
+            <!-- Nominal Belum Dibayarkan -->
             <div
-              class="flex flex-wrap justify-between items-center mb-8"
-              bis_skin_checked="1"
+              class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500"
             >
-              <h1 class="text-3xl font-bold text-gray-800">
-                Detail Pembayaran Siswa
-              </h1>
-              <button id="downloadReport" class="btn btn-success">
-                <i class="fas fa-download"></i> Unduh Laporan
-              </button>
-            </div>
-
-            <!-- Student Info Card -->
-            <div class="flex flex-col md:flex-row gap-6 mb-8">
-              <!-- Informasi Siswa -->
-              <div
-                class="bg-white border border-gray-200 p-6 rounded-xl shadow-sm w-full md:w-1/3"
-              >
-                <div class="flex items-center mb-3">
-                  <div class="bg-blue-100 p-3 rounded-full mr-4">
-                    <i class="fas fa-user text-blue-600 text-xl"></i>
-                  </div>
-                  <h2 class="text-lg font-semibold text-gray-800">
-                    Informasi Siswa
-                  </h2>
-                </div>
-                <div class="space-y-3" bis_skin_checked="1">
-                  <div
-                    class="flex justify-between items-center"
-                    bis_skin_checked="1"
-                    style="margin-bottom: 7px; margin-top: 10px"
-                  >
-                    <span class="text-gray-600">Nama:</span>
-                    <span class="font-medium text-gray-800">Ahmad Fauzi</span>
-                  </div>
-                  <div
-                    class="border-t border-gray-100 my-2"
-                    bis_skin_checked="1"
-                  ></div>
-                  <div
-                    class="flex justify-between items-center"
-                    bis_skin_checked="1"
-                    style="margin-bottom: 7px; margin-top: 7px"
-                  >
-                    <span class="text-gray-600">NISN:</span>
-                    <span class="font-medium text-gray-800">1234567890</span>
-                  </div>
-                  <div
-                    class="border-t border-gray-100 my-2"
-                    bis_skin_checked="1"
-                  ></div>
-                  <div
-                    class="flex justify-between items-center"
-                    bis_skin_checked="1"
-                    style="margin-bottom: 7px; margin-top: 7px"
-                  >
-                    <span class="text-gray-600">Jenjang:</span>
-                    <span class="font-medium text-gray-800">SMA Kelas XI</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Status Pembayaran -->
-              <div
-                class="status-need-action p-6 rounded-xl shadow-sm w-full md:w-1/3"
-              >
-                <div class="flex items-center mb-3">
-                  <div
-                    class="bg-opacity-20 p-2 rounded-lg mr-3"
-                    style="margin-right: 10px"
-                  >
-                    <i class="fas fa-exclamation-circle text-3xl"></i>
-                  </div>
-                  <h3 class="text-lg font-semibold">Status Pembayaran</h3>
-                </div>
-                <p class="text-sm opacity-80">Periode: Juli 2024</p>
-                <div class="mt-4">
-                  <p class="text-3xl font-bold">Perlu Tindakan</p>
-                  <div class="flex items-center mt-2">
-                    <i class="fas fa-clock text-sm opacity-80 mr-2"></i>
-                    <p class="text-sm opacity-80">
-                      Terakhir diperbarui: 15 Juli 2024
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sisa Tagihan -->
-              <div
-                class="status-need-action to-red-100 p-6 rounded-xl shadow-sm w-full md:w-1/3 border shadow-lg"
-              >
-                <div class="flex items-center mb-3">
-                  <div class="p-2 rounded-lg mr-3" style="margin-right: 10px">
-                    <i
-                      class="fas fa-money-bill-wave text-white-600 text-3xl"
-                    ></i>
-                  </div>
-                  <h3 class="text-lg font-semibold text-white-800">
-                    Sisa Tagihan
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-500 mb-1">
+                    Nominal Belum Dibayarkan
+                  </p>
+                  <h3 class="text-2xl font-bold text-gray-800">
+                    Rp 45.750.000
                   </h3>
+                  <p class="text-xs text-red-500 mt-2">
+                    <span class="inline-flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        ></path>
+                      </svg>
+                      12% dari bulan lalu
+                    </span>
+                  </p>
                 </div>
-                <p class="text-sm text-white-500">Tahun Ajaran 2024/2025</p>
-                <div class="mt-4">
-                  <p class="text-3xl font-bold">Rp 2.500.000</p>
-                  <div class="flex items-center mt-2">
-                    <i class="fas fa-calendar-alt text-white-400 mr-2"></i>
-                    <p class="text-sm text-white-500">
-                      Jatuh tempo: 30 Agustus 2024
-                    </p>
-                  </div>
+                <div class="bg-red-100 p-3 rounded-full">
+                  <i
+                    class="fas fa-file-invoice-dollar text-red-500 text-xl"
+                  ></i>
                 </div>
               </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex flex-wrap gap-4 mb-8" bis_skin_checked="1">
-              <button id="btnInputPayment" class="btn btn-primary">
-                <i class="fas fa-plus-circle"></i> Input Pembayaran
-              </button>
-              <button id="btnEdit" class="btn btn-secondary">
-                <i class="fas fa-edit"></i> Ubah Data
-              </button>
-              <button id="btnPengingat" class="btn btn-pengingat">
-                <i class="fas fa-paper-plane font-semibold"></i> Kirim Pengingat
-              </button>
-            </div>
-
-            <!-- Tabs -->
-            <div class="mb-8 border-b border-gray-200" bis_skin_checked="1">
-              <div class="flex flex-wrap -mb-px" bis_skin_checked="1">
-                <button id="tab-summary" class="tab-button tab-active">
-                  Ringkasan Pembayaran
-                </button>
-                <button id="tab-history" class="tab-button tab-inactive">
-                  Riwayat Pembayaran
-                </button>
-              </div>
-            </div>
-
-            <!-- Tab Content -->
+            <!-- Jumlah Tagihan Macet -->
             <div
-              id="tab-content-summary"
-              class="tab-content animate-fade-in"
-              bis_skin_checked="1"
+              class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500"
             >
-              <!-- Filter -->
-              <div class="filter-container mb-6" bis_skin_checked="1">
-                <span class="filter-label">Tampilkan pembayaran bulanan:</span>
-                <select id="academicYearFilter" class="filter-select">
-                  <option value="2024/2025">Tahun Ajaran 2024/2025</option>
-                  <option value="2023/2024">Tahun Ajaran 2023/2024</option>
-                  <option value="2022/2023">Tahun Ajaran 2022/2023</option>
-                </select>
-              </div>
-
-              <!-- Monthly Payment Table -->
-              <div class="card p-6 mb-8" bis_skin_checked="1">
-                <h3 class="text-lg font-semibold mb-4">
-                  Pembayaran Bulanan Tahun Ajaran
-                  <span id="selectedYear">2024/2025</span>
-                </h3>
-                <div class="table-container" bis_skin_checked="1">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Bulan</th>
-                        <th>Makan</th>
-                        <th>Laundry</th>
-                        <th>Listrik</th>
-                        <th>UDB</th>
-                      </tr>
-                    </thead>
-                    <tbody id="monthlyPaymentTable">
-                      <tr>
-                        <td class="font-medium">Juli</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/07/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/07/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/07/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/07/2024</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Agustus</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >02/08/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >02/08/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >02/08/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >02/08/2024</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">September</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/09/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/09/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/09/2024</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="paid-icon" bis_skin_checked="1">
-                              <i class="fas fa-check"></i>
-                            </div>
-                            <span class="text-sm text-gray-600"
-                              >01/09/2024</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Oktober</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">November</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Desember</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Januari</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Februari</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Maret</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">April</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Mei</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Juni</td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                        <td>
-                          <div class="paid-indicator" bis_skin_checked="1">
-                            <div class="unpaid-icon" bis_skin_checked="1">
-                              <i class="fas fa-minus"></i>
-                            </div>
-                            <span class="text-sm text-gray-400"
-                              >Belum dibayar</span
-                            >
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-500 mb-1">Jumlah Tagihan Macet</p>
+                  <h3 class="text-2xl font-bold text-yellow-500">87 Tagihan</h3>
+                  <p class="text-xs text-yellow-500 mt-2">
+                    <span class="inline-flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        ></path>
+                      </svg>
+                      8% dari bulan lalu
+                    </span>
+                  </p>
                 </div>
-              </div>
-
-              <!-- Other Payments Table -->
-              <div class="card p-6" bis_skin_checked="1">
-                <h3 class="text-lg font-semibold mb-4">
-                  Pembayaran Lainnya Tahun Ajaran
-                  <span id="selectedYearOther">2024/2025</span>
-                </h3>
-                <div class="table-container" bis_skin_checked="1">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Jenis Tagihan</th>
-                        <th>Nominal Tagihan</th>
-                        <th>Status</th>
-                        <th>Tanggal Pembayaran</th>
-                        <th>Metode Pembayaran</th>
-                        <th>Penerima</th>
-                      </tr>
-                    </thead>
-                    <tbody id="otherPaymentTable">
-                      <tr>
-                        <td class="font-medium">Ujian Semester Ganjil</td>
-                        <td class="font-medium">Rp 500.000</td>
-                        <td><span class="badge badge-success">Lunas</span></td>
-                        <td>15/09/2024</td>
-                        <td>Transfer Bank</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Acara Maulid</td>
-                        <td class="font-medium">Rp 250.000</td>
-                        <td>
-                          <span class="badge badge-warning">Belum Lunas</span>
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">Studi Tour</td>
-                        <td class="font-medium">Rp 1.750.000</td>
-                        <td>
-                          <span class="badge badge-warning">Belum Lunas</span>
-                        </td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="bg-yellow-100 p-3 rounded-full">
+                  <i class="fas fa-clock text-yellow-500 text-xl"></i>
                 </div>
               </div>
             </div>
 
+            <!-- Tagihan Menunggak ≤ 3 Bulan -->
             <div
-              id="tab-content-history"
-              class="tab-content animate-fade-in hidden"
-              bis_skin_checked="1"
+              class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-orange-500"
             >
-              <!-- Search -->
-              <div class="filter-container mb-6" bis_skin_checked="1">
-                <div class="search-container w-full" bis_skin_checked="1">
-                  <i class="fas fa-search search-icon"></i>
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-500 mb-1">
+                    Tagihan Menunggak ≤ 3 Bulan
+                  </p>
+                  <h3 class="text-2xl font-bold text-gray-800">52 Siswa</h3>
+                  <p class="text-xs text-orange-500 mt-2">
+                    <span class="inline-flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
+                        ></path>
+                      </svg>
+                      5% dari bulan lalu
+                    </span>
+                  </p>
+                </div>
+                <div class="bg-orange-100 p-3 rounded-full">
+                  <i
+                    class="fas fa-exclamation-circle text-orange-500 text-xl"
+                  ></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tagihan Menunggak ≥ 4 Bulan -->
+            <div
+              class="stat-card bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-sm text-gray-500 mb-1">
+                    Tagihan Menunggak ≥ 4 Bulan
+                  </p>
+                  <h3 class="text-2xl font-bold text-red-500">35 Siswa</h3>
+                  <p class="text-xs text-red-500 mt-2">
+                    <span class="inline-flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3 w-3 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                        ></path>
+                      </svg>
+                      15% dari bulan lalu
+                    </span>
+                  </p>
+                </div>
+                <div class="bg-red-300 p-3 rounded-full">
+                  <i class="fas fa-calendar-times text-red-500 text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search and Filter Container -->
+          <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+              <div class="flex-1">
+                <div class="relative">
                   <input
                     type="text"
-                    id="searchPayment"
-                    placeholder="Cari berdasarkan ID, tanggal, jenis pembayaran, atau penerima"
-                    class="search-input"
+                    id="search-input"
+                    placeholder="Cari berdasarkan nama siswa..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-gray-400 absolute left-3 top-2.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    ></path>
+                  </svg>
                 </div>
               </div>
+              <div class="flex flex-wrap gap-3">
+                <select
+                  id="class-filter"
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">Semua Kelas</option>
+                  <option value="10A">Kelas 10A</option>
+                  <option value="10B">Kelas 10B</option>
+                  <option value="11A">Kelas 11A</option>
+                  <option value="11B">Kelas 11B</option>
+                  <option value="12A">Kelas 12A</option>
+                  <option value="12B">Kelas 12B</option>
+                </select>
+                <select
+                  id="status-filter"
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="Perlu Perhatian">Perlu Perhatian</option>
+                  <option value="Macet">Macet</option>
+                  <option value="Perlu Tindakan">Perlu Tindakan</option>
+                </select>
+                <select
+                  id="duration-filter"
+                  class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="">Semua Durasi</option>
+                  <option value="1">1 Bulan</option>
+                  <option value="2">2 Bulan</option>
+                  <option value="3">3 Bulan</option>
+                  <option value="4">≥ 4 Bulan</option>
+                </select>
+              </div>
+            </div>
 
-              <!-- Payment History Table -->
-              <div class="card p-6" bis_skin_checked="1">
-                <h3 class="text-lg font-semibold mb-4">Riwayat Pembayaran</h3>
-                <div class="table-container" bis_skin_checked="1">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>ID Pembayaran</th>
-                        <th>Tanggal</th>
-                        <th>Jenis Pembayaran</th>
-                        <th>Jumlah</th>
-                        <th>Keterangan</th>
-                        <th>Metode Pembayaran</th>
-                        <th>Penerima</th>
-                      </tr>
-                    </thead>
-                    <tbody id="paymentHistoryTable">
-                      <tr>
-                        <td class="font-medium">PAY-20240901-001</td>
-                        <td>01/09/2024</td>
-                        <td>Makan September</td>
-                        <td class="font-medium">Rp 750.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Transfer Bank</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240901-002</td>
-                        <td>01/09/2024</td>
-                        <td>Laundry September</td>
-                        <td class="font-medium">Rp 250.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Transfer Bank</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240901-003</td>
-                        <td>01/09/2024</td>
-                        <td>Listrik September</td>
-                        <td class="font-medium">Rp 300.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Transfer Bank</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240901-004</td>
-                        <td>01/09/2024</td>
-                        <td>UDB September</td>
-                        <td class="font-medium">Rp 500.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Transfer Bank</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240802-001</td>
-                        <td>02/08/2024</td>
-                        <td>Makan Agustus</td>
-                        <td class="font-medium">Rp 750.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Tunai</td>
-                        <td>Budi Santoso</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240802-002</td>
-                        <td>02/08/2024</td>
-                        <td>Laundry Agustus</td>
-                        <td class="font-medium">Rp 250.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Tunai</td>
-                        <td>Budi Santoso</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240802-003</td>
-                        <td>02/08/2024</td>
-                        <td>Listrik Agustus</td>
-                        <td class="font-medium">Rp 300.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Tunai</td>
-                        <td>Budi Santoso</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240802-004</td>
-                        <td>02/08/2024</td>
-                        <td>UDB Agustus</td>
-                        <td class="font-medium">Rp 500.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>Tunai</td>
-                        <td>Budi Santoso</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240701-001</td>
-                        <td>01/07/2024</td>
-                        <td>Makan Juli</td>
-                        <td class="font-medium">Rp 750.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>QRIS</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240701-002</td>
-                        <td>01/07/2024</td>
-                        <td>Laundry Juli</td>
-                        <td class="font-medium">Rp 250.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>QRIS</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240701-003</td>
-                        <td>01/07/2024</td>
-                        <td>Listrik Juli</td>
-                        <td class="font-medium">Rp 300.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>QRIS</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                      <tr>
-                        <td class="font-medium">PAY-20240701-004</td>
-                        <td>01/07/2024</td>
-                        <td>UDB Juli</td>
-                        <td class="font-medium">Rp 500.000</td>
-                        <td>Pembayaran tepat waktu</td>
-                        <td>QRIS</td>
-                        <td>Admin Keuangan</td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      No
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Nama
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Kelas
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Tertunggak
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Jumlah Tagihan
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Status
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody
+                  class="bg-white divide-y divide-gray-200"
+                  id="payment-table-body"
+                >
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      1
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Ahmad Rizki
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10A
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      4 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 2.400.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
+                      >
+                        Perlu Tindakan
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      2
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Budi Santoso
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10A
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 1.200.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                      >
+                        Perlu Perhatian
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      3
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Citra Dewi
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10A
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      1 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 1.800.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800"
+                      >
+                        Macet
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      4
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Dian Purnama
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10A
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      1 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 600.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                      >
+                        Perlu Perhatian
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      5
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Eko Prasetyo
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10A
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      5 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 3.000.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
+                      >
+                        Perlu Tindakan
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      6
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Fitri Handayani
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10A
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 1.200.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                      >
+                        Perlu Perhatian
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      7
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Galih Pratama
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10B
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      3 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 1.800.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800"
+                      >
+                        Macet
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      8
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Hana Safira
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10B
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      1 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 600.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                      >
+                        Perlu Perhatian
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      9
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Irfan Hakim
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10B
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      4 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 2.400.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
+                      >
+                        Perlu Tindakan
+                      </span>
+                    </td>
+                  </tr>
+                  <tr class="table-row">
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                    >
+                      10
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Jihan Aulia
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      10B
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      2 Bulan
+                    </td>
+                    <td
+                      class="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
+                    >
+                      Rp 1.200.000
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                      <span
+                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
+                      >
+                        Perlu Perhatian
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-6">
+              <div class="text-sm text-gray-500">
+                Menampilkan <span id="showing-start">1</span> -
+                <span id="showing-end">10</span> dari
+                <span id="total-items">20</span> data
+              </div>
+              <div class="flex space-x-1">
+                <button
+                  id="prev-page"
+                  class="pagination-btn px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50 disabled"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 19l-7-7 7-7"
+                    ></path>
+                  </svg>
+                </button>
+                <div id="pagination-numbers" class="flex space-x-1">
+                  <button
+                    class="pagination-btn px-3 py-1 rounded-md border border-gray-300 active"
+                  >
+                    1</button
+                  ><button
+                    class="pagination-btn px-3 py-1 rounded-md border border-gray-300"
+                  >
+                    2
+                  </button>
                 </div>
+                <button
+                  id="next-page"
+                  class="pagination-btn px-3 py-1 rounded-md border border-gray-300"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -1397,460 +1177,6 @@
       </div>
     </div>
 
-    <!-- Input Payment Modal -->
-    <div id="inputPaymentModal" class="modal" bis_skin_checked="1">
-      <div class="modal-content max-w-4xl" bis_skin_checked="1">
-        <div
-          class="flex justify-between items-center p-5 border-b border-gray-200"
-          bis_skin_checked="1"
-        >
-          <h3 class="text-xl font-semibold">Input Pembayaran Bulanan</h3>
-          <button
-            class="close-modal p-2 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="p-5" bis_skin_checked="1">
-          <form id="paymentForm">
-            <div
-              class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-              bis_skin_checked="1"
-            >
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Bulan</label>
-                <div class="grid grid-cols-3 gap-3">
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Juli"
-                    />
-                    Juli</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Agustus"
-                    />
-                    Agustus</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="September"
-                    />
-                    September</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Oktober"
-                    />
-                    Oktober</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="November"
-                    />
-                    November</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Desember"
-                    />
-                    Desember</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Januari"
-                    />
-                    Januari</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Februari"
-                    />
-                    Februari</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Maret"
-                    />
-                    Maret</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="April"
-                    />
-                    April</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Mei"
-                    />
-                    Mei</label
-                  >
-                  <label
-                    ><input
-                      type="checkbox"
-                      class="bulan-checkbox mr-2"
-                      value="Juni"
-                    />
-                    Juni</label
-                  >
-                </div>
-              </div>
-              <div class="form-group" bis_skin_checked="1">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                  Pilih Jenis Tagihan:
-                </label>
-                <div class="grid grid-cols-2 gap-3">
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="makan"
-                      data-nominal="500000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">Makan</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="laundry"
-                      data-nominal="150000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">Laundry</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="listrik"
-                      data-nominal="200000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">Listrik</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="udb"
-                      data-nominal="100000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">UDB</span>
-                  </label>
-                  <label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="laundry"
-                      data-nominal="150000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">Laundry</span> </label
-                  ><label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="laundry"
-                      data-nominal="150000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">Laundry</span> </label
-                  ><label class="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="tagihan[]"
-                      value="laundry"
-                      data-nominal="1500000"
-                      class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-                    />
-                    <span class="text-sm text-gray-800">Kebersihan</span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div
-              class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-              bis_skin_checked="1"
-            >
-              <div class="form-group" bis_skin_checked="1">
-                <label for="currencyInput" class="form-label">Jumlah</label>
-                <div class="relative" bis_skin_checked="1">
-                  <div
-                    class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-                    bis_skin_checked="1"
-                  >
-                    <span class="text-gray-500">Rp</span>
-                  </div>
-
-                  <input
-                    type="text"
-                    id="currencyInput"
-                    class="form-control pl-10"
-                    placeholder="0"
-                    readonly
-                  />
-                </div>
-              </div>
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Tanggal Pembayaran</label>
-
-                <input
-                  type="date"
-                  id="tanggal"
-                  class="form-control bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-300 rounded px-3 py-2"
-                  readonly
-                  required=""
-                />
-              </div>
-            </div>
-            <div
-              class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-              bis_skin_checked="1"
-            >
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Metode Pembayaran</label>
-                <select class="form-control" required="">
-                  <option value="">Pilih Metode Pembayaran</option>
-                  <option value="tunai">Tunai</option>
-                  <option value="transfer">Transfer Bank</option>
-                  <option value="qris">QRIS</option>
-                </select>
-              </div>
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Tahun Ajaran</label>
-                <select class="form-control" required="">
-                  <option value="2024/2025">2024/2025</option>
-                  <option value="2023/2024">2023/2024</option>
-                  <option value="2022/2023">2022/2023</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group mb-4" bis_skin_checked="1">
-              <label class="form-label">Keterangan</label>
-              <textarea class="form-control" rows="3"></textarea>
-            </div>
-          </form>
-        </div>
-        <div
-          class="flex justify-end gap-3 p-5 border-t border-gray-200"
-          bis_skin_checked="1"
-        >
-          <button type="button" class="btn btn-secondary close-modal">
-            Batal
-          </button>
-          <button type="submit" form="paymentForm" class="btn btn-primary">
-            Simpan Pembayaran
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal" bis_skin_checked="1">
-      <div class="modal-content" bis_skin_checked="1">
-        <div
-          class="flex justify-between items-center p-5 border-b border-gray-200"
-          bis_skin_checked="1"
-        >
-          <h3 class="text-xl font-semibold">Ubah Data Siswa</h3>
-          <button
-            class="close-modal p-2 rounded-full hover:bg-gray-100 transition-colors"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div class="p-5" bis_skin_checked="1">
-          <form id="editForm">
-            <div
-              class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-              bis_skin_checked="1"
-            >
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Nama Siswa</label>
-                <input
-                  type="text"
-                  value="Ahmad Fauzi"
-                  class="form-control"
-                  required=""
-                />
-              </div>
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">NISN</label>
-                <input
-                  type="text"
-                  value="1234567890"
-                  class="form-control"
-                  required=""
-                />
-              </div>
-            </div>
-            <div
-              class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-              bis_skin_checked="1"
-            >
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Jenjang</label>
-                <select class="form-control" required="">
-                  <option value="sma-11">SMA Kelas XI</option>
-                  <option value="sma-10">SMA Kelas X</option>
-                  <option value="sma-12">SMA Kelas XII</option>
-                  <option value="smp-7">SMP Kelas VII</option>
-                  <option value="smp-8">SMP Kelas VIII</option>
-                  <option value="smp-9">SMP Kelas IX</option>
-                </select>
-              </div>
-              <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Status Pembayaran</label>
-                <select class="form-control" required="">
-                  <option value="lunas">Lunas</option>
-                  <option value="macet">Macet</option>
-                  <option value="perhatian">Perlu Perhatian</option>
-                  <option value="tindakan">Perlu Tindakan</option>
-                </select>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div
-          class="flex justify-end gap-3 p-5 border-t border-gray-200"
-          bis_skin_checked="1"
-        >
-          <button type="button" class="btn btn-secondary close-modal">
-            Batal
-          </button>
-          <button type="submit" form="editForm" class="btn btn-primary">
-            Simpan Perubahan
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Kirim Pengingat -->
-    <div id="pengingatModal" class="modal" bis_skin_checked="1">
-      <div
-        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
-        bis_skin_checked="1"
-      >
-        <div
-          class="flex justify-between items-center mb-4"
-          bis_skin_checked="1"
-        >
-          <h3 class="text-lg font-semibold text-gray-900">Kirim Pengingat</h3>
-          <button
-            onclick="hideModal('modal-kirim-pengingat')"
-            class="text-gray-400 hover:text-gray-600"
-          >
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <form id="pengingatForm">
-          <div class="mb-4" bis_skin_checked="1">
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Judul</label
-            >
-            <input
-              type="text"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-              value="Pembayaran SPP"
-              readonly=""
-            />
-          </div>
-          <div class="mb-4" bis_skin_checked="1">
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Teks Pengingat</label
-            >
-            <textarea
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-              rows="4"
-            >
-Mohon segera melakukan pembayaran SPP bulan ini sebelum tanggal 10.</textarea
-            >
-          </div>
-          <div class="mb-4" bis_skin_checked="1">
-            <label class="block text-sm font-medium text-gray-700 mb-1"
-              >Kirim Kepada</label
-            >
-            <select
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="">Pilih penerima</option>
-              <option value="ortu_x_ipa">Ortu Siswa X IPA</option>
-              <option value="siswa_x_ips">Siswa X IPS</option>
-              <option value="seluruh_jenjang">Seluruh Jenjang</option>
-            </select>
-          </div>
-          <div
-            class="flex justify-end gap-3 p-5 border-t border-gray-200"
-            bis_skin_checked="1"
-          >
-            <button type="button" class="btn btn-secondary close-modal">
-              Batal
-            </button>
-            <button
-              type="submit"
-              form="pengingatForm"
-              class="btn btn-pengingat"
-            >
-              <i class="fas fa-paper-plane font-semibold"></i> Kirim Pengingat
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Notification -->
-    <div
-      id="notification"
-      class="notification notification-success"
-      bis_skin_checked="1"
-    >
-      <div class="notification-icon" bis_skin_checked="1">
-        <i class="fas fa-check"></i>
-      </div>
-      <div bis_skin_checked="1">
-        <h4 class="font-medium text-gray-800">Berhasil!</h4>
-        <p class="text-sm text-gray-600" id="notificationMessage">
-          Laporan berhasil diunduh!
-        </p>
-      </div>
-    </div>
-    <iframe
-      height="1"
-      width="1"
-      style="
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        border: medium;
-        visibility: hidden;
-      "
-    ></iframe>
-    <script src="js/payment_details.js"></script>
+    <script src="js/example.js"></script>
   </body>
 </html>
