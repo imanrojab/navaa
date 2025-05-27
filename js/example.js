@@ -512,13 +512,7 @@ function renderTable() {
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
                         ${item.status}
                     </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div class="dropdown-aksi">
-                        <button  class=" text-gray-800 hover:text-gray-900 " onclick="window.location.href='payment_details.html'">
-                            Lihat Detail
-                                
-                        </button>
+               
                         
                     </div>
                 </td>
