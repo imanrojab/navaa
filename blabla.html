@@ -1,77 +1,278 @@
-<div class="mb-4">
-  <label class="block text-sm font-medium text-gray-700 mb-2">
-    Pilih Jenis Tagihan:
-  </label>
-  <div class="grid grid-cols-2 gap-3">
-    <label class="flex items-center">
-      <input
-        type="checkbox"
-        name="tagihan[]"
-        value="makan"
-        data-nominal="500000"
-        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-      />
-      <span class="text-sm text-gray-800">Makan (Rp 500.000)</span>
-    </label>
-    <label class="flex items-center">
-      <input
-        type="checkbox"
-        name="tagihan[]"
-        value="laundry"
-        data-nominal="150000"
-        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-      />
-      <span class="text-sm text-gray-800">Laundry (Rp 150.000)</span>
-    </label>
-    <label class="flex items-center">
-      <input
-        type="checkbox"
-        name="tagihan[]"
-        value="listrik"
-        data-nominal="200000"
-        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-      />
-      <span class="text-sm text-gray-800">Listrik (Rp 200.000)</span>
-    </label>
-    <label class="flex items-center">
-      <input
-        type="checkbox"
-        name="tagihan[]"
-        value="udb"
-        data-nominal="100000"
-        class="tagihan-checkbox text-blue-600 h-4 w-4 mr-2"
-      />
-      <span class="text-sm text-gray-800">UDB (Rp 100.000)</span>
-    </label>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulir PPDB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 py-10">
+    <div class="max-w-5xl mx-auto bg-white p-8 rounded shadow-md">
+      <h1 class="text-2xl font-bold mb-6">Formulir PPDB - Data Pribadi</h1>
+      <form class="space-y-6">
+        <!-- DATA PRIBADI -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Jenis Kelamin</label
+            >
+            <select class="mt-1 block w-full border rounded px-3 py-2">
+              <option>Laki-laki</option>
+              <option>Perempuan</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Tempat Lahir</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Tanggal Lahir</label
+            >
+            <input
+              type="date"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NIK</label>
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >No. KK</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">NISN</label>
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Anak ke-</label
+            >
+            <input
+              type="number"
+              min="1"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Bahasa Sehari-hari</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Alamat</label
+            >
+            <textarea
+              class="mt-1 block w-full border rounded px-3 py-2"
+            ></textarea>
+          </div>
+        </div>
 
-<!-- Input Jumlah Otomatis -->
-<div class="mb-4">
-  <label for="nominal" class="block text-sm font-medium text-gray-700 mb-2">
-    Total Pembayaran (Rp)
-  </label>
-  <input
-    type="text"
-    id="nominal"
-    readonly
-    class="w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-800 font-semibold"
-  />
-</div>
+        <h2 class="text-xl font-semibold mt-10 mb-4">
+          Data Sekolah & Pendaftaran
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Asal Sekolah</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Tingkat Kelas yang Dituju</label
+            >
+            <select class="mt-1 block w-full border rounded px-3 py-2">
+              <option>VII SMP</option>
+              <option>X SMA</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Program Kelas</label
+            >
+            <select class="mt-1 block w-full border rounded px-3 py-2">
+              <option>SMP</option>
+              <option>SMA</option>
+              <option>SMK</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Peminatan / Jurusan</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
 
-<script>
-  const checkboxList = document.querySelectorAll(".tagihan-checkbox");
-  const nominalInput = document.getElementById("nominal");
+        <h2 class="text-xl font-semibold mt-10 mb-4">Data Orang Tua / Wali</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Nama Ayah</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Pekerjaan Ayah</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Pendidikan Terakhir Ayah</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Penghasilan Ayah</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <!-- Ibu -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Nama Ibu</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Pekerjaan Ibu</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Pendidikan Terakhir Ibu</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Penghasilan Ibu</label
+            >
+            <input
+              type="text"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
 
-  function updateTotal() {
-    let total = 0;
-    checkboxList.forEach((cb) => {
-      if (cb.checked) {
-        total += parseInt(cb.getAttribute("data-nominal"));
-      }
-    });
-    nominalInput.value = total.toLocaleString("id-ID"); // Format: 600.000
-  }
+        <h2 class="text-xl font-semibold mt-10 mb-4">Minat & Lain-lain</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Kesenian</label
+            >
+            <input
+              type="text"
+              placeholder="Contoh: Musik, Rupa"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Olahraga</label
+            >
+            <input
+              type="text"
+              placeholder="Contoh: Sepak Bola, Renang"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Organisasi</label
+            >
+            <input
+              type="text"
+              placeholder="Contoh: OSIS, Remaja Masjid"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700"
+              >Cita-cita</label
+            >
+            <input
+              type="text"
+              placeholder="Contoh: Dokter, Guru"
+              class="mt-1 block w-full border rounded px-3 py-2"
+            />
+          </div>
+        </div>
 
-  checkboxList.forEach((cb) => cb.addEventListener("change", updateTotal));
-</script>
+        <div class="mt-10">
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          >
+            Kirim Pendaftaran
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
