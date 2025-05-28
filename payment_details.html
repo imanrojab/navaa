@@ -1418,31 +1418,63 @@
               bis_skin_checked="1"
             >
               <div class="form-group" bis_skin_checked="1">
+                <label class="form-label">Nama Siswa</label>
+
+                <input
+                  type="text"
+                  id="studentName"
+                  value="Ahmad Fauzi"
+                  class="form-control bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-300 rounded px-3 py-2"
+                  readonly
+                  required=""
+                />
+              </div>
+              <div class="form-group" bis_skin_checked="1">
+                <label class="form-label">NISN</label>
+
+                <input
+                  type="number"
+                  id="NISN"
+                  value="123456789"
+                  class="form-control bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-300 rounded px-3 py-2"
+                  readonly
+                  required=""
+                />
+              </div>
+
+              <div class="form-group" bis_skin_checked="1">
                 <label class="form-label">Bulan</label>
                 <div class="grid grid-cols-3 gap-3">
                   <label
                     ><input
                       type="checkbox"
+                      disabled
                       class="bulan-checkbox mr-2"
                       value="Juli"
                     />
-                    Juli</label
+                    <span class="line-through text-gray-500">Juli</span></label
                   >
                   <label
                     ><input
                       type="checkbox"
                       class="bulan-checkbox mr-2"
+                      disabled
                       value="Agustus"
                     />
-                    Agustus</label
+                    <span class="line-through text-gray-500"
+                      >Agustus</span
+                    ></label
                   >
                   <label
                     ><input
                       type="checkbox"
                       class="bulan-checkbox mr-2"
+                      disabled
                       value="September"
                     />
-                    September</label
+                    <span class="line-through text-gray-500"
+                      >September</span
+                    ></label
                   >
                   <label
                     ><input
@@ -1450,7 +1482,7 @@
                       class="bulan-checkbox mr-2"
                       value="Oktober"
                     />
-                    Oktober</label
+                    <span class="">Oktober</span></label
                   >
                   <label
                     ><input
@@ -1458,7 +1490,7 @@
                       class="bulan-checkbox mr-2"
                       value="November"
                     />
-                    November</label
+                    <span class="">November</span></label
                   >
                   <label
                     ><input
@@ -1466,7 +1498,7 @@
                       class="bulan-checkbox mr-2"
                       value="Desember"
                     />
-                    Desember</label
+                    <span class="">Desember</span></label
                   >
                   <label
                     ><input
@@ -1474,7 +1506,7 @@
                       class="bulan-checkbox mr-2"
                       value="Januari"
                     />
-                    Januari</label
+                    <span class="">Januari</span></label
                   >
                   <label
                     ><input
@@ -1482,7 +1514,7 @@
                       class="bulan-checkbox mr-2"
                       value="Februari"
                     />
-                    Februari</label
+                    <span class=""> Februari</span></label
                   >
                   <label
                     ><input
@@ -1490,7 +1522,7 @@
                       class="bulan-checkbox mr-2"
                       value="Maret"
                     />
-                    Maret</label
+                    <span class="">Maret</span></label
                   >
                   <label
                     ><input
@@ -1498,7 +1530,7 @@
                       class="bulan-checkbox mr-2"
                       value="April"
                     />
-                    April</label
+                    <span class=""> April</span></label
                   >
                   <label
                     ><input
@@ -1506,15 +1538,15 @@
                       class="bulan-checkbox mr-2"
                       value="Mei"
                     />
-                    Mei</label
-                  >
+                    <span class="">Mei</span>
+                  </label>
                   <label
                     ><input
                       type="checkbox"
                       class="bulan-checkbox mr-2"
                       value="Juni"
                     />
-                    Juni</label
+                    <span class=""> Juni</span></label
                   >
                 </div>
               </div>
@@ -1643,12 +1675,15 @@
                 </select>
               </div>
               <div class="form-group" bis_skin_checked="1">
-                <label class="form-label">Tahun Ajaran</label>
-                <select class="form-control" required="">
-                  <option value="2024/2025">2024/2025</option>
-                  <option value="2023/2024">2023/2024</option>
-                  <option value="2022/2023">2022/2023</option>
-                </select>
+                <label class="form-label" aria-readonly="">Tahun Ajaran</label>
+                <input
+                  type="text"
+                  id="TahunAjaran"
+                  value="2024/2025"
+                  class="form-control bg-gray-100 text-gray-500 cursor-not-allowed border border-gray-300 rounded px-3 py-2"
+                  readonly
+                  required=""
+                />
               </div>
             </div>
             <div class="form-group mb-4" bis_skin_checked="1">
