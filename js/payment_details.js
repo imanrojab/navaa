@@ -900,3 +900,42 @@ window.addEventListener("click", function (event) {
     });
   }
 });
+
+// Tab hsitory actions
+document.addEventListener("DOMContentLoaded", function () {
+  const hash = window.location.hash;
+
+  if (hash === "#tab-history") {
+    // 1. Nonaktifkan semua tab
+    document
+      .querySelectorAll(".tab-content")
+      .forEach((el) => el.classList.add("hidden"));
+    document.querySelectorAll(".tab-button").forEach((el) => {
+      el.classList.remove("tab-active");
+      el.classList.add("tab-inactive");
+    });
+
+    // 2. Aktifkan konten tab history
+    const content = document.getElementById("tab-content-history");
+    if (content) content.classList.remove("hidden");
+
+    // 3. Aktifkan tombol tab history
+    const tabButton = document.getElementById("tab-history");
+    if (tabButton) {
+      tabButton.classList.add("tab-active");
+      tabButton.classList.remove("tab-inactive");
+    }
+  }
+});
+
+// Input payment popup trigger
+document.addEventListener("DOMContentLoaded", function () {
+  const params = new URLSearchParams(window.location.search);
+  const popupTrigger = params.get("popup");
+
+  if (popupTrigger === "input") {
+    // Trigger click pada button id=btnInputPayment
+    const btn = document.getElementById("btnInputPayment");
+    if (btn) btn.click();
+  }
+});
