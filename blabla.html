@@ -1,278 +1,2876 @@
-<!DOCTYPE html>
 <html lang="id">
+  <script
+    src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/content/location/location.js"
+    id="eppiocemhmnlbhjplcgkofciiegomcon"
+  ></script>
+  <script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/extend-native-history-api.js"></script>
+  <script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/requests.js"></script>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulir PPDB</title>
+    <title>Pendaftaran PPDB Online</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      bis_use="true"
+      type="text/javascript"
+      charset="utf-8"
+      data-bis-config='["facebook.com/","twitter.com/","youtube-nocookie.com/embed/","//vk.com/","//www.vk.com/","linkedin.com/","//www.linkedin.com/","//instagram.com/","//www.instagram.com/","//www.google.com/recaptcha/api2/","//hangouts.google.com/webchat/","//www.google.com/calendar/","//www.google.com/maps/embed","spotify.com/","soundcloud.com/","//player.vimeo.com/","//disqus.com/","//tgwidget.com/","//js.driftt.com/","friends2follow.com","/widget","login","//video.bigmir.net/","blogger.com","//smartlock.google.com/","//keep.google.com/","/web.tolstoycomments.com/","moz-extension://","chrome-extension://","/auth/","//analytics.google.com/","adclarity.com","paddle.com/checkout","hcaptcha.com","recaptcha.net","2captcha.com","accounts.google.com","www.google.com/shopping/customerreviews","buy.tinypass.com","gstatic.com","secureir.ebaystatic.com","docs.google.com","contacts.google.com","github.com","mail.google.com","chat.google.com","audio.xpleer.com","keepa.com","static.xx.fbcdn.net","sas.selleramp.com","1plus1.video","console.googletagservices.com","//lnkd.demdex.net/","//radar.cedexis.com/","//li.protechts.net/","challenges.cloudflare.com/","ogs.google.com"]'
+      src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/traffic.js"
+    ></script>
+    <style>
+      :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --secondary: #0ea5e9;
+        --accent: #8b5cf6;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+      }
+
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+      }
+
+      .form-container {
+        background: #ffffff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .form-header {
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+      }
+
+      .form-section {
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .form-section.active {
+        border-left: 3px solid var(--primary);
+      }
+
+      .form-section:not(.active) {
+        opacity: 0.7;
+      }
+
+      .form-section:hover:not(.active) {
+        opacity: 0.9;
+      }
+
+      .form-input {
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+      }
+
+      .form-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        background-color: #ffffff;
+      }
+
+      .form-select {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+      }
+
+      .step-indicator {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: white;
+        background-color: var(--primary);
+      }
+
+      .step-indicator.inactive {
+        background-color: #cbd5e1;
+        color: #475569;
+      }
+
+      .step-line {
+        flex: 1;
+        height: 2px;
+        background-color: #cbd5e1;
+      }
+
+      .step-line.active {
+        background-color: var(--primary);
+      }
+
+      .btn-primary {
+        background-color: var(--primary);
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background-color: #e2e8f0;
+        color: #475569;
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background-color: #cbd5e1;
+      }
+
+      .payment-method {
+        border: 2px solid #e2e8f0;
+        transition: all 0.2s ease;
+      }
+
+      .payment-method:hover {
+        border-color: #cbd5e1;
+      }
+
+      .payment-method.selected {
+        border-color: var(--primary);
+        background-color: rgba(79, 70, 229, 0.05);
+      }
+
+      .file-upload {
+        border: 2px dashed #cbd5e1;
+        transition: all 0.3s ease;
+      }
+
+      .file-upload:hover {
+        border-color: var(--primary);
+        background-color: rgba(79, 70, 229, 0.05);
+      }
+
+      /* Custom animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      /* Tooltip styles */
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: #1e293b;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      /* Loading spinner */
+      .spinner {
+        border: 3px solid rgba(203, 213, 225, 0.3);
+        border-radius: 50%;
+        border-top: 3px solid var(--primary);
+        width: 20px;
+        height: 20px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+    <style>
+      *,
+      ::before,
+      ::after {
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+        --tw-pan-x: ;
+        --tw-pan-y: ;
+        --tw-pinch-zoom: ;
+        --tw-scroll-snap-strictness: proximity;
+        --tw-gradient-from-position: ;
+        --tw-gradient-via-position: ;
+        --tw-gradient-to-position: ;
+        --tw-ordinal: ;
+        --tw-slashed-zero: ;
+        --tw-numeric-figure: ;
+        --tw-numeric-spacing: ;
+        --tw-numeric-fraction: ;
+        --tw-ring-inset: ;
+        --tw-ring-offset-width: 0px;
+        --tw-ring-offset-color: #fff;
+        --tw-ring-color: rgb(59 130 246 / 0.5);
+        --tw-ring-offset-shadow: 0 0 #0000;
+        --tw-ring-shadow: 0 0 #0000;
+        --tw-shadow: 0 0 #0000;
+        --tw-shadow-colored: 0 0 #0000;
+        --tw-blur: ;
+        --tw-brightness: ;
+        --tw-contrast: ;
+        --tw-grayscale: ;
+        --tw-hue-rotate: ;
+        --tw-invert: ;
+        --tw-saturate: ;
+        --tw-sepia: ;
+        --tw-drop-shadow: ;
+        --tw-backdrop-blur: ;
+        --tw-backdrop-brightness: ;
+        --tw-backdrop-contrast: ;
+        --tw-backdrop-grayscale: ;
+        --tw-backdrop-hue-rotate: ;
+        --tw-backdrop-invert: ;
+        --tw-backdrop-opacity: ;
+        --tw-backdrop-saturate: ;
+        --tw-backdrop-sepia: ;
+        --tw-contain-size: ;
+        --tw-contain-layout: ;
+        --tw-contain-paint: ;
+        --tw-contain-style: ;
+      }
+      ::backdrop {
+        --tw-border-spacing-x: 0;
+        --tw-border-spacing-y: 0;
+        --tw-translate-x: 0;
+        --tw-translate-y: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        --tw-scale-x: 1;
+        --tw-scale-y: 1;
+        --tw-pan-x: ;
+        --tw-pan-y: ;
+        --tw-pinch-zoom: ;
+        --tw-scroll-snap-strictness: proximity;
+        --tw-gradient-from-position: ;
+        --tw-gradient-via-position: ;
+        --tw-gradient-to-position: ;
+        --tw-ordinal: ;
+        --tw-slashed-zero: ;
+        --tw-numeric-figure: ;
+        --tw-numeric-spacing: ;
+        --tw-numeric-fraction: ;
+        --tw-ring-inset: ;
+        --tw-ring-offset-width: 0px;
+        --tw-ring-offset-color: #fff;
+        --tw-ring-color: rgb(59 130 246 / 0.5);
+        --tw-ring-offset-shadow: 0 0 #0000;
+        --tw-ring-shadow: 0 0 #0000;
+        --tw-shadow: 0 0 #0000;
+        --tw-shadow-colored: 0 0 #0000;
+        --tw-blur: ;
+        --tw-brightness: ;
+        --tw-contrast: ;
+        --tw-grayscale: ;
+        --tw-hue-rotate: ;
+        --tw-invert: ;
+        --tw-saturate: ;
+        --tw-sepia: ;
+        --tw-drop-shadow: ;
+        --tw-backdrop-blur: ;
+        --tw-backdrop-brightness: ;
+        --tw-backdrop-contrast: ;
+        --tw-backdrop-grayscale: ;
+        --tw-backdrop-hue-rotate: ;
+        --tw-backdrop-invert: ;
+        --tw-backdrop-opacity: ;
+        --tw-backdrop-saturate: ;
+        --tw-backdrop-sepia: ;
+        --tw-contain-size: ;
+        --tw-contain-layout: ;
+        --tw-contain-paint: ;
+        --tw-contain-style: ;
+      } /* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */
+      *,
+      ::after,
+      ::before {
+        box-sizing: border-box;
+        border-width: 0;
+        border-style: solid;
+        border-color: #e5e7eb;
+      }
+      ::after,
+      ::before {
+        --tw-content: "";
+      }
+      :host,
+      html {
+        line-height: 1.5;
+        -webkit-text-size-adjust: 100%;
+        -moz-tab-size: 4;
+        tab-size: 4;
+        font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+          "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        margin: 0;
+        line-height: inherit;
+      }
+      hr {
+        height: 0;
+        color: inherit;
+        border-top-width: 1px;
+      }
+      abbr:where([title]) {
+        -webkit-text-decoration: underline dotted;
+        text-decoration: underline dotted;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-size: inherit;
+        font-weight: inherit;
+      }
+      a {
+        color: inherit;
+        text-decoration: inherit;
+      }
+      b,
+      strong {
+        font-weight: bolder;
+      }
+      code,
+      kbd,
+      pre,
+      samp {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-feature-settings: normal;
+        font-variation-settings: normal;
+        font-size: 1em;
+      }
+      small {
+        font-size: 80%;
+      }
+      sub,
+      sup {
+        font-size: 75%;
+        line-height: 0;
+        position: relative;
+        vertical-align: baseline;
+      }
+      sub {
+        bottom: -0.25em;
+      }
+      sup {
+        top: -0.5em;
+      }
+      table {
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+      }
+      button,
+      input,
+      optgroup,
+      select,
+      textarea {
+        font-family: inherit;
+        font-feature-settings: inherit;
+        font-variation-settings: inherit;
+        font-size: 100%;
+        font-weight: inherit;
+        line-height: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        margin: 0;
+        padding: 0;
+      }
+      button,
+      select {
+        text-transform: none;
+      }
+      button,
+      input:where([type="button"]),
+      input:where([type="reset"]),
+      input:where([type="submit"]) {
+        -webkit-appearance: button;
+        background-color: transparent;
+        background-image: none;
+      }
+      :-moz-focusring {
+        outline: auto;
+      }
+      :-moz-ui-invalid {
+        box-shadow: none;
+      }
+      progress {
+        vertical-align: baseline;
+      }
+      ::-webkit-inner-spin-button,
+      ::-webkit-outer-spin-button {
+        height: auto;
+      }
+      [type="search"] {
+        -webkit-appearance: textfield;
+        outline-offset: -2px;
+      }
+      ::-webkit-search-decoration {
+        -webkit-appearance: none;
+      }
+      ::-webkit-file-upload-button {
+        -webkit-appearance: button;
+        font: inherit;
+      }
+      summary {
+        display: list-item;
+      }
+      blockquote,
+      dd,
+      dl,
+      figure,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      hr,
+      p,
+      pre {
+        margin: 0;
+      }
+      fieldset {
+        margin: 0;
+        padding: 0;
+      }
+      legend {
+        padding: 0;
+      }
+      menu,
+      ol,
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      dialog {
+        padding: 0;
+      }
+      textarea {
+        resize: vertical;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      [role="button"],
+      button {
+        cursor: pointer;
+      }
+      :disabled {
+        cursor: default;
+      }
+      audio,
+      canvas,
+      embed,
+      iframe,
+      img,
+      object,
+      svg,
+      video {
+        display: block;
+        vertical-align: middle;
+      }
+      img,
+      video {
+        max-width: 100%;
+        height: auto;
+      }
+      [hidden]:where(:not([hidden="until-found"])) {
+        display: none;
+      }
+      .pointer-events-none {
+        pointer-events: none;
+      }
+      .absolute {
+        position: absolute;
+      }
+      .relative {
+        position: relative;
+      }
+      .inset-y-0 {
+        top: 0px;
+        bottom: 0px;
+      }
+      .left-0 {
+        left: 0px;
+      }
+      .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .mb-1 {
+        margin-bottom: 0.25rem;
+      }
+      .mb-2 {
+        margin-bottom: 0.5rem;
+      }
+      .mb-3 {
+        margin-bottom: 0.75rem;
+      }
+      .mb-4 {
+        margin-bottom: 1rem;
+      }
+      .mb-6 {
+        margin-bottom: 1.5rem;
+      }
+      .mb-8 {
+        margin-bottom: 2rem;
+      }
+      .ml-1 {
+        margin-left: 0.25rem;
+      }
+      .ml-2 {
+        margin-left: 0.5rem;
+      }
+      .ml-3 {
+        margin-left: 0.75rem;
+      }
+      .mr-1 {
+        margin-right: 0.25rem;
+      }
+      .mr-2 {
+        margin-right: 0.5rem;
+      }
+      .mt-1 {
+        margin-top: 0.25rem;
+      }
+      .mt-2 {
+        margin-top: 0.5rem;
+      }
+      .mt-4 {
+        margin-top: 1rem;
+      }
+      .mt-6 {
+        margin-top: 1.5rem;
+      }
+      .mt-8 {
+        margin-top: 2rem;
+      }
+      .block {
+        display: block;
+      }
+      .inline-block {
+        display: inline-block;
+      }
+      .inline {
+        display: inline;
+      }
+      .flex {
+        display: flex;
+      }
+      .grid {
+        display: grid;
+      }
+      .hidden {
+        display: none;
+      }
+      .h-10 {
+        height: 2.5rem;
+      }
+      .h-12 {
+        height: 3rem;
+      }
+      .h-4 {
+        height: 1rem;
+      }
+      .h-5 {
+        height: 1.25rem;
+      }
+      .h-6 {
+        height: 1.5rem;
+      }
+      .max-h-40 {
+        max-height: 10rem;
+      }
+      .min-h-screen {
+        min-height: 100vh;
+      }
+      .w-12 {
+        width: 3rem;
+      }
+      .w-4 {
+        width: 1rem;
+      }
+      .w-5 {
+        width: 1.25rem;
+      }
+      .w-6 {
+        width: 1.5rem;
+      }
+      .w-full {
+        width: 100%;
+      }
+      .max-w-5xl {
+        max-width: 64rem;
+      }
+      .flex-shrink-0 {
+        flex-shrink: 0;
+      }
+      .cursor-pointer {
+        cursor: pointer;
+      }
+      .appearance-none {
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .grid-cols-1 {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+      .grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .items-center {
+        align-items: center;
+      }
+      .justify-end {
+        justify-content: flex-end;
+      }
+      .justify-center {
+        justify-content: center;
+      }
+      .justify-between {
+        justify-content: space-between;
+      }
+      .gap-4 {
+        gap: 1rem;
+      }
+      .gap-6 {
+        gap: 1.5rem;
+      }
+      .space-y-3 > :not([hidden]) ~ :not([hidden]) {
+        --tw-space-y-reverse: 0;
+        margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+        margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+      }
+      .overflow-hidden {
+        overflow: hidden;
+      }
+      .rounded {
+        border-radius: 0.25rem;
+      }
+      .rounded-lg {
+        border-radius: 0.5rem;
+      }
+      .rounded-xl {
+        border-radius: 0.75rem;
+      }
+      .border-b {
+        border-bottom-width: 1px;
+      }
+      .border-gray-100 {
+        --tw-border-opacity: 1;
+        border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));
+      }
+      .border-gray-200 {
+        --tw-border-opacity: 1;
+        border-color: rgb(229 231 235 / var(--tw-border-opacity, 1));
+      }
+      .border-gray-300 {
+        --tw-border-opacity: 1;
+        border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
+      }
+      .bg-indigo-50 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(238 242 255 / var(--tw-bg-opacity, 1));
+      }
+      .bg-white {
+        --tw-bg-opacity: 1;
+        background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+      }
+      .bg-yellow-50 {
+        --tw-bg-opacity: 1;
+        background-color: rgb(254 252 232 / var(--tw-bg-opacity, 1));
+      }
+      .p-3 {
+        padding: 0.75rem;
+      }
+      .p-4 {
+        padding: 1rem;
+      }
+      .p-6 {
+        padding: 1.5rem;
+      }
+      .p-8 {
+        padding: 2rem;
+      }
+      .px-4 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      .px-6 {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+      }
+      .px-8 {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+      .py-2 {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+      .py-3 {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+      }
+      .py-6 {
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
+      .py-8 {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+      .pb-2 {
+        padding-bottom: 0.5rem;
+      }
+      .pl-12 {
+        padding-left: 3rem;
+      }
+      .pl-3 {
+        padding-left: 0.75rem;
+      }
+      .pr-4 {
+        padding-right: 1rem;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .text-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+      }
+      .text-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+      }
+      .text-sm {
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+      }
+      .text-xl {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+      }
+      .text-xs {
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+      .font-bold {
+        font-weight: 700;
+      }
+      .font-medium {
+        font-weight: 500;
+      }
+      .font-semibold {
+        font-weight: 600;
+      }
+      .text-gray-400 {
+        --tw-text-opacity: 1;
+        color: rgb(156 163 175 / var(--tw-text-opacity, 1));
+      }
+      .text-gray-500 {
+        --tw-text-opacity: 1;
+        color: rgb(107 114 128 / var(--tw-text-opacity, 1));
+      }
+      .text-gray-600 {
+        --tw-text-opacity: 1;
+        color: rgb(75 85 99 / var(--tw-text-opacity, 1));
+      }
+      .text-gray-700 {
+        --tw-text-opacity: 1;
+        color: rgb(55 65 81 / var(--tw-text-opacity, 1));
+      }
+      .text-gray-800 {
+        --tw-text-opacity: 1;
+        color: rgb(31 41 55 / var(--tw-text-opacity, 1));
+      }
+      .text-indigo-600 {
+        --tw-text-opacity: 1;
+        color: rgb(79 70 229 / var(--tw-text-opacity, 1));
+      }
+      .text-indigo-700 {
+        --tw-text-opacity: 1;
+        color: rgb(67 56 202 / var(--tw-text-opacity, 1));
+      }
+      .text-indigo-800 {
+        --tw-text-opacity: 1;
+        color: rgb(55 48 163 / var(--tw-text-opacity, 1));
+      }
+      .text-red-500 {
+        --tw-text-opacity: 1;
+        color: rgb(239 68 68 / var(--tw-text-opacity, 1));
+      }
+      .text-white {
+        --tw-text-opacity: 1;
+        color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+      }
+      .text-yellow-600 {
+        --tw-text-opacity: 1;
+        color: rgb(202 138 4 / var(--tw-text-opacity, 1));
+      }
+      .text-yellow-700 {
+        --tw-text-opacity: 1;
+        color: rgb(161 98 7 / var(--tw-text-opacity, 1));
+      }
+      .text-yellow-800 {
+        --tw-text-opacity: 1;
+        color: rgb(133 77 14 / var(--tw-text-opacity, 1));
+      }
+      .underline {
+        -webkit-text-decoration-line: underline;
+        text-decoration-line: underline;
+      }
+      .opacity-90 {
+        opacity: 0.9;
+      }
+      .focus\:outline-none:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+      }
+      .focus\:ring-indigo-500:focus {
+        --tw-ring-opacity: 1;
+        --tw-ring-color: rgb(99 102 241 / var(--tw-ring-opacity, 1));
+      }
+      @media (min-width: 640px) {
+        .sm\:text-sm {
+          font-size: 0.875rem;
+          line-height: 1.25rem;
+        }
+      }
+      @media (min-width: 768px) {
+        .md\:col-span-2 {
+          grid-column: span 2 / span 2;
+        }
+        .md\:grid-cols-2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .md\:grid-cols-4 {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 py-10">
-    <div class="max-w-5xl mx-auto bg-white p-8 rounded shadow-md">
-      <h1 class="text-2xl font-bold mb-6">Formulir PPDB - Data Pribadi</h1>
-      <form class="space-y-6">
-        <!-- DATA PRIBADI -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Nama Lengkap</label
+  <body
+    class="min-h-screen py-8 px-4"
+    bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWllZ29tY29uIiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJkaXNhYmxlZCIsIkZBQ0VCT09LIjoiZGlzYWJsZWQiLCJUV0lUVEVSIjoiZGlzYWJsZWQiLCJSRURESVQiOiJkaXNhYmxlZCIsIlBJTlRFUkVTVCI6ImRpc2FibGVkIiwiSU5TVEFHUkFNIjoiZGlzYWJsZWQiLCJMSU5LRURJTiI6ImRpc2FibGVkIiwiQ09ORklHIjoiZGlzYWJsZWQifSwidmVyc2lvbiI6IjIuMC4yMiIsInNjb3JlIjoyMDAyMn1d"
+    __processed_9674b220-e47b-49bf-aa00-12df3d14a4e5__="true"
+  >
+    <div
+      class="max-w-5xl mx-auto form-container rounded-xl overflow-hidden"
+      bis_skin_checked="1"
+    >
+      <!-- Header -->
+      <div class="form-header py-8 px-8 text-white" bis_skin_checked="1">
+        <h1 class="text-3xl font-bold">Pendaftaran Peserta Didik Baru</h1>
+        <p class="mt-2 opacity-90">Tahun Ajaran 2025/2026</p>
+      </div>
+
+      <!-- Progress Steps -->
+      <div
+        class="bg-white px-8 py-6 border-b border-gray-100"
+        bis_skin_checked="1"
+      >
+        <div class="flex items-center justify-between" bis_skin_checked="1">
+          <div class="flex items-center" bis_skin_checked="1">
+            <div
+              class="step-indicator"
+              id="step1-indicator"
+              bis_skin_checked="1"
             >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
+              1
+            </div>
+            <span class="ml-2 font-medium text-sm">Data Pribadi</span>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Jenis Kelamin</label
+          <div class="step-line active" bis_skin_checked="1"></div>
+          <div class="flex items-center" bis_skin_checked="1">
+            <div
+              class="step-indicator"
+              id="step2-indicator"
+              bis_skin_checked="1"
             >
-            <select class="mt-1 block w-full border rounded px-3 py-2">
-              <option>Laki-laki</option>
-              <option>Perempuan</option>
-            </select>
+              2
+            </div>
+            <span class="ml-2 font-medium text-sm">Data Sekolah</span>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Tempat Lahir</label
+          <div class="step-line" bis_skin_checked="1"></div>
+          <div class="flex items-center" bis_skin_checked="1">
+            <div
+              class="step-indicator inactive"
+              id="step3-indicator"
+              bis_skin_checked="1"
             >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
+              3
+            </div>
+            <span class="ml-2 font-medium text-sm">Data Orang Tua</span>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Tanggal Lahir</label
+          <div class="step-line" bis_skin_checked="1"></div>
+          <div class="flex items-center" bis_skin_checked="1">
+            <div
+              class="step-indicator inactive"
+              id="step4-indicator"
+              bis_skin_checked="1"
             >
-            <input
-              type="date"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">NIK</label>
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >No. KK</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">NISN</label>
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Anak ke-</label
-            >
-            <input
-              type="number"
-              min="1"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Bahasa Sehari-hari</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Alamat</label
-            >
-            <textarea
-              class="mt-1 block w-full border rounded px-3 py-2"
-            ></textarea>
+              4
+            </div>
+            <span class="ml-2 font-medium text-sm">Foto &amp; Pembayaran</span>
           </div>
         </div>
+      </div>
 
-        <h2 class="text-xl font-semibold mt-10 mb-4">
-          Data Sekolah & Pendaftaran
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Asal Sekolah</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Tingkat Kelas yang Dituju</label
-            >
-            <select class="mt-1 block w-full border rounded px-3 py-2">
-              <option>VII SMP</option>
-              <option>X SMA</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Program Kelas</label
-            >
-            <select class="mt-1 block w-full border rounded px-3 py-2">
-              <option>SMP</option>
-              <option>SMA</option>
-              <option>SMK</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Peminatan / Jurusan</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <h2 class="text-xl font-semibold mt-10 mb-4">Data Orang Tua / Wali</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Nama Ayah</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Pekerjaan Ayah</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Pendidikan Terakhir Ayah</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Penghasilan Ayah</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <!-- Ibu -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Nama Ibu</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Pekerjaan Ibu</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Pendidikan Terakhir Ibu</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Penghasilan Ibu</label
-            >
-            <input
-              type="text"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <h2 class="text-xl font-semibold mt-10 mb-4">Minat & Lain-lain</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Kesenian</label
-            >
-            <input
-              type="text"
-              placeholder="Contoh: Musik, Rupa"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Olahraga</label
-            >
-            <input
-              type="text"
-              placeholder="Contoh: Sepak Bola, Renang"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Organisasi</label
-            >
-            <input
-              type="text"
-              placeholder="Contoh: OSIS, Remaja Masjid"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700"
-              >Cita-cita</label
-            >
-            <input
-              type="text"
-              placeholder="Contoh: Dokter, Guru"
-              class="mt-1 block w-full border rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div class="mt-10">
-          <button
-            type="submit"
-            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+      <!-- Form -->
+      <form id="ppdbForm" class="bg-white">
+        <!-- Step 1: Data Pribadi -->
+        <div
+          id="step1"
+          class="form-step p-8 animate-fade-in"
+          bis_skin_checked="1"
+        >
+          <h2
+            class="text-xl font-semibold text-gray-800 mb-6 flex items-center"
           >
-            Kirim Pendaftaran
-          </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 mr-2 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+            A. Data Pribadi Calon Siswa
+          </h2>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-6"
+            bis_skin_checked="1"
+          >
+            <div bis_skin_checked="1">
+              <label
+                for="nama_lengkap"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Nama Lengkap (sesuai akta/ijazah)
+                <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="nama_lengkap"
+                name="nama_lengkap"
+                required=""
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="jenis_kelamin"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Jenis Kelamin <span class="text-red-500">*</span></label
+              >
+              <select
+                id="jenis_kelamin"
+                name="jenis_kelamin"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Jenis Kelamin</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="tempat_lahir"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tempat Lahir <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="tempat_lahir"
+                name="tempat_lahir"
+                required=""
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="tanggal_lahir"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tanggal Lahir <span class="text-red-500">*</span></label
+              >
+              <input
+                type="date"
+                id="tanggal_lahir"
+                name="tanggal_lahir"
+                required=""
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="nik"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >NIK (Nomor Induk Kependudukan)
+                <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="nik"
+                name="nik"
+                required=""
+                maxlength="16"
+                pattern="[0-9]{16}"
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+              <p class="text-xs text-gray-500 mt-1">16 digit nomor NIK</p>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="no_kk"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Nomor Kartu Keluarga <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="no_kk"
+                name="no_kk"
+                required=""
+                maxlength="16"
+                pattern="[0-9]{16}"
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                16 digit nomor Kartu Keluarga
+              </p>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="nisn"
+                class="block text-sm font-medium text-gray-700 mb-1"
+              >
+                NISN (Nomor Induk Siswa Nasional)
+                <span class="text-red-500">*</span>
+                <span class="tooltip">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 inline text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span class="tooltip-text"
+                    >Anda bisa mengeceknya di
+                    <a
+                      href="https://nisn.data.kemdikbud.go.id/index.php/Cindex/caribynama/"
+                      target="_blank"
+                      class="underline"
+                      >sini</a
+                    ></span
+                  >
+                </span>
+              </label>
+              <input
+                type="text"
+                id="nisn"
+                name="nisn"
+                required=""
+                maxlength="10"
+                pattern="[0-9]{10}"
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+              <p class="text-xs text-gray-500 mt-1">10 digit nomor NISN</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4" bis_skin_checked="1">
+              <div bis_skin_checked="1">
+                <label
+                  for="anak_ke"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Anak ke- <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="number"
+                  id="anak_ke"
+                  name="anak_ke"
+                  required=""
+                  min="1"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="jml_saudara"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Dari <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="number"
+                  id="jml_saudara"
+                  name="jml_saudara"
+                  required=""
+                  min="1"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+                <p class="text-xs text-gray-500 mt-1">Jumlah bersaudara</p>
+              </div>
+            </div>
+
+            <div class="md:col-span-2" bis_skin_checked="1">
+              <label
+                for="alamat"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Alamat Lengkap <span class="text-red-500">*</span></label
+              >
+              <textarea
+                id="alamat"
+                name="alamat"
+                rows="2"
+                required=""
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              ></textarea>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="provinsi"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Provinsi <span class="text-red-500">*</span></label
+              >
+              <select
+                id="provinsi"
+                name="provinsi"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Provinsi</option>
+                <option value="jawa_barat">Jawa Barat</option>
+                <option value="jawa_tengah">Jawa Tengah</option>
+                <option value="jawa_barat">Jawa Barat</option>
+                <option value="jawa_tengah">Jawa Tengah</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="kabupaten"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Kabupaten/Kota <span class="text-red-500">*</span></label
+              >
+              <select
+                id="kabupaten"
+                name="kabupaten"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Kabupaten/Kota</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="kecamatan"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Kecamatan <span class="text-red-500">*</span></label
+              >
+              <select
+                id="kecamatan"
+                name="kecamatan"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Kecamatan</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="kelurahan"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Kelurahan/Desa <span class="text-red-500">*</span></label
+              >
+              <select
+                id="kelurahan"
+                name="kelurahan"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Kelurahan/Desa</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="no_hp_siswa"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Nomor HP (WhatsApp siswa jika ada)</label
+              >
+              <input
+                type="tel"
+                id="no_hp_siswa"
+                name="no_hp_siswa"
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                placeholder="Contoh: 08123456789"
+              />
+            </div>
+          </div>
+
+          <div class="mt-8 flex justify-end" bis_skin_checked="1">
+            <button
+              type="button"
+              id="nextToStep2"
+              class="btn-primary px-6 py-2 rounded-lg text-white font-medium"
+            >
+              Lanjut ke Data Sekolah
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Data Sekolah -->
+        <div
+          id="step2"
+          class="form-step p-8 hidden animate-fade-in"
+          bis_skin_checked="1"
+        >
+          <h2
+            class="text-xl font-semibold text-gray-800 mb-6 flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 mr-2 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              ></path>
+            </svg>
+            B. Data Sekolah Asal &amp; Pilihan Pendaftaran
+          </h2>
+
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-6"
+            bis_skin_checked="1"
+          >
+            <div bis_skin_checked="1">
+              <label
+                for="asal_sekolah"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Asal Sekolah Sebelumnya
+                <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="asal_sekolah"
+                name="asal_sekolah"
+                required=""
+                class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+              />
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="tingkat_kelas"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tingkat Kelas yang Dituju
+                <span class="text-red-500">*</span></label
+              >
+              <select
+                id="tingkat_kelas"
+                name="tingkat_kelas"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Tingkat Kelas</option>
+                <option value="VII SMP">VII SMP</option>
+                <option value="X SMA">X SMA</option>
+                <option value="X SMK">X SMK</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="jalur_pendaftaran"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Jalur Pendaftaran <span class="text-red-500">*</span></label
+              >
+              <select
+                id="jalur_pendaftaran"
+                name="jalur_pendaftaran"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Jalur Pendaftaran</option>
+                <option value="Santri Baru">Santri Baru</option>
+                <option value="Pindahan">Pindahan</option>
+                <option value="Beasiswa">Beasiswa</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="program_kelas"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Program Kelas <span class="text-red-500">*</span></label
+              >
+              <select
+                id="program_kelas"
+                name="program_kelas"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Program Kelas</option>
+                <option value="SMP">SMP</option>
+                <option value="SMA">SMA</option>
+                <option value="SMK">SMK</option>
+              </select>
+            </div>
+
+            <div id="jurusan_container" class="hidden" bis_skin_checked="1">
+              <label
+                for="jurusan"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Peminatan / Jurusan <span class="text-red-500">*</span></label
+              >
+              <select
+                id="jurusan"
+                name="jurusan"
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Jurusan</option>
+                <!-- Opsi akan diisi dinamis berdasarkan program kelas -->
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="lokasi_tes"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Lokasi Tes <span class="text-red-500">*</span></label
+              >
+              <select
+                id="lokasi_tes"
+                name="lokasi_tes"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Lokasi Tes</option>
+                <option value="Kampus Utama">Kampus Utama</option>
+                <option value="Kampus 2">Kampus 2</option>
+                <option value="Online">Online</option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="gelombang"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Gelombang Pendaftaran
+                <span class="text-red-500">*</span></label
+              >
+              <select
+                id="gelombang"
+                name="gelombang"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Gelombang</option>
+                <option value="Gelombang 1 Tahun 2025/2026">
+                  Gelombang 1 Tahun 2025/2026
+                </option>
+                <option value="Gelombang 2 Tahun 2025/2026">
+                  Gelombang 2 Tahun 2025/2026
+                </option>
+                <option value="Gelombang 3 Tahun 2025/2026">
+                  Gelombang 3 Tahun 2025/2026
+                </option>
+              </select>
+            </div>
+
+            <div bis_skin_checked="1">
+              <label
+                for="referensi"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Referensi (cara mengetahui sekolah)
+                <span class="text-red-500">*</span></label
+              >
+              <select
+                id="referensi"
+                name="referensi"
+                required=""
+                class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+              >
+                <option value="">Pilih Referensi</option>
+                <option value="Media Sosial">Media Sosial</option>
+                <option value="Website">Website</option>
+                <option value="Keluarga/Teman">Keluarga/Teman</option>
+                <option value="Alumni">Alumni</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-8 flex justify-between" bis_skin_checked="1">
+            <button
+              type="button"
+              id="backToStep1"
+              class="btn-secondary px-6 py-2 rounded-lg font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+              Kembali
+            </button>
+            <button
+              type="button"
+              id="nextToStep3"
+              class="btn-primary px-6 py-2 rounded-lg text-white font-medium"
+            >
+              Lanjut ke Data Orang Tua
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Data Orang Tua -->
+        <div
+          id="step3"
+          class="form-step p-8 hidden animate-fade-in"
+          bis_skin_checked="1"
+        >
+          <h2
+            class="text-xl font-semibold text-gray-800 mb-6 flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 mr-2 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
+            C. Data Orang Tua
+          </h2>
+
+          <!-- Data Ayah -->
+          <div class="mb-8" bis_skin_checked="1">
+            <h3
+              class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b border-gray-200"
+            >
+              Data Ayah
+            </h3>
+
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 gap-6"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <label
+                  for="nama_ayah"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Nama Ayah Kandung <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="nama_ayah"
+                  name="nama_ayah"
+                  required=""
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="nik_ayah"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >NIK Ayah <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="nik_ayah"
+                  name="nik_ayah"
+                  required=""
+                  maxlength="16"
+                  pattern="[0-9]{16}"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+                <p class="text-xs text-gray-500 mt-1">16 digit nomor NIK</p>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="pekerjaan_ayah"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Pekerjaan Ayah <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="pekerjaan_ayah"
+                  name="pekerjaan_ayah"
+                  required=""
+                  class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Pekerjaan</option>
+                  <option value="PNS">PNS</option>
+                  <option value="TNI/POLRI">TNI/POLRI</option>
+                  <option value="Swasta">Swasta</option>
+                  <option value="Wiraswasta">Wiraswasta</option>
+                  <option value="Petani">Petani</option>
+                  <option value="Buruh">Buruh</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="pendidikan_ayah"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Pendidikan Terakhir Ayah
+                  <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="pendidikan_ayah"
+                  name="pendidikan_ayah"
+                  required=""
+                  class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Pendidikan</option>
+                  <option value="SD/Sederajat">SD/Sederajat</option>
+                  <option value="SMP/Sederajat">SMP/Sederajat</option>
+                  <option value="SMA/Sederajat">SMA/Sederajat</option>
+                  <option value="D1/D2/D3">D1/D2/D3</option>
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                </select>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="no_hp_ayah"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Nomor WhatsApp Ayah <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="no_hp_ayah"
+                  name="no_hp_ayah"
+                  required=""
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                  placeholder="Contoh: 08123456789"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="penghasilan_ayah"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Penghasilan per Bulan Ayah
+                  <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="penghasilan_ayah"
+                  name="penghasilan_ayah"
+                  required=""
+                  class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Penghasilan</option>
+                  <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
+                  <option value="Rp 1.000.000 - Rp 3.000.000">
+                    Rp 1.000.000 - Rp 3.000.000
+                  </option>
+                  <option value="Rp 3.000.000 - Rp 5.000.000">
+                    Rp 3.000.000 - Rp 5.000.000
+                  </option>
+                  <option value="Rp 5.000.000 - Rp 10.000.000">
+                    Rp 5.000.000 - Rp 10.000.000
+                  </option>
+                  <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Ibu -->
+          <div class="mb-8" bis_skin_checked="1">
+            <h3
+              class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b border-gray-200"
+            >
+              Data Ibu
+            </h3>
+
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 gap-6"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <label
+                  for="nama_ibu"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Nama Ibu Kandung <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="nama_ibu"
+                  name="nama_ibu"
+                  required=""
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="nik_ibu"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >NIK Ibu <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="nik_ibu"
+                  name="nik_ibu"
+                  required=""
+                  maxlength="16"
+                  pattern="[0-9]{16}"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+                <p class="text-xs text-gray-500 mt-1">16 digit nomor NIK</p>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="pekerjaan_ibu"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Pekerjaan Ibu <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="pekerjaan_ibu"
+                  name="pekerjaan_ibu"
+                  required=""
+                  class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Pekerjaan</option>
+                  <option value="PNS">PNS</option>
+                  <option value="TNI/POLRI">TNI/POLRI</option>
+                  <option value="Swasta">Swasta</option>
+                  <option value="Wiraswasta">Wiraswasta</option>
+                  <option value="Ibu Rumah Tangga">Ibu Rumah Tangga</option>
+                  <option value="Petani">Petani</option>
+                  <option value="Buruh">Buruh</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="pendidikan_ibu"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Pendidikan Terakhir Ibu
+                  <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="pendidikan_ibu"
+                  name="pendidikan_ibu"
+                  required=""
+                  class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Pendidikan</option>
+                  <option value="SD/Sederajat">SD/Sederajat</option>
+                  <option value="SMP/Sederajat">SMP/Sederajat</option>
+                  <option value="SMA/Sederajat">SMA/Sederajat</option>
+                  <option value="D1/D2/D3">D1/D2/D3</option>
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
+                  <option value="S3">S3</option>
+                </select>
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="no_hp_ibu"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Nomor WhatsApp Ibu <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="no_hp_ibu"
+                  name="no_hp_ibu"
+                  required=""
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                  placeholder="Contoh: 08123456789"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="penghasilan_ibu"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Penghasilan per Bulan Ibu
+                  <span class="text-red-500">*</span></label
+                >
+                <select
+                  id="penghasilan_ibu"
+                  name="penghasilan_ibu"
+                  required=""
+                  class="form-input form-select w-full px-4 py-2 rounded-lg focus:outline-none appearance-none"
+                >
+                  <option value="">Pilih Penghasilan</option>
+                  <option value="< Rp 1.000.000">&lt; Rp 1.000.000</option>
+                  <option value="Rp 1.000.000 - Rp 3.000.000">
+                    Rp 1.000.000 - Rp 3.000.000
+                  </option>
+                  <option value="Rp 3.000.000 - Rp 5.000.000">
+                    Rp 3.000.000 - Rp 5.000.000
+                  </option>
+                  <option value="Rp 5.000.000 - Rp 10.000.000">
+                    Rp 5.000.000 - Rp 10.000.000
+                  </option>
+                  <option value="> Rp 10.000.000">&gt; Rp 10.000.000</option>
+                  <option value="Tidak Berpenghasilan">
+                    Tidak Berpenghasilan
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Wali -->
+          <div class="mb-8" bis_skin_checked="1">
+            <h3
+              class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b border-gray-200 flex items-center justify-between"
+            >
+              <span>Data Wali (Jika Ada)</span>
+              <div class="flex items-center" bis_skin_checked="1">
+                <input
+                  type="checkbox"
+                  id="has_wali"
+                  name="has_wali"
+                  class="mr-2 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                />
+                <label for="has_wali" class="text-sm text-gray-600"
+                  >Memiliki Wali</label
+                >
+              </div>
+            </h3>
+
+            <div
+              id="wali_container"
+              class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <label
+                  for="nama_wali"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Nama Wali</label
+                >
+                <input
+                  type="text"
+                  id="nama_wali"
+                  name="nama_wali"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="hubungan_wali"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Status hubungan dengan peserta didik</label
+                >
+                <input
+                  type="text"
+                  id="hubungan_wali"
+                  name="hubungan_wali"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                  placeholder="Contoh: Paman, Kakek, dll"
+                />
+              </div>
+
+              <div bis_skin_checked="1">
+                <label
+                  for="no_hp_wali"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Nomor WhatsApp Wali
+                </label>
+                <input
+                  type="tel"
+                  id="no_hp_wali"
+                  name="no_hp_wali"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                  placeholder="Contoh: 08123456789"
+                />
+              </div>
+
+              <div class="md:col-span-2" bis_skin_checked="1">
+                <label
+                  for="alamat_wali"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Alamat Wali</label
+                >
+                <textarea
+                  id="alamat_wali"
+                  name="alamat_wali"
+                  rows="2"
+                  class="form-input w-full px-4 py-2 rounded-lg focus:outline-none"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nomor WhatsApp Utama -->
+          <div class="mb-8 bg-indigo-50 p-4 rounded-lg" bis_skin_checked="1">
+            <h3 class="text-lg font-medium text-indigo-800 mb-4">
+              Nomor WhatsApp Utama
+            </h3>
+
+            <p class="text-sm text-indigo-700 mb-4">
+              Pilih salah satu nomor WhatsApp yang akan menjadi kontak utama
+              untuk menerima informasi penting terkait pendaftaran.
+            </p>
+
+            <div class="space-y-3" bis_skin_checked="1">
+              <div class="flex items-center" bis_skin_checked="1">
+                <input
+                  type="radio"
+                  id="wa_utama_ayah"
+                  name="wa_utama"
+                  value="ayah"
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                />
+                <label
+                  for="wa_utama_ayah"
+                  class="ml-2 block text-sm text-gray-700"
+                  >Nomor WhatsApp Ayah</label
+                >
+              </div>
+              <div class="flex items-center" bis_skin_checked="1">
+                <input
+                  type="radio"
+                  id="wa_utama_ibu"
+                  name="wa_utama"
+                  value="ibu"
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                />
+                <label
+                  for="wa_utama_ibu"
+                  class="ml-2 block text-sm text-gray-700"
+                  >Nomor WhatsApp Ibu</label
+                >
+              </div>
+              <div
+                id="wa_utama_wali_container"
+                class="flex items-center hidden"
+                bis_skin_checked="1"
+              >
+                <input
+                  type="radio"
+                  id="wa_utama_wali"
+                  name="wa_utama"
+                  value="wali"
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
+                />
+                <label
+                  for="wa_utama_wali"
+                  class="ml-2 block text-sm text-gray-700"
+                  >Nomor WhatsApp Wali</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 flex justify-between" bis_skin_checked="1">
+            <button
+              type="button"
+              id="backToStep2"
+              class="btn-secondary px-6 py-2 rounded-lg font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+              Kembali
+            </button>
+            <button
+              type="button"
+              id="nextToStep4"
+              class="btn-primary px-6 py-2 rounded-lg text-white font-medium"
+            >
+              Lanjut ke Foto &amp; Pembayaran
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 4: Foto & Pembayaran -->
+        <div
+          id="step4"
+          class="form-step p-8 hidden animate-fade-in"
+          bis_skin_checked="1"
+        >
+          <h2
+            class="text-xl font-semibold text-gray-800 mb-6 flex items-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 mr-2 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+            D. Foto &amp; Pembayaran
+          </h2>
+
+          <!-- Upload Foto -->
+          <div class="mb-8" bis_skin_checked="1">
+            <h3
+              class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b border-gray-200"
+            >
+              Upload Foto Calon Peserta Didik
+            </h3>
+
+            <div
+              class="file-upload p-6 rounded-lg text-center"
+              bis_skin_checked="1"
+            >
+              <div class="mb-4" bis_skin_checked="1">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="mx-auto h-12 w-12 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+              <label for="foto_siswa" class="cursor-pointer">
+                <span
+                  class="btn-primary px-4 py-2 rounded-lg text-white font-medium inline-block"
+                  >Pilih Foto</span
+                >
+                <input
+                  type="file"
+                  id="foto_siswa"
+                  name="foto_siswa"
+                  accept="image/*"
+                  class="hidden"
+                  required=""
+                />
+              </label>
+              <p class="text-sm text-gray-500 mt-2">
+                Format: JPG, PNG, atau JPEG. Maks. 2MB
+              </p>
+              <div
+                id="preview_container"
+                class="mt-4 hidden"
+                bis_skin_checked="1"
+              >
+                <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                <img
+                  id="preview_image"
+                  src="#"
+                  alt="Preview"
+                  class="mx-auto max-h-40 rounded-lg"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Pembayaran -->
+          <div class="mb-8" bis_skin_checked="1">
+            <h3
+              class="text-lg font-medium text-gray-700 mb-4 pb-2 border-b border-gray-200"
+            >
+              Pembayaran
+            </h3>
+
+            <div class="bg-yellow-50 p-4 rounded-lg mb-6" bis_skin_checked="1">
+              <div class="flex" bis_skin_checked="1">
+                <div class="flex-shrink-0" bis_skin_checked="1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-yellow-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="ml-3" bis_skin_checked="1">
+                  <h3 class="text-sm font-medium text-yellow-800">
+                    Informasi Biaya
+                  </h3>
+                  <div
+                    class="mt-2 text-sm text-yellow-700"
+                    bis_skin_checked="1"
+                  >
+                    <p>
+                      Biaya administrasi pendaftaran:
+                      <span class="font-semibold">Rp 500.000</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 gap-6"
+              bis_skin_checked="1"
+            >
+              <div bis_skin_checked="1">
+                <label
+                  for="pembayaran_awal"
+                  class="block text-sm font-medium text-gray-700 mb-1"
+                  >Pembayaran Tahap Awal (Opsional)</label
+                >
+                <div class="relative" bis_skin_checked="1">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                    bis_skin_checked="1"
+                  >
+                    <span class="text-gray-500 sm:text-sm">Rp</span>
+                  </div>
+                  <input
+                    type="text"
+                    id="pembayaran_awal"
+                    name="pembayaran_awal"
+                    class="form-input w-full pl-12 pr-4 py-2 rounded-lg focus:outline-none"
+                    placeholder="0"
+                  />
+                </div>
+                <p class="text-xs text-gray-500 mt-1">
+                  Boleh dikosongkan terlebih dahulu
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-6" bis_skin_checked="1">
+              <label class="block text-sm font-medium text-gray-700 mb-3"
+                >Pilih Metode Pembayaran</label
+              >
+
+              <div
+                class="grid grid-cols-2 md:grid-cols-4 gap-4"
+                bis_skin_checked="1"
+              >
+                <div
+                  class="payment-method p-3 rounded-lg cursor-pointer"
+                  data-method="bca"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="h-10 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <span class="font-semibold text-gray-800"
+                      >Transfer BCA</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="payment-method p-3 rounded-lg cursor-pointer"
+                  data-method="mandiri"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="h-10 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <span class="font-semibold text-gray-800"
+                      >Transfer Mandiri</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="payment-method p-3 rounded-lg cursor-pointer"
+                  data-method="bri"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="h-10 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <span class="font-semibold text-gray-800"
+                      >Transfer BRI</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="payment-method p-3 rounded-lg cursor-pointer"
+                  data-method="bni"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="h-10 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <span class="font-semibold text-gray-800"
+                      >Transfer BNI</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="payment-method p-3 rounded-lg cursor-pointer"
+                  data-method="bsi"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="h-10 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <span class="font-semibold text-gray-800"
+                      >Transfer BSI</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="payment-method p-3 rounded-lg cursor-pointer"
+                  data-method="qris"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="h-10 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <span class="font-semibold text-gray-800">QRIS</span>
+                  </div>
+                </div>
+              </div>
+
+              <input
+                type="hidden"
+                id="metode_pembayaran"
+                name="metode_pembayaran"
+                required=""
+              />
+            </div>
+          </div>
+
+          <div class="mt-8 flex justify-between" bis_skin_checked="1">
+            <button
+              type="button"
+              id="backToStep3"
+              class="btn-secondary px-6 py-2 rounded-lg font-medium"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+              Kembali
+            </button>
+            <button
+              type="submit"
+              id="submitForm"
+              class="btn-primary px-8 py-3 rounded-lg text-white font-medium"
+            >
+              Kirim dan Lanjut ke Pembayaran
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-1 inline"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                ></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </form>
     </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Step navigation
+        const steps = ["step1", "step2", "step3", "step4"];
+        const indicators = [
+          "step1-indicator",
+          "step2-indicator",
+          "step3-indicator",
+          "step4-indicator",
+        ];
+        let currentStep = 0;
+
+        function showStep(stepIndex) {
+          // Hide all steps
+          steps.forEach((step) => {
+            document.getElementById(step).classList.add("hidden");
+          });
+
+          // Show current step
+          document.getElementById(steps[stepIndex]).classList.remove("hidden");
+
+          // Update indicators
+          indicators.forEach((indicator, index) => {
+            const indicatorEl = document.getElementById(indicator);
+            if (index <= stepIndex) {
+              indicatorEl.classList.remove("inactive");
+            } else {
+              indicatorEl.classList.add("inactive");
+            }
+          });
+
+          // Update progress lines
+          const lines = document.querySelectorAll(".step-line");
+          lines.forEach((line, index) => {
+            if (index < stepIndex) {
+              line.classList.add("active");
+            } else {
+              line.classList.remove("active");
+            }
+          });
+
+          // Scroll to top
+          window.scrollTo(0, 0);
+
+          currentStep = stepIndex;
+        }
+
+        // Navigation buttons
+        document
+          .getElementById("nextToStep2")
+          .addEventListener("click", function () {
+            // Validate step 1 fields
+            const step1Fields = document.querySelectorAll("#step1 [required]");
+            let isValid = true;
+
+            step1Fields.forEach((field) => {
+              if (!field.checkValidity()) {
+                isValid = false;
+                field.reportValidity();
+              }
+            });
+
+            if (isValid) {
+              showStep(1);
+            }
+          });
+
+        document
+          .getElementById("backToStep1")
+          .addEventListener("click", function () {
+            showStep(0);
+          });
+
+        document
+          .getElementById("nextToStep3")
+          .addEventListener("click", function () {
+            // Validate step 2 fields
+            const step2Fields = document.querySelectorAll("#step2 [required]");
+            let isValid = true;
+
+            step2Fields.forEach((field) => {
+              if (!field.checkValidity()) {
+                isValid = false;
+                field.reportValidity();
+              }
+            });
+
+            if (isValid) {
+              showStep(2);
+            }
+          });
+
+        document
+          .getElementById("backToStep2")
+          .addEventListener("click", function () {
+            showStep(1);
+          });
+
+        document
+          .getElementById("nextToStep4")
+          .addEventListener("click", function () {
+            // Validate step 3 fields
+            const step3Fields = document.querySelectorAll("#step3 [required]");
+            let isValid = true;
+
+            step3Fields.forEach((field) => {
+              if (!field.checkValidity()) {
+                isValid = false;
+                field.reportValidity();
+              }
+            });
+
+            // Check if WhatsApp utama is selected
+            const waUtamaSelected = document.querySelector(
+              'input[name="wa_utama"]:checked'
+            );
+            if (!waUtamaSelected) {
+              isValid = false;
+              alert("Silakan pilih nomor WhatsApp utama");
+            }
+
+            if (isValid) {
+              showStep(3);
+            }
+          });
+
+        document
+          .getElementById("backToStep3")
+          .addEventListener("click", function () {
+            showStep(2);
+          });
+
+        // Program kelas and jurusan logic
+        const programKelas = document.getElementById("program_kelas");
+        const jurusanContainer = document.getElementById("jurusan_container");
+        const jurusan = document.getElementById("jurusan");
+
+        programKelas.addEventListener("change", function () {
+          jurusanContainer.classList.add("hidden");
+          jurusan.innerHTML = '<option value="">Pilih Jurusan</option>';
+          jurusan.removeAttribute("required");
+
+          if (this.value === "SMA") {
+            jurusanContainer.classList.remove("hidden");
+            jurusan.setAttribute("required", "required");
+
+            const options = [
+              { value: "IPA", text: "IPA" },
+              { value: "IPS", text: "IPS" },
+              { value: "Bahasa", text: "Bahasa" },
+            ];
+
+            options.forEach((option) => {
+              const optionEl = document.createElement("option");
+              optionEl.value = option.value;
+              optionEl.textContent = option.text;
+              jurusan.appendChild(optionEl);
+            });
+          } else if (this.value === "SMK") {
+            jurusanContainer.classList.remove("hidden");
+            jurusan.setAttribute("required", "required");
+
+            const options = [
+              {
+                value: "Teknik Komputer dan Jaringan",
+                text: "Teknik Komputer dan Jaringan",
+              },
+              {
+                value: "Rekayasa Perangkat Lunak",
+                text: "Rekayasa Perangkat Lunak",
+              },
+              { value: "Multimedia", text: "Multimedia" },
+              { value: "Akuntansi", text: "Akuntansi" },
+              {
+                value: "Administrasi Perkantoran",
+                text: "Administrasi Perkantoran",
+              },
+              { value: "Pemasaran", text: "Pemasaran" },
+            ];
+
+            options.forEach((option) => {
+              const optionEl = document.createElement("option");
+              optionEl.value = option.value;
+              optionEl.textContent = option.text;
+              jurusan.appendChild(optionEl);
+            });
+          }
+        });
+
+        // Wali logic
+        const hasWali = document.getElementById("has_wali");
+        const waliContainer = document.getElementById("wali_container");
+        const waUtamaWaliContainer = document.getElementById(
+          "wa_utama_wali_container"
+        );
+
+        hasWali.addEventListener("change", function () {
+          if (this.checked) {
+            waliContainer.classList.remove("hidden");
+            waUtamaWaliContainer.classList.remove("hidden");
+
+            // Make wali fields required
+            document
+              .getElementById("nama_wali")
+              .setAttribute("required", "required");
+            document
+              .getElementById("hubungan_wali")
+              .setAttribute("required", "required");
+            document
+              .getElementById("no_hp_wali")
+              .setAttribute("required", "required");
+            document
+              .getElementById("alamat_wali")
+              .setAttribute("required", "required");
+          } else {
+            waliContainer.classList.add("hidden");
+            waUtamaWaliContainer.classList.add("hidden");
+
+            // Remove required from wali fields
+            document.getElementById("nama_wali").removeAttribute("required");
+            document
+              .getElementById("hubungan_wali")
+              .removeAttribute("required");
+            document.getElementById("no_hp_wali").removeAttribute("required");
+            document.getElementById("alamat_wali").removeAttribute("required");
+
+            // Uncheck wali radio if selected
+            if (document.getElementById("wa_utama_wali").checked) {
+              document.getElementById("wa_utama_wali").checked = false;
+            }
+          }
+        });
+
+        // Payment method selection
+        const paymentMethods = document.querySelectorAll(".payment-method");
+        const paymentMethodInput = document.getElementById("metode_pembayaran");
+
+        paymentMethods.forEach((method) => {
+          method.addEventListener("click", function () {
+            // Remove selected class from all methods
+            paymentMethods.forEach((m) => m.classList.remove("selected"));
+
+            // Add selected class to clicked method
+            this.classList.add("selected");
+
+            // Set hidden input value
+            paymentMethodInput.value = this.dataset.method;
+          });
+        });
+
+        // Photo preview
+        const fotoInput = document.getElementById("foto_siswa");
+        const previewContainer = document.getElementById("preview_container");
+        const previewImage = document.getElementById("preview_image");
+
+        fotoInput.addEventListener("change", function () {
+          if (this.files && this.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              previewImage.src = e.target.result;
+              previewContainer.classList.remove("hidden");
+            };
+
+            reader.readAsDataURL(this.files[0]);
+          }
+        });
+
+        // Form submission
+        document
+          .getElementById("ppdbForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            // Validate all required fields
+            const requiredFields = document.querySelectorAll("[required]");
+            let isValid = true;
+
+            requiredFields.forEach((field) => {
+              if (!field.checkValidity()) {
+                isValid = false;
+                field.reportValidity();
+              }
+            });
+
+            // Check if payment method is selected
+            if (!paymentMethodInput.value) {
+              isValid = false;
+              alert("Silakan pilih metode pembayaran");
+              return;
+            }
+
+            if (isValid) {
+              // Show success message and redirect to payment page
+              alert(
+                "Pendaftaran berhasil! Anda akan diarahkan ke halaman pembayaran."
+              );
+              // In a real app, you would redirect to a payment page or show a modal
+            }
+          });
+
+        // Location data (simplified example with 2 provinces, 2 districts each, etc.)
+        const locationData = {
+          provinces: [
+            { id: "jawa_barat", name: "Jawa Barat" },
+            { id: "jawa_tengah", name: "Jawa Tengah" },
+          ],
+          districts: {
+            jawa_barat: [
+              { id: "bandung", name: "Kab. Bandung" },
+              { id: "bogor", name: "Kab. Bogor" },
+            ],
+            jawa_tengah: [
+              { id: "semarang", name: "Kab. Semarang" },
+              { id: "solo", name: "Kota Surakarta (Solo)" },
+            ],
+          },
+          subdistricts: {
+            bandung: [
+              { id: "dayeuhkolot", name: "Dayeuhkolot" },
+              { id: "baleendah", name: "Baleendah" },
+            ],
+            bogor: [
+              { id: "cibinong", name: "Cibinong" },
+              { id: "ciawi", name: "Ciawi" },
+            ],
+            semarang: [
+              { id: "ungaran", name: "Ungaran" },
+              { id: "ambarawa", name: "Ambarawa" },
+            ],
+            solo: [
+              { id: "jebres", name: "Jebres" },
+              { id: "laweyan", name: "Laweyan" },
+            ],
+          },
+          villages: {
+            dayeuhkolot: [
+              { id: "dayeuhkolot_village", name: "Desa Dayeuhkolot" },
+              { id: "sukapura", name: "Desa Sukapura" },
+            ],
+            baleendah: [
+              { id: "baleendah_village", name: "Desa Baleendah" },
+              { id: "manggahang", name: "Desa Manggahang" },
+            ],
+            cibinong: [
+              { id: "cibinong_village", name: "Kelurahan Cibinong" },
+              { id: "pakansari", name: "Kelurahan Pakansari" },
+            ],
+            ciawi: [
+              { id: "ciawi_village", name: "Desa Ciawi" },
+              { id: "bendungan", name: "Desa Bendungan" },
+            ],
+            ungaran: [
+              { id: "ungaran_timur", name: "Kelurahan Ungaran Timur" },
+              { id: "ungaran_barat", name: "Kelurahan Ungaran Barat" },
+            ],
+            ambarawa: [
+              { id: "ambarawa_village", name: "Kelurahan Ambarawa" },
+              { id: "lodoyong", name: "Kelurahan Lodoyong" },
+            ],
+            jebres: [
+              { id: "jebres_village", name: "Kelurahan Jebres" },
+              { id: "mojosongo", name: "Kelurahan Mojosongo" },
+            ],
+            laweyan: [
+              { id: "laweyan_village", name: "Kelurahan Laweyan" },
+              { id: "pajang", name: "Kelurahan Pajang" },
+            ],
+          },
+        };
+
+        // Populate provinces dropdown
+        const provinsiSelect = document.getElementById("provinsi");
+        const kabupatenSelect = document.getElementById("kabupaten");
+        const kecamatanSelect = document.getElementById("kecamatan");
+        const kelurahanSelect = document.getElementById("kelurahan");
+
+        // Populate provinces
+        locationData.provinces.forEach((province) => {
+          const option = document.createElement("option");
+          option.value = province.id;
+          option.textContent = province.name;
+          provinsiSelect.appendChild(option);
+        });
+
+        // Province change event
+        provinsiSelect.addEventListener("change", function () {
+          // Clear subsequent dropdowns
+          kabupatenSelect.innerHTML =
+            '<option value="">Pilih Kabupaten/Kota</option>';
+          kecamatanSelect.innerHTML =
+            '<option value="">Pilih Kecamatan</option>';
+          kelurahanSelect.innerHTML =
+            '<option value="">Pilih Kelurahan/Desa</option>';
+
+          const provinceId = this.value;
+          if (provinceId) {
+            // Populate districts based on selected province
+            const districts = locationData.districts[provinceId];
+            if (districts) {
+              districts.forEach((district) => {
+                const option = document.createElement("option");
+                option.value = district.id;
+                option.textContent = district.name;
+                kabupatenSelect.appendChild(option);
+              });
+            }
+          }
+        });
+
+        // District change event
+        kabupatenSelect.addEventListener("change", function () {
+          // Clear subsequent dropdowns
+          kecamatanSelect.innerHTML =
+            '<option value="">Pilih Kecamatan</option>';
+          kelurahanSelect.innerHTML =
+            '<option value="">Pilih Kelurahan/Desa</option>';
+
+          const districtId = this.value;
+          if (districtId) {
+            // Populate subdistricts based on selected district
+            const subdistricts = locationData.subdistricts[districtId];
+            if (subdistricts) {
+              subdistricts.forEach((subdistrict) => {
+                const option = document.createElement("option");
+                option.value = subdistrict.id;
+                option.textContent = subdistrict.name;
+                kecamatanSelect.appendChild(option);
+              });
+            }
+          }
+        });
+
+        // Subdistrict change event
+        kecamatanSelect.addEventListener("change", function () {
+          // Clear village dropdown
+          kelurahanSelect.innerHTML =
+            '<option value="">Pilih Kelurahan/Desa</option>';
+
+          const subdistrictId = this.value;
+          if (subdistrictId) {
+            // Populate villages based on selected subdistrict
+            const villages = locationData.villages[subdistrictId];
+            if (villages) {
+              villages.forEach((village) => {
+                const option = document.createElement("option");
+                option.value = village.id;
+                option.textContent = village.name;
+                kelurahanSelect.appendChild(option);
+              });
+            }
+          }
+        });
+      });
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'946d741711fc807d',t:'MTc0ODQzMjE3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+    <iframe
+      height="1"
+      width="1"
+      style="
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        border: none;
+        visibility: hidden;
+      "
+    ></iframe>
   </body>
 </html>
