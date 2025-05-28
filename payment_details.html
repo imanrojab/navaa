@@ -613,7 +613,11 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap gap-4 mb-8" bis_skin_checked="1">
-              <button id="btnInputPayment" class="btn btn-primary">
+              <button
+                id="btnInputPayment"
+                onclick="openModal()"
+                class="btn btn-primary"
+              >
                 <i class="fas fa-plus-circle"></i> Input Pembayaran
               </button>
               <button id="btnEdit" class="btn btn-secondary">
@@ -1700,7 +1704,7 @@
             Batal
           </button>
           <button type="submit" form="paymentForm" class="btn btn-primary">
-            Simpan Pembayaran
+            Lanjutkan Pembayaran
           </button>
         </div>
       </div>
@@ -1875,7 +1879,11 @@ Mohon segera melakukan pembayaran SPP bulan ini sebelum tanggal 10.</textarea
         </p>
       </div>
     </div>
-
+    <script>
+      document.getElementById("currencyInput").value =
+        formatCurrency(nominalhide);
+      document.getElementById("nominalHidden").value = nominalhide;
+    </script>
     <script src="js/payment_details.js"></script>
   </body>
 </html>

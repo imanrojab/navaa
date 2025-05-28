@@ -717,16 +717,43 @@ closeButtons.forEach((button) => {
   });
 });
 
-// Form submission
+// Prevent form submission if no amount is entered
 document.getElementById("paymentForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+  const nilai = document.getElementById("currencyInput").value;
+  const angka = parseInt(nilai.replace(/\D/g, "")) || 0;
 
-  // Hide modal
-  document.getElementById("inputPaymentModal").classList.remove("active");
+  if (angka === 0) {
+    e.preventDefault(); // Stop form submit
+    alert("Nominal belum diisi. Pilih tagihan atau bulan terlebih dahulu.");
 
-  // Show notification
+    // Tambahan: pastikan modal tetap terbuka
+    document.getElementById("inputPaymentModal").classList.remove("hidden");
+    return;
+  }
+  // Jika angka lebih dari 0
+  e.preventDefault(); // Stop form agar tidak reload halaman (opsional jika pakai AJAX)
+  document.getElementById("inputPaymentModal").classList.add("hidden"); // Sembunyikan modal
+
   showNotification("Pembayaran berhasil disimpan!", "success");
+
+  // Reset form jika mau:
+  document.getElementById("paymentForm").reset();
 });
+
+// Open and close modal functions for input payment button
+function openModal() {
+  const modal = document.getElementById("inputPaymentModal");
+  modal.classList.remove("hidden");
+}
+
+function closeModal() {
+  const modal = document.getElementById("inputPaymentModal");
+  modal.classList.add("hidden");
+}
+// Form submission
+// document.getElementById("paymentForm").addEventListener("submit", function (e) {
+
+// });
 
 document.getElementById("editForm").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -927,6 +954,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+// validasi input sebelum lanjut
+document
+  .getElementById("btnNextPayment")
+  .addEventListener("click", function (e) {
+    const nominal = parseInt(
+      document.getElementById("currencyInput").value.replace(/\D/g, "") || "0"
+    );
+
+    if (nominal === 0) {
+      e.preventDefault(); // cegah submit
+      alert("Nominal tidak boleh 0. Pilih tagihan atau bulan terlebih dahulu.");
+    }
+  });
 
 // Input payment popup trigger
 document.addEventListener("DOMContentLoaded", function () {
