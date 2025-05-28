@@ -739,8 +739,24 @@ document.getElementById("paymentForm").addEventListener("submit", function (e) {
   // Reset form jika mau:
   document.getElementById("paymentForm").reset();
 });
+// Input payment popup trigger
+document.addEventListener("DOMContentLoaded", function () {
+  const params = new URLSearchParams(window.location.search);
+  const popup = params.get("popup");
+
+  if (popup === "input") {
+    const inputBtn = document.getElementById("btnInputPayment");
+    if (inputBtn) inputBtn.click();
+
+    // Hapus query ?popup=input dari URL agar tombol bisa dipakai ulang
+    if (window.history.replaceState) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+});
 
 // Open and close modal functions for input payment button
+
 function openModal() {
   const modal = document.getElementById("inputPaymentModal");
   modal.classList.remove("hidden");
@@ -750,6 +766,7 @@ function closeModal() {
   const modal = document.getElementById("inputPaymentModal");
   modal.classList.add("hidden");
 }
+
 // Form submission
 // document.getElementById("paymentForm").addEventListener("submit", function (e) {
 
@@ -965,18 +982,6 @@ document
 
     if (nominal === 0) {
       e.preventDefault(); // cegah submit
-      alert("Nominal tidak boleh 0. Pilih tagihan atau bulan terlebih dahulu.");
+      alert("Nominal tidak boleh 0. Pilih tagihan dan bulan terlebih dahulu.");
     }
   });
-
-// Input payment popup trigger
-document.addEventListener("DOMContentLoaded", function () {
-  const params = new URLSearchParams(window.location.search);
-  const popupTrigger = params.get("popup");
-
-  if (popupTrigger === "input") {
-    // Trigger click pada button id=btnInputPayment
-    const btn = document.getElementById("btnInputPayment");
-    if (btn) btn.click();
-  }
-});
