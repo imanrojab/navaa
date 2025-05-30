@@ -74,6 +74,34 @@
           <form id="registrationForm">
             <!-- Section 1: Data Pribadi -->
             <div class="form-section active" id="section1" bis_skin_checked="1">
+              <div
+                class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4"
+                bis_skin_checked="1"
+              >
+                <div class="flex items-start" bis_skin_checked="1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 text-amber-500 mt-0.5 mr-2 flex-shrink-0"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+
+                  <p class="text-sm text-amber-800">
+                    Sebelum melanjutkan pengisian formulir, harap mempersiapkan
+                    file berikut:<br />
+                    1. <strong>Foto formal calon siswa</strong> dengan latar
+                    belakang polos.<br />
+                    2. <strong>Foto atau hasil scan Kartu Keluarga</strong> yang
+                    jelas dan terbaca.
+                  </p>
+                </div>
+              </div>
               <h2
                 class="text-2xl font-semibold mb-6 flex items-center text-blue-800"
               >
@@ -88,6 +116,12 @@
                   <label class="block text-sm font-medium text-gray-700 mb-1"
                     >Nama Lengkap (sesuai akta/ijazah)
                     <span class="text-red-500">*</span></label
+                  >
+                  <input type="text" class="form-input" required="" />
+                </div>
+                <div class="input-group" bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Nama Panggilan <span class="text-red-500">*</span></label
                   >
                   <input type="text" class="form-input" required="" />
                 </div>
@@ -232,103 +266,44 @@
                     placeholder="Tidak ada, Asma, epilepsi, TBC, dll. "
                   />
                 </div>
-                <div class="mb-8" bis_skin_checked="1">
-                  <h3 class="text-lg font-medium mb-4 text-blue-700">
-                    Upload Foto Calon Peserta Didik
-                  </h3>
-                  <div
-                    class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
-                    bis_skin_checked="1"
-                  >
-                    <div class="mb-4" bis_skin_checked="1">
+                <div class="input-group" bis_skin_checked="1">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Informasi alergi dan penanganan khusus
+                    <span class="text-red-500">*</span
+                    ><span class="tooltip">
                       <svg
-                        class="mx-auto h-12 w-12 text-gray-400"
-                        stroke="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 inline text-gray-500"
                         fill="none"
-                        viewBox="0 0 48 48"
-                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
                         <path
-                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                          stroke-width="2"
                           stroke-linecap="round"
                           stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                       </svg>
-                    </div>
-                    <div
-                      class="flex text-sm text-gray-600 justify-center"
-                      bis_skin_checked="1"
-                    >
-                      <label
-                        for="file-upload"
-                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
-                      >
-                        <span>Upload foto</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          class="sr-only"
-                          accept="image/*"
-                        />
-                      </label>
-                      <p class="pl-1">atau drag and drop</p>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2">
-                      PNG, JPG, GIF hingga 2MB
-                    </p>
-                    <div
-                      id="preview-container"
-                      class="mt-4 hidden"
-                      bis_skin_checked="1"
-                    >
-                      <img
-                        id="preview-image"
-                        class="mx-auto h-32 object-cover rounded-md"
-                        src=""
-                        alt="Preview"
-                      />
-                    </div>
-                  </div>
+                      <span class="tooltip-text"
+                        >Form ini digunakan untuk mencatat kondisi siswa yang
+                        membutuhkan penanganan khusus. Contoh: Siswa dengan asma
+                        yang bisa kambuh saat kelelahan, cuaca dingin, atau
+                        panik. Jika tidak membaik dalam 30 detik, segera berikan
+                        inhaler. Jika setelah 5 menit tidak ada perubahan,
+                        segera bawa ke klinik terdekat.
+                      </span>
+                    </span></label
+                  >
+                  <textarea
+                    class="form-input"
+                    rows="3"
+                    required=""
+                    placeholder="Berikan penjelasan sejelas mungkin mengenai kondisi siswa. Jika tidak ada berikan tanda hubung (-) "
+                  ></textarea>
                 </div>
               </div>
-              <div class="input-group" bis_skin_checked="1">
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Informasi alergi dan penanganan khusus
-                  <span class="text-red-500">*</span
-                  ><span class="tooltip">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4 inline text-gray-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <span class="tooltip-text"
-                      >Form ini digunakan untuk mencatat kondisi siswa yang
-                      membutuhkan penanganan khusus. Contoh: Siswa dengan asma
-                      yang bisa kambuh saat kelelahan, cuaca dingin, atau panik.
-                      Jika tidak membaik dalam 30 detik, segera berikan inhaler.
-                      Jika setelah 5 menit tidak ada perubahan, segera bawa ke
-                      klinik terdekat.
-                    </span>
-                  </span></label
-                >
-                <textarea
-                  class="form-input"
-                  rows="3"
-                  required=""
-                  placeholder="Berikan penjelasan sejelas mungkin mengenai kondisi siswa. Jika tidak ada berikan tanda hubung (-) "
-                ></textarea>
-              </div>
+
               <div class="input-group" bis_skin_checked="1">
                 <label class="block text-sm font-medium text-gray-700 mb-1"
                   >Alamat Lengkap <span class="text-red-500">*</span></label
@@ -994,63 +969,128 @@
                 <span class="mr-2">📝</span> D. Upload Foto &amp; Pembayaran
               </h2>
 
-              <div class="mb-8" bis_skin_checked="1">
-                <h3 class="text-lg font-medium mb-4 text-blue-700">
-                  Upload Foto Calon Peserta Didik
-                </h3>
-                <div
-                  class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
-                  bis_skin_checked="1"
-                >
-                  <div class="mb-4" bis_skin_checked="1">
-                    <svg
-                      class="mx-auto h-12 w-12 text-gray-400"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      ></path>
-                    </svg>
-                  </div>
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                bis_skin_checked="1"
+              >
+                <div class="mb-8" bis_skin_checked="1">
+                  <h3 class="text-lg font-medium mb-4 text-blue-700">
+                    Upload Foto Calon Peserta Didik
+                  </h3>
                   <div
-                    class="flex text-sm text-gray-600 justify-center"
+                    class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
                     bis_skin_checked="1"
                   >
-                    <label
-                      for="file-upload"
-                      class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+                    <div class="mb-4" bis_skin_checked="1">
+                      <svg
+                        class="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div
+                      class="flex text-sm text-gray-600 justify-center"
+                      bis_skin_checked="1"
                     >
-                      <span>Upload foto</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        class="sr-only"
-                        accept="image/*"
+                      <label
+                        for="file-upload"
+                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+                      >
+                        <span>Upload foto</span>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          class="sr-only"
+                          accept="image/*"
+                        />
+                      </label>
+                      <p class="pl-1">atau drag and drop</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                      PNG, JPG, PDF hingga 10MB
+                    </p>
+                    <div
+                      id="preview-container"
+                      class="mt-4 hidden"
+                      bis_skin_checked="1"
+                    >
+                      <img
+                        id="preview-image"
+                        class="mx-auto h-32 object-cover rounded-md"
+                        src=""
+                        alt="Preview"
                       />
-                    </label>
-                    <p class="pl-1">atau drag and drop</p>
+                    </div>
                   </div>
-                  <p class="text-xs text-gray-500 mt-2">
-                    PNG, JPG, GIF hingga 2MB
-                  </p>
+                </div>
+                <div class="mb-8" bis_skin_checked="1">
+                  <h3 class="text-lg font-medium mb-4 text-blue-700">
+                    Upload Foto Kartu Keluarga
+                  </h3>
                   <div
-                    id="preview-container"
-                    class="mt-4 hidden"
+                    class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center"
                     bis_skin_checked="1"
                   >
-                    <img
-                      id="preview-image"
-                      class="mx-auto h-32 object-cover rounded-md"
-                      src=""
-                      alt="Preview"
-                    />
+                    <div class="mb-4" bis_skin_checked="1">
+                      <svg
+                        class="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div
+                      class="flex text-sm text-gray-600 justify-center"
+                      bis_skin_checked="1"
+                    >
+                      <label
+                        for="file-upload"
+                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+                      >
+                        <span>Upload foto</span>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          class="sr-only"
+                          accept="image/*"
+                        />
+                      </label>
+                      <p class="pl-1">atau drag and drop</p>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                      PNG, JPG, PDF hingga 10MB
+                    </p>
+                    <div
+                      id="preview-container"
+                      class="mt-4 hidden"
+                      bis_skin_checked="1"
+                    >
+                      <img
+                        id="preview-image"
+                        class="mx-auto h-32 object-cover rounded-md"
+                        src=""
+                        alt="Preview"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
