@@ -8,45 +8,59 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/student_registration_view.css">
+    <link rel="stylesheet" href="css/student_registration_edit.css" />
   </head>
   <body class="text-gray-800">
-    <div  class="mt-2 mb-2 max-w-5xl mx-auto form-container rounded-xl overflow-hidden">
+    <div
+      class="mt-2 mb-2 max-w-5xl mx-auto form-container rounded-xl overflow-hidden"
+    >
       <!-- Header -->
-     <header class="form-header text-white px-4 shadow-lg sticky top-0 z-30 bg-slate-800">
-  <div class="container mx-auto">
-    <div class="flex flex-col sm:flex-row justify-between items-center">
+      <header
+        class="form-header text-white px-4 shadow-lg sticky top-0 z-30 bg-slate-800"
+      >
+        <div class="container mx-auto">
+          <div class="flex flex-col sm:flex-row justify-between items-center">
+            <!-- Kiri: Logo + Info Sekolah -->
+            <div
+              class="flex flex-col sm:flex-row items-center text-center sm:text-left"
+            >
+              <div class="py-2 px-2">
+                <img
+                  src="asset/img/logo.png"
+                  class="h-24 sm:h-28 mx-auto sm:mx-0"
+                  alt="Logo"
+                />
+              </div>
+              <div class="py-4 px-3">
+                <h1 class="text-2xl sm:text-3xl font-bold">
+                  Detail Pendaftaran Peserta Didik Baru
+                </h1>
+                <h2 class="text-lg sm:text-xl font-bold">
+                  Yayasan Pendidikan Islam Al-Bayan
+                </h2>
+                <p class="text-sm sm:text-base opacity-90">
+                  Tahun Ajaran 2025/2026
+                </p>
+              </div>
+            </div>
 
-      <!-- Kiri: Logo + Info Sekolah -->
-      <div class="flex flex-col sm:flex-row items-center text-center sm:text-left">
-        <div class="py-2 px-2">
-          <img src="asset/img/logo.png" class="h-24 sm:h-28 mx-auto sm:mx-0" alt="Logo" />
+            <!-- Kanan: Status -->
+            <div class="mb-4 sm:mb-0">
+              <div
+                class="bg-white text-indigo-800 rounded-full px-4 py-2 font-semibold flex items-center shadow-md"
+              >
+                <span
+                  class="inline-block h-3 w-3 rounded-full bg-green-500 mr-2 status-badge"
+                ></span>
+                <span class="text-sm">Status: Terdaftar</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="py-4 px-3">
-          <h1 class="text-2xl sm:text-3xl font-bold">
-            Detail Pendaftaran Peserta Didik Baru
-          </h1>
-          <h2 class="text-lg sm:text-xl font-bold">
-            Yayasan Pendidikan Islam Al-Bayan
-          </h2>
-          <p class="text-sm sm:text-base opacity-90">Tahun Ajaran 2025/2026</p>
-        </div>
-      </div>
-
-      <!-- Kanan: Status -->
-      <div class="mb-4 sm:mb-0">
-        <div class="bg-white text-indigo-800 rounded-full px-4 py-2 font-semibold flex items-center shadow-md">
-          <span class="inline-block h-3 w-3 rounded-full bg-green-500 mr-2 status-badge"></span>
-          <span class="text-sm">Status: Terdaftar</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</header>
+      </header>
 
       <!-- Main Content -->
-        <main class="flex-grow bg-white mx-auto px-4 py-8">
+      <main class="flex-grow bg-white mx-auto px-4 py-8">
         <!-- Registration ID Card -->
         <div
           class="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-4 border-t-4 border-indigo-600"
@@ -142,7 +156,7 @@
                 </div>
               </div>
             </div>
-<div
+            <div
               class="bg-white rounded-xl mt-4 shadow-md p-4 text-center"
               bis_skin_checked="1"
             >
@@ -150,15 +164,34 @@
                 class="w-64 h-32 mx-auto bg-gray-100 rounded-lg mb-3 flex items-center justify-center overflow-hidden"
                 bis_skin_checked="1"
               >
-                <div class="flex items-center justify-center w-65 h-34 bg-gray-100 border border-dashed border-gray-400 rounded-lg">
-  <div class="flex items-center justify-center w-64 h-32 bg-gray-100 border border-dashed border-gray-400 rounded-lg">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-      d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z" />
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 11h8M8 15h6M6 9h.01" />
-  </svg>
-</div>
-</div>
+                <div
+                  class="flex items-center justify-center w-65 h-34 bg-gray-100 border border-dashed border-gray-400 rounded-lg"
+                >
+                  <div
+                    class="flex items-center justify-center w-64 h-32 bg-gray-100 border border-dashed border-gray-400 rounded-lg"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-20 h-20 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1"
+                        d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M8 11h8M8 15h6M6 9h.01"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
               <h3 class="font-bold text-lg text-gray-800">Kartu Keluarga</h3>
               <p class="text-gray-600 text-sm">No. KK : 3201010101010001</p>
@@ -167,39 +200,6 @@
                 class="mt-2 text-sm text-indigo-600 hover:text-indigo-800 font-medium"
               >
                 Ubah Foto
-              </button>
-
-              
-            </div>
-            <!-- Payment Summary (Mobile Only) -->
-            <div
-              class="bg-white rounded-xl shadow-md p-4 mt-4 lg:hidden"
-              bis_skin_checked="1"
-            >
-              <h3 class="font-bold text-lg text-gray-800 mb-3">
-                Ringkasan Pembayaran
-              </h3>
-              <div
-                class="flex justify-between items-center mb-2"
-                bis_skin_checked="1"
-              >
-                <span class="text-sm">Biaya Administrasi</span>
-                <span class="font-bold">Rp 500.000</span>
-              </div>
-              <div
-                class="flex justify-between items-center mb-3"
-                bis_skin_checked="1"
-              >
-                <span class="text-sm">Status</span>
-                <span class="text-amber-600 font-medium text-sm"
-                  >Belum Dibayar</span
-                >
-              </div>
-              <button
-                id="payNowBtnMobile"
-                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition duration-200 text-sm"
-              >
-                Bayar Sekarang
               </button>
             </div>
           </div>
@@ -233,23 +233,13 @@
                   >
                     Data Orang Tua
                   </button>
-                  <button
-                    class="tab-btn px-4 py-3 font-medium text-gray-500 hover:text-gray-700 "
-                    data-tab="payment"
-                  >
-                    Pembayaran
-                  </button>
                 </div>
               </div>
 
               <!-- Tab Content -->
               <div class="p-4" bis_skin_checked="1">
                 <!-- Personal Data Tab -->
-                <div
-                  id="personal"
-                  class="tab-content "
-                  bis_skin_checked="1"
-                >
+                <div id="personal" class="tab-content" bis_skin_checked="1">
                   <h3 class="section-title text-lg font-semibold mb-4">
                     Data Pribadi Calon Siswa
                   </h3>
@@ -259,194 +249,210 @@
                   >
                     <div bis_skin_checked="1">
                       <label class="input-label" for="fullName"
-                        >Nama Lengkap</label
+                        >Nama Lengkap <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="fullName"
-                        class="readonly-input"
+                        class="form-input"
                         value="Ahmad Fauzi"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="fullName"
-                        >Nama Panggilan</label
+                        >Nama Panggilan
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="callName"
-                        class="readonly-input"
+                        class="form-input"
                         value="Fauzi"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
-                      <label class="input-label" for="gender"
-                        >Jenis Kelamin</label
+                      <label class="input-label"
+                        >Jenis Kelamin
+                        <span class="text-red-500">*</span></label
                       >
-                      <input
-                        type="text"
-                        id="gender"
-                        class="readonly-input"
-                        value="Laki-laki"
-                        readonly=""
-                      />
+                      <select class="form-select" required="">
+                        <option value="" disabled="">
+                          Pilih Jenis Kelamin
+                        </option>
+                        <option value="Laki-laki" selected="">Laki-laki</option>
+                        <option value="Perempuan">Perempuan</option>
+                      </select>
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="birthPlace"
-                        >Tempat Lahir</label
+                        >Tempat Lahir <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="birthPlace"
-                        class="readonly-input"
+                        class="form-input"
                         value="Jakarta"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="birthDate"
-                        >Tanggal Lahir</label
+                        >Tanggal Lahir
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="birthDate"
-                        class="readonly-input"
+                        class="form-input"
                         value="15 Mei 2013"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
-                      <label class="input-label" for="nik">NIK</label>
+                      <label class="input-label" for="nik"
+                        >NIK <span class="text-red-500">*</span></label
+                      >
                       <input
                         type="text"
                         id="nik"
-                        class="readonly-input"
+                        class="form-input"
                         value="3201016505130002"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="familyCardNumber"
-                        >Nomor Kartu Keluarga</label
+                        >Nomor Kartu Keluarga
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="familyCardNumber"
-                        class="readonly-input"
+                        class="form-input"
                         value="3201010101010001"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
-                      <label class="input-label" for="nisn">NISN</label>
+                      <label class="input-label" for="nisn"
+                        >NISN <span class="text-red-500">*</span></label
+                      >
                       <input
                         type="text"
                         id="nisn"
-                        class="readonly-input"
+                        class="form-input"
                         value="1234567890"
-                        readonly=""
+                        required
                       />
                     </div>
                     <div bis_skin_checked="1">
-                      <label class="input-label" for="nisn">Nomor KIP</label>
+                      <label class="input-label" for="nisn"
+                        >Nomor KIP<span class="text-red-500">*</span></label
+                      >
                       <input
                         type="text"
                         id="kip"
-                        class="readonly-input"
+                        class="form-input"
                         value="PK23W0"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="childOrder"
-                        >Anak ke-</label
+                        >Anak ke-<span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="childOrder"
-                        class="readonly-input"
+                        class="form-input"
                         value="2 dari 3 bersaudara"
-                        readonly=""
                       />
                     </div>
                     <div class="sm:col-span-2" bis_skin_checked="1">
                       <label class="input-label" for="medicalHistory"
-                        >Riwayat Penyaktit</label
+                        >Riwayat Penyakit
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="medicalHistory"
-                        class="readonly-input"
+                        class="form-input"
                         value="Asma"
-                        readonly=""
                       />
                     </div>
                     <div class="sm:col-span-2" bis_skin_checked="1">
                       <label class="input-label" for="specialHandling"
-                        >Informasi alergi dan penanganan khusus 
-</label
+                        >Informasi alergi dan penanganan khusus
+                        <span class="text-red-500">*</span></label
                       >
-                      <textarea type name=""  class="readonly-input" rows="3" id="specialHandling" readonly>Siswa dengan asma yang bisa kambuh saat kelelahan, cuaca dingin, atau panik. Jika tidak membaik dalam 30 detik, segera berikan inhaler. Jika setelah 5 menit tidak ada perubahan, segera bawa ke klinik terdekat.</textarea>
-                      
+                      <textarea
+                        type
+                        name=""
+                        class="form-input"
+                        rows="3"
+                        id="specialHandling"
+                        readonly
+                      >
+Siswa dengan asma yang bisa kambuh saat kelelahan, cuaca dingin, atau panik. Jika tidak membaik dalam 30 detik, segera berikan inhaler. Jika setelah 5 menit tidak ada perubahan, segera bawa ke klinik terdekat.</textarea
+                      >
                     </div>
                     <div class="sm:col-span-2" bis_skin_checked="1">
                       <label class="input-label" for="address"
-                        >Alamat Lengkap</label
+                        >Alamat Lengkap
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="address"
-                        class="readonly-input"
+                        class="form-input"
                         value="Jl. Merdeka No. 123, RT 002/RW 003"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
-                      <label class="input-label" for="province">Provinsi</label>
+                      <label class="input-label" for="province"
+                        >Provinsi <span class="text-red-500">*</span></label
+                      >
                       <input
                         type="text"
                         id="province"
-                        class="readonly-input"
+                        class="form-input"
                         value="Jawa Barat"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="city"
-                        >Kabupaten/Kota</label
+                        >Kabupaten/Kota
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="city"
-                        class="readonly-input"
+                        class="form-input"
                         value="Bogor"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="district"
-                        >Kecamatan</label
+                        >Kecamatan <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="district"
-                        class="readonly-input"
+                        class="form-input"
                         value="Bogor Utara"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="subdistrict"
-                        >Kelurahan</label
+                        >Desa/Kelurahan
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="subdistrict"
-                        class="readonly-input"
+                        class="form-input"
                         value="Tegal Gundil"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
@@ -456,9 +462,8 @@
                       <input
                         type="text"
                         id="phoneNumber"
-                        class="readonly-input"
+                        class="form-input"
                         value="081234567890"
-                        readonly=""
                       />
                     </div>
                   </div>
@@ -479,129 +484,99 @@
                   >
                     <div bis_skin_checked="1">
                       <label class="input-label" for="previousSchool"
-                        >Asal Sekolah Sebelumnya</label
+                        >Asal Sekolah Sebelumnya
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="previousSchool"
-                        class="readonly-input"
+                        class="form-input"
                         value="SD Negeri 1 Bogor"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
-                      <label class="input-label" for="targetClass"
-                        >Tingkat Kelas yang Dituju</label
+                      <label class="input-label"
+                        >Tingkat Kelas Yang Dituju
+                        <span class="text-red-500">*</span></label
                       >
-                      <input
-                        type="text"
-                        id="targetClass"
-                        class="readonly-input"
-                        value="VII SMP"
-                        readonly=""
-                      />
+                      <select class="form-select" required="">
+                        <option value="" disabled="">
+                          Pilih Tingkat Kelas
+                        </option>
+                        <option value="VII SMP" selected="">VII SMP</option>
+                        <option value="X SMA">X SMA</option>
+                        <option value="X SMK">X SMK</option>
+                      </select>
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="registrationPath"
-                        >Jalur Pendaftaran</label
+                        >Jalur Pendaftaran
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="registrationPath"
-                        class="readonly-input"
+                        class="form-input"
                         value="Santri Baru"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="classProgram"
-                        >Program Kelas</label
+                        >Program Kelas
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="classProgram"
-                        class="readonly-input"
+                        class="form-input"
                         value="SMP"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="specialization"
-                        >Peminatan/Jurusan</label
+                        >Peminatan/Jurusan
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="specialization"
-                        class="readonly-input"
+                        class="form-input"
                         value="Reguler"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="testLocation"
-                        >Lokasi Tes</label
+                        >Lokasi Tes <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="testLocation"
-                        class="readonly-input"
+                        class="form-input"
                         value="Kampus Utama"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="registrationWave"
-                        >Gelombang Pendaftaran</label
+                        >Gelombang Pendaftaran
+                        <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="registrationWave"
-                        class="readonly-input"
+                        class="form-input"
                         value="Gelombang 2 Tahun 2025/2026"
-                        readonly=""
                       />
                     </div>
                     <div bis_skin_checked="1">
                       <label class="input-label" for="reference"
-                        >Referensi</label
+                        >Referensi <span class="text-red-500">*</span></label
                       >
                       <input
                         type="text"
                         id="reference"
-                        class="readonly-input"
+                        class="form-input"
                         value="Media Sosial"
-                        readonly=""
                       />
-                    </div>
-                  </div>
-
-                  <div
-                    class="mt-6 bg-blue-50 rounded-lg p-3 flex items-start"
-                    bis_skin_checked="1"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-blue-500 mt-0.5 mr-2 flex-shrink-0"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
-                        clip-rule="evenodd"
-                      ></path>
-                    </svg>
-                    <div bis_skin_checked="1">
-                      <p class="text-sm text-blue-800 font-medium">
-                        Jadwal Tes Seleksi
-                      </p>
-                      <p class="text-xs text-blue-700 mt-1">
-                        Tanggal: 20 Januari 2025
-                      </p>
-                      <p class="text-xs text-blue-700">Waktu: 08:00 WIB</p>
-                      <p class="text-xs text-blue-700">
-                        Tempat: Kampus Utama, Ruang Serbaguna Lt. 2
-                      </p>
                     </div>
                   </div>
                 </div>
@@ -643,98 +618,97 @@
                     >
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherName"
-                          >Nama Ayah Kandung</label
+                          >Nama Ayah Kandung
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="fatherName"
-                          class="readonly-input"
+                          class="form-input"
                           value="Budi Santoso"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherNik"
-                          >NIK Ayah</label
+                          >NIK Ayah <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="fatherNik"
-                          class="readonly-input"
+                          class="form-input"
                           value="3201010101010002"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherNik"
-                          >Tahun Lahir Ayah</label
+                          >Tahun Lahir Ayah
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="number"
                           id="lahirayah"
-                          class="readonly-input"
+                          class="form-input"
                           value="1987"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherNik"
-                          >Status Ayah</label
+                          >Status Ayah
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="statusayah"
-                          class="readonly-input"
+                          class="form-input"
                           value="Masih Hidup"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherJob"
-                          >Pekerjaan Ayah</label
+                          >Pekerjaan Ayah
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="fatherJob"
-                          class="readonly-input"
+                          class="form-input"
                           value="Swasta"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherEducation"
-                          >Pendidikan Terakhir Ayah</label
+                          >Pendidikan Terakhir Ayah
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="fatherEducation"
-                          class="readonly-input"
+                          class="form-input"
                           value="S1"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherPhone"
-                          >Nomor WhatsApp Ayah</label
+                          >Nomor WhatsApp Ayah
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="fatherPhone"
-                          class="readonly-input"
+                          class="form-input"
                           value="081234567891"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherIncome"
-                          >Penghasilan per Bulan Ayah</label
+                          >Penghasilan per Bulan Ayah
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="fatherIncome"
-                          class="readonly-input"
+                          class="form-input"
                           value="Rp 5.000.000 - Rp 10.000.000"
-                          readonly=""
                         />
                       </div>
                     </div>
@@ -767,98 +741,96 @@
                     >
                       <div bis_skin_checked="1">
                         <label class="input-label" for="motherName"
-                          >Nama Ibu Kandung</label
+                          >Nama Ibu Kandung
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="motherName"
-                          class="readonly-input"
+                          class="form-input"
                           value="Siti Aminah"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="motherNik"
-                          >NIK Ibu</label
+                          >NIK Ibu <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="motherNik"
-                          class="readonly-input"
+                          class="form-input"
                           value="3201010101010003"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherNik"
-                          >Tahun Lahir Ibu</label
+                          >Tahun Lahir Ibu
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="number"
                           id="lahiribu"
-                          class="readonly-input"
+                          class="form-input"
                           value="1990"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="fatherNik"
-                          >Status Ibu</label
+                          >Status Ibu <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="statusibu"
-                          class="readonly-input"
+                          class="form-input"
                           value="Masih Hidup"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="motherJob"
-                          >Pekerjaan Ibu</label
+                          >Pekerjaan Ibu
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="motherJob"
-                          class="readonly-input"
+                          class="form-input"
                           value="Ibu Rumah Tangga"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="motherEducation"
-                          >Pendidikan Terakhir Ibu</label
+                          >Pendidikan Terakhir Ibu
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="motherEducation"
-                          class="readonly-input"
+                          class="form-input"
                           value="SMA"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="motherPhone"
-                          >Nomor WhatsApp Ibu</label
+                          >Nomor WhatsApp Ibu
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="motherPhone"
-                          class="readonly-input"
+                          class="form-input"
                           value="081234567892"
-                          readonly=""
                         />
                       </div>
                       <div bis_skin_checked="1">
                         <label class="input-label" for="motherIncome"
-                          >Penghasilan per Bulan Ibu</label
+                          >Penghasilan per Bulan Ibu
+                          <span class="text-red-500">*</span></label
                         >
                         <input
                           type="text"
                           id="motherIncome"
-                          class="readonly-input"
+                          class="form-input"
                           value="-"
-                          readonly=""
                         />
                       </div>
                     </div>
@@ -899,358 +871,6 @@
                 </div>
 
                 <!-- Payment Tab -->
-                <div id="payment" class="tab-content hidden" bis_skin_checked="1">
-                  <h3 class="section-title text-lg font-semibold mb-4">
-                    Informasi Pembayaran
-                  </h3>
-
-                  <div
-                    class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4"
-                    bis_skin_checked="1"
-                  >
-                    <div class="flex items-start" bis_skin_checked="1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-amber-500 mt-0.5 mr-2 flex-shrink-0"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"
-                          clip-rule="evenodd"
-                        ></path>
-                      </svg>
-                      <p class="text-sm text-amber-800">
-                        Pembayaran biaya administrasi pendaftaran sebesar Rp
-                        500.000 belum dilakukan. Silakan lakukan pembayaran
-                        untuk melanjutkan proses pendaftaran.
-                      </p>
-                    </div>
-                  </div>
-
-                  <!-- Administration Payment Section -->
-                  <div
-                    class="bg-white border border-gray-200 rounded-lg p-4 mb-4"
-                    bis_skin_checked="1"
-                  >
-                    <h4 class="font-medium text-base mb-3 text-gray-700">
-                      Biaya Administrasi Pendaftaran
-                    </h4>
-                    <p class="text-xl font-bold text-indigo-600 mb-1">
-                      Rp 500.000
-                    </p>
-                    <p class="text-xs text-gray-500 mb-4">
-                      Status:
-                      <span class="text-amber-600 font-medium"
-                        >Belum Dibayar</span
-                      >
-                    </p>
-
-                    <div
-                      class="mt-4 pt-4 border-t border-gray-100"
-                      bis_skin_checked="1"
-                    >
-                      <div
-                        class="flex justify-between items-center mb-2"
-                        bis_skin_checked="1"
-                      >
-                        <span class="text-sm text-gray-600">Total Dibayar</span>
-                        <span class="font-bold text-gray-800">Rp 0</span>
-                      </div>
-                      <div
-                        class="flex justify-between items-center"
-                        bis_skin_checked="1"
-                      >
-                        <span class="text-sm text-gray-600"
-                          >Sisa Pembayaran</span
-                        >
-                        <span class="font-bold text-indigo-600"
-                          >Rp 500.000</span
-                        >
-                      </div>
-                    </div>
-                    <button
-                      id="payNowBtn"
-                      class="w-full bg-indigo-600 mt-4 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition duration-200 text-sm"
-                    >
-                      Bayar Sekarang
-                    </button>
-                  </div>
-                  <div class="mb-4 ">
-                  <input type="checkbox" id="togglePayment" />
-                  <label for="togglePayment" style="text-box: 2px;" >Saya ingin mencicil pembayaran daftar ulang </label>
-                    </div>
-                  <div id="re-registrationPayment" style="display: none;"
-                    class="bg-white border border-gray-200 rounded-lg p-4 mb-4"
-                    bis_skin_checked="1"
-                  >
-                    <h4 class="font-medium text-base mb-3 text-gray-700">
-                      Pembayaran Daftar Ulang
-                    </h4>
-                    <p class="text-gray-500 text-xs mb-4">
-                     
-                      Anda dapat memulai cicilan pembayaran daftar ulang dari sekarang melalui form pembayaran berikut.
-                    </p>
-                    <div class="mb-4" bis_skin_checked="1">
-                      <label
-                        for="initialPayment"
-                        class="block text-xs font-medium text-gray-700 mb-1"
-                        >Jumlah Pembayaran</label
-                      >
-                      <input
-                        type="text"
-                        id="initialPayment"
-                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                        placeholder="Rp 0"
-                      />
-                    </div>
-                    <button
-                      class="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
-                    >
-                      Simpan
-                    </button>
-                    <h4 class="font-medium text-base mb-3 text-gray-700">
-                      Metode Pembayaran
-                    </h4>
-                    <div
-                      class="grid grid-cols-3 sm:grid-cols-4 gap-2"
-                      bis_skin_checked="1"
-                    >
-                      <label
-                        class="payment-method border border-gray-200 rounded-lg p-2 flex flex-col items-center cursor-pointer hover:border-indigo-400 transition"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          class="hidden"
-                          value="bca"
-                        />
-                        <div
-                          class="h-6 flex items-center justify-center"
-                          bis_skin_checked="1"
-                        >
-                          <span class="font-medium text-gray-800 text-sm"
-                            >BCA</span
-                          >
-                        </div>
-                        <span class="text-xs text-gray-500">Transfer</span>
-                      </label>
-
-                      <label
-                        class="payment-method border border-gray-200 rounded-lg p-2 flex flex-col items-center cursor-pointer hover:border-indigo-400 transition border-indigo-600 bg-indigo-50"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          class="hidden"
-                          value="mandiri"
-                        />
-                        <div
-                          class="h-6 flex items-center justify-center"
-                          bis_skin_checked="1"
-                        >
-                          <span class="font-medium text-gray-800 text-sm"
-                            >Mandiri</span
-                          >
-                        </div>
-                        <span class="text-xs text-gray-500">Transfer</span>
-                      </label>
-
-                      <label
-                        class="payment-method border border-gray-200 rounded-lg p-2 flex flex-col items-center cursor-pointer hover:border-indigo-400 transition"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          class="hidden"
-                          value="bri"
-                        />
-                        <div
-                          class="h-6 flex items-center justify-center"
-                          bis_skin_checked="1"
-                        >
-                          <span class="font-medium text-gray-800 text-sm"
-                            >BRI</span
-                          >
-                        </div>
-                        <span class="text-xs text-gray-500">Transfer</span>
-                      </label>
-
-                      <label
-                        class="payment-method border border-gray-200 rounded-lg p-2 flex flex-col items-center cursor-pointer hover:border-indigo-400 transition"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          class="hidden"
-                          value="bni"
-                        />
-                        <div
-                          class="h-6 flex items-center justify-center"
-                          bis_skin_checked="1"
-                        >
-                          <span class="font-medium text-gray-800 text-sm"
-                            >BNI</span
-                          >
-                        </div>
-                        <span class="text-xs text-gray-500">Transfer</span>
-                      </label>
-
-                      <label
-                        class="payment-method border border-gray-200 rounded-lg p-2 flex flex-col items-center cursor-pointer hover:border-indigo-400 transition"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          class="hidden"
-                          value="bsi"
-                        />
-                        <div
-                          class="h-6 flex items-center justify-center"
-                          bis_skin_checked="1"
-                        >
-                          <span class="font-medium text-gray-800 text-sm"
-                            >BSI</span
-                          >
-                        </div>
-                        <span class="text-xs text-gray-500">Transfer</span>
-                      </label>
-
-                      <label
-                        class="payment-method border border-gray-200 rounded-lg p-2 flex flex-col items-center cursor-pointer hover:border-indigo-400 transition"
-                      >
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          class="hidden"
-                          value="qris"
-                        />
-                        <div
-                          class="h-6 flex items-center justify-center"
-                          bis_skin_checked="1"
-                        >
-                          <span class="font-medium text-gray-800 text-sm"
-                            >QRIS</span
-                          >
-                        </div>
-                        <span class="text-xs text-gray-500">Scan QR</span>
-                      </label>
-                    </div>
-                    <div
-                      class="mt-4 pt-4 border-t border-gray-100"
-                      bis_skin_checked="1"
-                    >
-                    <div
-                        class="flex justify-between items-center mb-2"
-                        bis_skin_checked="1"
-                      >
-                        <span class="text-sm text-gray-600">Total Pembayaran</span>
-                        <span class="font-bold text-gray-800">Rp 10.000.000</span>
-                      </div>
-                      <div
-                        class="flex justify-between items-center mb-2 "
-                        bis_skin_checked="1"
-                      >
-                        <span class="text-sm text-gray-600">Total Dibayar</span>
-                        <span class="font-bold text-gray-800">Rp 2.000.000</span>
-                      </div>
-                      <div
-                        class="flex justify-between items-center border-t border-gray-100 pt-2"
-                        bis_skin_checked="1"
-                      >
-                        <span class="text-sm text-gray-600"
-                          >Sisa Pembayaran</span
-                        >
-                        <span class="font-bold text-indigo-600"
-                          >Rp 8.000.000</span
-                        >
-                      </div>
-                    </div>
-                    <button
-                       id="proceedToPaymentBtn"
-                      class="w-full bg-indigo-600 mt-4 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition duration-200 text-sm"
-                    >
-                      Bayar Sekarang
-                    </button>
-                  </div>
-
-                  
-                  <h4 class="font-medium text-base mb-3 text-gray-700">
-                      Riwayat Pembayaran
-                    </h4>
-
-                    <div class="overflow-x-auto" bis_skin_checked="1">
-                      <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                          <tr>
-                            <th
-                              scope="col"
-                              class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              ID Pmebayaran
-                            </th>
-                            <th
-                              scope="col"
-                              class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Tanggal
-                            </th>
-                            <th
-                              scope="col"
-                              class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Deskripsi
-                            </th>
-                            <th
-                              scope="col"
-                              class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Jumlah
-                            </th>
-                            <th
-                              scope="col"
-                              class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                            >
-                              Status
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                          <tr>
-                            <td
-                              class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
-                            >
-                              PMY-02390849893898
-                            </td>
-                            <td
-                              class="px-4 py-3 whitespace-nowrap text-sm text-gray-500"
-                            >
-                              15 Jan 2025
-                            </td>
-                            <td
-                              class="px-4 py-3 whitespace-nowrap text-sm text-gray-800"
-                            >
-                              Biaya Administrasi
-                            </td>
-                            <td
-                              class="px-4 py-3 whitespace-nowrap text-sm text-gray-800"
-                            >
-                              Rp 500.000
-                            </td>
-                            <td class="px-4 py-3 whitespace-nowrap">
-                              <span
-                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800"
-                                >Menunggu</span
-                              >
-                            </td>
-                          </tr>
-                          
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                </div>
               </div>
             </div>
           </div>
@@ -1277,7 +897,7 @@
             </svg>
             Edit
           </button>
-          
+
           <button
             id="cancelRegistrationBtnMobile"
             class="flex-1 bg-white border border-red-500 text-red-500 hover:bg-red-50 font-medium py-2 px-3 rounded-lg transition duration-200 flex items-center justify-center text-sm"
@@ -1320,7 +940,7 @@
               </svg>
               Edit Data
             </button>
-            
+
             <button
               id="shareDataBtn"
               class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center justify-center"
@@ -1360,7 +980,7 @@
       </main>
 
       <!-- Footer -->
-      <footer class="bg-gray-800 text-white py-6 px-4  ">
+      <footer class="bg-gray-800 text-white py-6 px-4">
         <div class="container mx-auto" bis_skin_checked="1">
           <div
             class="flex flex-col md:flex-row justify-between items-center"
@@ -1489,7 +1109,8 @@
                 >
                   <span>Pilih Foto</span>
                   <input type="file" class="hidden" accept="image/*" />
-                </label>
+                  <span class="text-red-500">*</span></label
+                >
               </div>
             </div>
             <p class="text-xs text-gray-500 mb-4 text-center">
@@ -1510,10 +1131,8 @@
               </button>
             </div>
           </div>
-          
         </div>
       </div>
-      
 
       <div
         id="photokkModal"
@@ -1529,7 +1148,9 @@
               class="flex justify-between items-center mb-4"
               bis_skin_checked="1"
             >
-              <h3 class="text-lg font-bold text-gray-800">Ubah Foto Kartu Keluarga</h3>
+              <h3 class="text-lg font-bold text-gray-800">
+                Ubah Foto Kartu Keluarga
+              </h3>
               <button
                 id="closePhotokkModal"
                 class="text-gray-400 hover:text-gray-600"
@@ -1555,11 +1176,26 @@
                 class="w-64 h-32 mx-auto bg-gray-100 rounded-lg mb-4 flex items-center justify-center"
                 bis_skin_checked="1"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-20 h-20 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-      d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z" />
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 11h8M8 15h6M6 9h.01" />
-  </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-20 h-20 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M4 5h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V7a2 2 0 012-2z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M8 11h8M8 15h6M6 9h.01"
+                  />
+                </svg>
               </div>
               <div class="flex justify-center" bis_skin_checked="1">
                 <label
@@ -1567,7 +1203,8 @@
                 >
                   <span>Pilih Foto</span>
                   <input type="file" class="hidden" accept="image/*" />
-                </label>
+                  <span class="text-red-500">*</span></label
+                >
               </div>
             </div>
             <p class="text-xs text-gray-500 mb-4 text-center">
@@ -1585,102 +1222,6 @@
                 class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
               >
                 Simpan
-              </button>
-            </div>
-          </div>
-          
-        </div>
-      </div>
-      <!-- Modal for Payment Confirmation -->
-      <div
-        id="paymentModal"
-        class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden"
-        bis_skin_checked="1"
-      >
-        <div
-          class="modal-content bg-white rounded-xl shadow-xl max-w-sm w-full"
-          bis_skin_checked="1"
-        >
-          <div class="p-5" bis_skin_checked="1">
-            <div
-              class="flex justify-between items-center mb-4"
-              bis_skin_checked="1"
-            >
-              <h3 class="text-lg font-bold text-gray-800">
-                Konfirmasi Pembayaran
-              </h3>
-              <button
-                id="closePaymentModal"
-                class="text-gray-400 hover:text-gray-600"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
-              </button>
-            </div>
-            <div class="mb-5" bis_skin_checked="1">
-              <div
-                class="flex items-center justify-center mb-4"
-                bis_skin_checked="1"
-              >
-                <div
-                  class="bg-indigo-100 rounded-full p-3"
-                  bis_skin_checked="1"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-8 w-8 text-indigo-600"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-              <p class="text-gray-600 text-sm mb-4 text-center">
-                Untuk melihat detail, merubah, membayar atau menghapus
-                pendaftaran bisa dilakukan melalui link yang akan kami kirim ke
-                nomor WhatsApp utama.
-              </p>
-              <div
-                class="bg-indigo-50 border border-indigo-100 rounded-lg p-3"
-                bis_skin_checked="1"
-              >
-                <p class="text-xs text-indigo-800 text-center">
-                  Link akan dikirimkan ke:
-                  <span class="font-medium">081234567891</span> (WhatsApp Ayah)
-                </p>
-              </div>
-            </div>
-            <div class="flex justify-end" bis_skin_checked="1">
-              <button
-                id="cancelPaymentProcess"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg transition duration-200 mr-2 text-sm"
-              >
-                Kembali
-              </button>
-              <button
-                id="confirmPaymentProcess"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 text-sm"
-              >
-                Lanjutkan
               </button>
             </div>
           </div>
@@ -1765,10 +1306,14 @@
                 class="list-disc list-inside text-xs text-gray-600 mt-2 space-y-1"
               >
                 <li>Semua data pendaftaran akan dihapus</li>
-                <li>Uang untuk biaya administrasi pendaftaran tidak dapat dikembalikan</li>
                 <li>
-                  Jika sudah melakukan pencicilan untuk pembayaran daftar ulang, proses pengembalian dana akan
-                  membutuhkan waktu 7-14 hari kerja
+                  Uang untuk biaya administrasi pendaftaran tidak dapat
+                  dikembalikan
+                </li>
+                <li>
+                  Jika sudah melakukan pencicilan untuk pembayaran daftar ulang,
+                  proses pengembalian dana akan membutuhkan waktu 7-14 hari
+                  kerja
                 </li>
                 <li>
                   Anda perlu mendaftar ulang jika ingin mengikuti PPDB kembali
@@ -1794,7 +1339,6 @@
       </div>
     </div>
 
-    
-    <script src="js/student_registration_view.js"></script>
+    <script src="js/student_registration_edit.js"></script>
   </body>
 </html>
