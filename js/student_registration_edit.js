@@ -101,7 +101,14 @@ document.addEventListener("DOMContentLoaded", function () {
     ["closePaymentModal", "cancelPaymentProcess", "confirmPaymentProcess"]
   );
 
-  // Setup Cancel Registration Modal
+  // Setup Save Changes Modal
+  setupModal(
+    "saveModal",
+    ["savechangesBtn", "savechangesBtnMobile"],
+    ["closesaveModal", "backFromsave", "confirmsave"]
+  );
+
+  // Setup Cancel Changes Modal
   setupModal(
     "cancelModal",
     ["cancelRegistrationBtn", "cancelRegistrationBtnMobile"],
@@ -127,7 +134,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   document.getElementById("confirmCancel").addEventListener("click", () => {
-    showToast("Pendaftaran Anda telah dibatalkan!");
+    showToast("Perubahan Anda telah dibatalkan!");
+
+    // Arahkan ke halaman baru setelah 2 detik (2000ms)
+    setTimeout(() => {
+      window.location.href = "student_registration_view.html";
+    }, 2000);
+  });
+
+  document.getElementById("confirmsave").addEventListener("click", () => {
+    showToast("Perubahan Anda telah tersimpan!");
+
+    // Arahkan ke halaman baru setelah 2 detik (2000ms)
+    setTimeout(() => {
+      window.location.href = "student_registration_view.html";
+    }, 2000);
   });
 
   // Edit data functionality
@@ -248,4 +269,34 @@ input.addEventListener("input", function (e) {
 
   rupiah = split[1] !== undefined ? rupiah + "," + split[1] : rupiah;
   e.target.value = "Rp " + rupiah;
+});
+
+// Validasi input sebelum menyimpan perubahan
+document.addEventListener("DOMContentLoaded", function () {
+  document
+    .getElementById("savechangesBtn")
+    .addEventListener("click", function (e) {
+      const requiredInputs = document.querySelectorAll(
+        "input[required], select[required], textarea[required]"
+      );
+      let isValid = true;
+
+      for (let input of requiredInputs) {
+        if (!input.value.trim()) {
+          alert(
+            `Kolom "${
+              input.placeholder || input.name || "ini"
+            }" tidak boleh kosong`
+          );
+          input.focus();
+          isValid = false;
+          break;
+        }
+      }
+
+      if (isValid) {
+        // Lanjutkan proses simpan di sini
+        alert("Data berhasil divalidasi dan siap disimpan!");
+      }
+    });
 });
