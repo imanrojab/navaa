@@ -2,16 +2,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Keamanan - Perbarui Kejadian</title>
+    <title>Keamanan - Data Perizinan</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="css/all_page.css" />
-    <link rel="stylesheet" href="css/add_incident.css" />
+    <link rel="stylesheet" href="css/settings.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -263,17 +261,17 @@
               <i
                 class="fas fa-chevron-down text-xs"
                 id="keamanan-icon"
-                style="transform: rotate(180deg)"
+                style="transform: rotate(0deg)"
               ></i>
             </div>
             <div
               id="keamanan-submenu"
-              class="submenu pl-4 active"
+              class="submenu pl-4"
               bis_skin_checked="1"
             >
               <a href="permissions.html">
                 <div
-                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
                   bis_skin_checked="1"
                 >
                   <i class="fas fa-door-open w-6 text-sm"></i>
@@ -282,7 +280,7 @@
               >
               <a href="incident_report.html">
                 <div
-                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center bg-white/10"
+                  class="px-4 py-2 submenu-item rounded-lg mx-2 cursor-pointer flex items-center"
                   bis_skin_checked="1"
                 >
                   <i class="fas fa-exclamation-triangle w-6 text-sm"></i>
@@ -406,7 +404,7 @@
         >
           <a href="settings.html">
             <div
-              class="px-4 py-2 rounded-lg cursor-pointer flex items-center"
+              class="px-4 py-2 rounded-lg cursor-pointer flex items-center active"
               bis_skin_checked="1"
             >
               <i class="fas fa-cog w-6"></i>
@@ -495,1728 +493,495 @@
 
         <!-- Page Content -->
         <main class="flex-1 p-6 overflow-y-auto">
-          <div class="bg-white rounded-xl shadow-md p-6">
-            <!-- Header -->
-            <div style="margin-bottom: 7px">
-              <div
-                class="flex justify-between items-center"
-                bis_skin_checked="1"
-              >
-                <div bis_skin_checked="1">
-                  <h1 class="text-2xl font-bold">Perbarui Laporan Kejadian</h1>
-                  <p>Sistem Manajemen Laporan Kejadian</p>
-                </div>
-                <div class="flex items-center space-x-4" bis_skin_checked="1">
+          <div class="mb-8" bis_skin_checked="1">
+            <h1 class="text-3xl font-semibold text-gray-700">
+              Pengaturan Akun
+            </h1>
+          </div>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            bis_skin_checked="1"
+          >
+            <!-- Manajemen Pengguna -->
+            <div
+              class="card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer"
+              onclick="navigateTo('manajemen-pengguna')"
+              bis_skin_checked="1"
+            >
+              <div class="p-6" bis_skin_checked="1">
+                <div
+                  class="flex items-center justify-between mb-4"
+                  bis_skin_checked="1"
+                >
                   <div
-                    class="flex items-center bg-indigo-500 bg-opacity-50 rounded-lg px-3 py-1"
+                    class="icon h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center"
                     bis_skin_checked="1"
                   >
-                    <span class="text-xs font-medium mr-2"
-                      >Terakhir diperbarui:</span
-                    >
-                    <span class="text-xs">16 Nov 2023, 09:45 WIB</span>
-                  </div>
-                  <button
-                    id="saveChanges"
-                    class="text-white bg-indigo-600 px-4 py-2 rounded-lg shadow hover:bg-indigo-50 transition flex items-center"
-                  >
                     <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
+                      class="h-6 w-6 text-blue-600"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="feather feather-save w-4 h-4 mr-2"
+                      viewBox="0 0 24 24"
                     >
                       <path
-                        d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
                       ></path>
-                      <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                      <polyline points="7 3 7 8 15 8"></polyline>
                     </svg>
-                    Simpan Perubahan
-                  </button>
+                  </div>
+                  <span
+                    class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    >Admin</span
+                  >
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Manajemen Pengguna
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Kelola akun, hak akses, dan informasi pengguna sistem
+                </p>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-xs text-gray-400"
+                    >Terakhir diakses: 2 jam lalu</span
+                  >
+                  <svg
+                    class="h-5 w-5 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
                 </div>
               </div>
             </div>
-            <!-- Main Content -->
 
-            <form id="updateIncidentForm">
-              <div
-                class="grid grid-cols-1 lg:grid-cols-3 gap-8"
-                bis_skin_checked="1"
-              >
-                <!-- Left Column -->
-                <div class="lg:col-span-2 space-y-6" bis_skin_checked="1">
-                  <!-- Informasi Umum -->
+            <!-- Pengaturan PPDB -->
+            <div
+              class="card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer"
+              onclick="navigateTo('pengaturan-ppdb')"
+              bis_skin_checked="1"
+            >
+              <div class="p-6" bis_skin_checked="1">
+                <div
+                  class="flex items-center justify-between mb-4"
+                  bis_skin_checked="1"
+                >
                   <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
+                    class="icon h-12 w-12 rounded-full bg-green-100 flex items-center justify-center"
                     bis_skin_checked="1"
                   >
-                    <div
-                      class="flex justify-between items-start mb-4"
-                      bis_skin_checked="1"
+                    <svg
+                      class="h-6 w-6 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <h2
-                        class="text-xl font-semibold text-gray-800 flex items-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-info w-5 h-5 mr-2 text-indigo-500"
-                        >
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="12" y1="16" x2="12" y2="12"></line>
-                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        Informasi Umum
-                      </h2>
-                      <div bis_skin_checked="1">
-                        <select
-                          id="statusSelect"
-                          class="form-select w-36 text-sm"
-                        >
-                          <option value="pending">Menunggu</option>
-                          <option value="progress" selected="">
-                            Dalam Proses
-                          </option>
-                          <option value="completed">Selesai</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div
-                      class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                      bis_skin_checked="1"
-                    >
-                      <div bis_skin_checked="1">
-                        <label
-                          for="reportId"
-                          class="block text-sm text-gray-500 mb-1 required-field"
-                          >ID Laporan</label
-                        >
-                        <input
-                          type="text"
-                          id="reportId"
-                          class="form-input bg-gray-50"
-                          value="LP-2023-0042"
-                          readonly=""
-                        />
-                        <p class="text-xs text-gray-400 mt-1">
-                          ID tidak dapat diubah
-                        </p>
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="incidentDateTime"
-                          class="block text-sm text-gray-500 mb-1 required-field"
-                          >Tanggal &amp; Waktu Kejadian</label
-                        >
-                        <input
-                          type="datetime-local"
-                          id="incidentDateTime"
-                          class="form-input"
-                          value="2023-11-15T10:30"
-                        />
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="incidentType"
-                          class="block text-sm text-gray-500 mb-1 required-field"
-                          >Jenis Kejadian</label
-                        >
-                        <select id="incidentType" class="form-select">
-                          <option value="">Pilih Jenis Kejadian</option>
-                          <option value="fight" selected="">
-                            Perkelahian Antar Siswa
-                          </option>
-                          <option value="bullying">Perundungan</option>
-                          <option value="vandalism">Vandalisme</option>
-                          <option value="theft">Pencurian</option>
-                          <option value="academic">Pelanggaran Akademik</option>
-                          <option value="other">Lainnya</option>
-                        </select>
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="incidentCategory"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Kategori</label
-                        >
-                        <select id="incidentCategory" class="form-select">
-                          <option value="">Pilih Kategori</option>
-                          <option value="discipline" selected="">
-                            Ketertiban
-                          </option>
-                          <option value="academic">Akademik</option>
-                          <option value="safety">Keamanan</option>
-                          <option value="health">Kesehatan</option>
-                          <option value="other">Lainnya</option>
-                        </select>
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="incidentLocation"
-                          class="block text-sm text-gray-500 mb-1 required-field"
-                          >Lokasi Kejadian</label
-                        >
-                        <input
-                          type="text"
-                          id="incidentLocation"
-                          class="form-input"
-                          value="Kantin Sekolah"
-                        />
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="incidentPriority"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Prioritas</label
-                        >
-                        <select id="incidentPriority" class="form-select">
-                          <option value="low">Rendah</option>
-                          <option value="medium">Sedang</option>
-                          <option value="high" selected="">Tinggi</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Data Pelapor -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
-                  >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
+                      <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
-                        class="feather feather-user w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <path
-                          d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                        ></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
-                      Data Pelapor
-                    </h2>
-                    <div
-                      class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                      bis_skin_checked="1"
-                    >
-                      <div bis_skin_checked="1">
-                        <label
-                          for="reporterName"
-                          class="block text-sm text-gray-500 mb-1 required-field"
-                          >Nama Pelapor</label
-                        >
-                        <input
-                          type="text"
-                          id="reporterName"
-                          class="form-input"
-                          value="Budi Santoso"
-                        />
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="reporterRole"
-                          class="block text-sm text-gray-500 mb-1 required-field"
-                          >Jabatan / Peran</label
-                        >
-                        <input
-                          type="text"
-                          id="reporterRole"
-                          class="form-input"
-                          value="Guru BK"
-                        />
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="reportTime"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Waktu Pelaporan</label
-                        >
-                        <input
-                          type="datetime-local"
-                          id="reportTime"
-                          class="form-input bg-gray-50"
-                          value="2023-11-15T11:15"
-                          readonly=""
-                        />
-                        <p class="text-xs text-gray-400 mt-1">
-                          Waktu pelaporan awal tidak dapat diubah
-                        </p>
-                      </div>
-                      <div bis_skin_checked="1">
-                        <label
-                          for="reporterContact"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Kontak Pelapor</label
-                        >
-                        <input
-                          type="text"
-                          id="reporterContact"
-                          class="form-input"
-                          value="081234567890"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Data Pihak Terkait -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
-                  >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
                         stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-users w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <path
-                          d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-                        ></path>
-                        <circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                      </svg>
-                      Data Pihak Terkait
-                    </h2>
-
-                    <div id="involvedParties" bis_skin_checked="1">
-                      <div
-                        class="border border-gray-200 rounded-lg p-4 mb-4"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="flex justify-between items-center mb-3"
-                          bis_skin_checked="1"
-                        >
-                          <h3 class="font-medium text-gray-700">Pihak #1</h3>
-                          <div class="flex items-center" bis_skin_checked="1">
-                            <select class="form-select w-24 text-sm mr-2">
-                              <option value="perpetrator" selected="">
-                                Pelaku
-                              </option>
-                              <option value="victim">Korban</option>
-                              <option value="witness">Saksi</option>
-                              <option value="other">Lainnya</option>
-                            </select>
-                            <button
-                              type="button"
-                              class="text-red-500 hover:text-red-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-trash-2 w-4 h-4"
-                              >
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                ></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                          bis_skin_checked="1"
-                        >
-                          <div bis_skin_checked="1">
-                            <label
-                              class="block text-sm text-gray-500 mb-1 required-field"
-                              >Nama Siswa/Pihak</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="Ahmad Rizki"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Nomor Induk / ID Siswa</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="2023-0015"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Kelas / Jenjang</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="XI IPA 2"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Peran dalam Kejadian</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="Pelaku"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div
-                        class="border border-gray-200 rounded-lg p-4 mb-4"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="flex justify-between items-center mb-3"
-                          bis_skin_checked="1"
-                        >
-                          <h3 class="font-medium text-gray-700">Pihak #2</h3>
-                          <div class="flex items-center" bis_skin_checked="1">
-                            <select class="form-select w-24 text-sm mr-2">
-                              <option value="perpetrator">Pelaku</option>
-                              <option value="victim" selected="">Korban</option>
-                              <option value="witness">Saksi</option>
-                              <option value="other">Lainnya</option>
-                            </select>
-                            <button
-                              type="button"
-                              class="text-red-500 hover:text-red-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-trash-2 w-4 h-4"
-                              >
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                ></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                          bis_skin_checked="1"
-                        >
-                          <div bis_skin_checked="1">
-                            <label
-                              class="block text-sm text-gray-500 mb-1 required-field"
-                              >Nama Siswa/Pihak</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="Deni Pratama"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Nomor Induk / ID Siswa</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="2023-0028"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Kelas / Jenjang</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="XI IPA 1"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Peran dalam Kejadian</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="Korban"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      <div
-                        class="border border-gray-200 rounded-lg p-4"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="flex justify-between items-center mb-3"
-                          bis_skin_checked="1"
-                        >
-                          <h3 class="font-medium text-gray-700">Pihak #3</h3>
-                          <div class="flex items-center" bis_skin_checked="1">
-                            <select class="form-select w-24 text-sm mr-2">
-                              <option value="perpetrator">Pelaku</option>
-                              <option value="victim">Korban</option>
-                              <option value="witness" selected="">Saksi</option>
-                              <option value="other">Lainnya</option>
-                            </select>
-                            <button
-                              type="button"
-                              class="text-red-500 hover:text-red-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-trash-2 w-4 h-4"
-                              >
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                ></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                        <div
-                          class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                          bis_skin_checked="1"
-                        >
-                          <div bis_skin_checked="1">
-                            <label
-                              class="block text-sm text-gray-500 mb-1 required-field"
-                              >Nama Siswa/Pihak</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="Rina Wati"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Nomor Induk / ID Siswa</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="2023-0033"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Kelas / Jenjang</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="XI IPA 2"
-                            />
-                          </div>
-                          <div bis_skin_checked="1">
-                            <label class="block text-sm text-gray-500 mb-1"
-                              >Peran dalam Kejadian</label
-                            >
-                            <input
-                              type="text"
-                              class="form-input"
-                              value="Saksi"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mt-4" bis_skin_checked="1">
-                      <button
-                        type="button"
-                        id="addPartyBtn"
-                        class="flex items-center text-indigo-600 hover:text-indigo-800 font-medium text-sm"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-plus-circle w-4 h-4 mr-1"
-                        >
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="12" y1="8" x2="12" y2="16"></line>
-                          <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg>
-                        Tambah Pihak Terkait
-                      </button>
-                    </div>
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                      ></path>
+                    </svg>
                   </div>
-
-                  <!-- Deskripsi Kejadian -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
+                  <span
+                    class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    >Pendaftaran</span
                   >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-file-text w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <path
-                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                        ></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                      </svg>
-                      Deskripsi Kejadian
-                    </h2>
-                    <div bis_skin_checked="1">
-                      <label
-                        for="incidentDescription"
-                        class="block text-sm text-gray-500 mb-1 required-field"
-                        >Kronologis Kejadian</label
-                      >
-                      <textarea
-                        id="incidentDescription"
-                        class="form-input textarea"
-                        rows="5"
-                      >
-Kejadian terjadi pada saat jam istirahat di kantin sekolah. Berawal dari Ahmad Rizki yang tidak sengaja menabrak Deni Pratama saat mengambil makanan, yang kemudian berujung pada pertengkaran verbal. Situasi memanas ketika Ahmad mendorong Deni hingga terjatuh. Beberapa siswa lain mencoba melerai namun situasi sudah terlanjur memanas. Petugas keamanan sekolah dan guru piket akhirnya datang untuk menenangkan situasi.</textarea
-                      >
-                    </div>
-                    <div class="mt-2" bis_skin_checked="1">
-                      <div
-                        class="flex items-center text-sm text-gray-500"
-                        bis_skin_checked="1"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-clock w-4 h-4 mr-1"
-                        >
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        <span
-                          >Terakhir diubah: 16 Nov 2023, 09:15 WIB oleh Budi
-                          Santoso</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Dokumentasi/Bukti -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
-                  >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-image w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <rect
-                          x="3"
-                          y="3"
-                          width="18"
-                          height="18"
-                          rx="2"
-                          ry="2"
-                        ></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <polyline points="21 15 16 10 5 21"></polyline>
-                      </svg>
-                      Dokumentasi/Bukti
-                    </h2>
-
-                    <div class="mb-6" bis_skin_checked="1">
-                      <label
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                        >Foto / Video Kejadian</label
-                      >
-                      <div
-                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
-                        bis_skin_checked="1"
-                      >
-                        <div class="relative group" bis_skin_checked="1">
-                          <div
-                            class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg overflow-hidden"
-                            bis_skin_checked="1"
-                          >
-                            <div
-                              class="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-500"
-                              bis_skin_checked="1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-12 w-12"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1"
-                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                ></path>
-                              </svg>
-                            </div>
-                          </div>
-                          <div
-                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center"
-                            bis_skin_checked="1"
-                          >
-                            <div
-                              class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2"
-                              bis_skin_checked="1"
-                            >
-                              <button
-                                type="button"
-                                class="p-1.5 bg-white rounded-full text-gray-700 hover:text-red-600"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="2"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  class="feather feather-trash-2 w-4 h-4"
-                                >
-                                  <polyline points="3 6 5 6 21 6"></polyline>
-                                  <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                  ></path>
-                                  <line x1="10" y1="11" x2="10" y2="17"></line>
-                                  <line x1="14" y1="11" x2="14" y2="17"></line>
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                          <p class="mt-1 text-xs text-gray-500 truncate">
-                            Foto Lokasi Kejadian.jpg
-                          </p>
-                        </div>
-
-                        <div class="relative group" bis_skin_checked="1">
-                          <div
-                            class="aspect-w-16 aspect-h-9 bg-gray-100 rounded-lg overflow-hidden"
-                            bis_skin_checked="1"
-                          >
-                            <div
-                              class="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-500"
-                              bis_skin_checked="1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-12 w-12"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="1"
-                                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                                ></path>
-                              </svg>
-                            </div>
-                          </div>
-                          <div
-                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center"
-                            bis_skin_checked="1"
-                          >
-                            <div
-                              class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2"
-                              bis_skin_checked="1"
-                            >
-                              <button
-                                type="button"
-                                class="p-1.5 bg-white rounded-full text-gray-700 hover:text-red-600"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="24"
-                                  height="24"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  stroke-width="2"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  class="feather feather-trash-2 w-4 h-4"
-                                >
-                                  <polyline points="3 6 5 6 21 6"></polyline>
-                                  <path
-                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                  ></path>
-                                  <line x1="10" y1="11" x2="10" y2="17"></line>
-                                  <line x1="14" y1="11" x2="14" y2="17"></line>
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                          <p class="mt-1 text-xs text-gray-500 truncate">
-                            Video CCTV.mp4
-                          </p>
-                        </div>
-
-                        <div
-                          class="border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center p-4 hover:bg-gray-50 transition cursor-pointer"
-                          bis_skin_checked="1"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-upload-cloud w-8 h-8 text-gray-400 mb-2"
-                          >
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                            <line x1="12" y1="12" x2="12" y2="21"></line>
-                            <path
-                              d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"
-                            ></path>
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                          </svg>
-                          <p class="text-sm text-gray-500">Unggah Foto/Video</p>
-                          <p class="text-xs text-gray-400">
-                            Klik atau seret file
-                          </p>
-                          <input
-                            type="file"
-                            class="hidden"
-                            accept="image/*,video/*"
-                            multiple=""
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div bis_skin_checked="1">
-                      <label
-                        class="block text-sm font-medium text-gray-700 mb-2"
-                        >Surat Tertulis atau Bukti Fisik Lainnya</label
-                      >
-                      <div class="space-y-3" bis_skin_checked="1">
-                        <div
-                          class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
-                          bis_skin_checked="1"
-                        >
-                          <div class="flex items-center" bis_skin_checked="1">
-                            <div
-                              class="p-2 bg-indigo-100 rounded-md text-indigo-500 mr-3"
-                              bis_skin_checked="1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-file-text w-5 h-5"
-                              >
-                                <path
-                                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                                ></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                              </svg>
-                            </div>
-                            <div bis_skin_checked="1">
-                              <p class="text-sm font-medium text-gray-700">
-                                Surat Pernyataan.pdf
-                              </p>
-                              <p class="text-xs text-gray-500">PDF • 1.2 MB</p>
-                            </div>
-                          </div>
-                          <div bis_skin_checked="1">
-                            <button
-                              type="button"
-                              class="p-1.5 text-gray-500 hover:text-red-600"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-trash-2 w-4 h-4"
-                              >
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                ></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div
-                          class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
-                          bis_skin_checked="1"
-                        >
-                          <div class="flex items-center" bis_skin_checked="1">
-                            <div
-                              class="p-2 bg-indigo-100 rounded-md text-indigo-500 mr-3"
-                              bis_skin_checked="1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-file-text w-5 h-5"
-                              >
-                                <path
-                                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                                ></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                              </svg>
-                            </div>
-                            <div bis_skin_checked="1">
-                              <p class="text-sm font-medium text-gray-700">
-                                Laporan Saksi.docx
-                              </p>
-                              <p class="text-xs text-gray-500">DOCX • 845 KB</p>
-                            </div>
-                          </div>
-                          <div bis_skin_checked="1">
-                            <button
-                              type="button"
-                              class="p-1.5 text-gray-500 hover:text-red-600"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-trash-2 w-4 h-4"
-                              >
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                ></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div
-                          class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
-                          bis_skin_checked="1"
-                        >
-                          <div class="flex items-center" bis_skin_checked="1">
-                            <div
-                              class="p-2 bg-indigo-100 rounded-md text-indigo-500 mr-3"
-                              bis_skin_checked="1"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-file-text w-5 h-5"
-                              >
-                                <path
-                                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
-                                ></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="16" y1="13" x2="8" y2="13"></line>
-                                <line x1="16" y1="17" x2="8" y2="17"></line>
-                                <polyline points="10 9 9 9 8 9"></polyline>
-                              </svg>
-                            </div>
-                            <div bis_skin_checked="1">
-                              <p class="text-sm font-medium text-gray-700">
-                                Hasil Mediasi.pdf
-                              </p>
-                              <p class="text-xs text-gray-500">PDF • 980 KB</p>
-                              <span
-                                class="inline-block px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded mt-1"
-                                >Baru</span
-                              >
-                            </div>
-                          </div>
-                          <div bis_skin_checked="1">
-                            <button
-                              type="button"
-                              class="p-1.5 text-gray-500 hover:text-red-600"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="feather feather-trash-2 w-4 h-4"
-                              >
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path
-                                  d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                                ></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div
-                          class="border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center p-4 hover:bg-gray-50 transition cursor-pointer"
-                          bis_skin_checked="1"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-upload-cloud w-8 h-8 text-gray-400 mb-2"
-                          >
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                            <line x1="12" y1="12" x2="12" y2="21"></line>
-                            <path
-                              d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"
-                            ></path>
-                            <polyline points="16 16 12 12 8 16"></polyline>
-                          </svg>
-                          <p class="text-sm text-gray-500">Unggah Dokumen</p>
-                          <p class="text-xs text-gray-400">
-                            Klik atau seret file
-                          </p>
-                          <input
-                            type="file"
-                            class="hidden"
-                            accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
-
-                <!-- Right Column -->
-                <div class="space-y-6" bis_skin_checked="1">
-                  <!-- Tindak Lanjut & Evaluasi -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Pengaturan PPDB
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Atur jadwal, kuota, dan persyaratan penerimaan siswa baru
+                </p>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-xs text-gray-400"
+                    >Terakhir diakses: 1 hari lalu</span
                   >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-check-square w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <polyline points="9 11 12 14 22 4"></polyline>
-                        <path
-                          d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
-                        ></path>
-                      </svg>
-                      Tindak Lanjut &amp; Evaluasi
-                    </h2>
-
-                    <div class="space-y-4" bis_skin_checked="1">
-                      <div bis_skin_checked="1">
-                        <label
-                          for="actionsTaken"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Tindakan yang Sudah Diambil</label
-                        >
-                        <textarea
-                          id="actionsTaken"
-                          class="form-input textarea"
-                          rows="3"
-                        >
-Kedua siswa telah dipanggil ke ruang BK untuk dimintai keterangan. Orang tua dari kedua siswa telah dihubungi dan sudah datang ke sekolah pada tanggal 16 November 2023. Mediasi antara kedua siswa telah dilakukan dengan hasil positif.</textarea
-                        >
-                      </div>
-
-                      <div bis_skin_checked="1">
-                        <label
-                          for="relatedNotes"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Catatan dari Pihak Terkait</label
-                        >
-                        <textarea
-                          id="relatedNotes"
-                          class="form-input textarea"
-                          rows="3"
-                        >
-Menurut Guru BK, kedua siswa memiliki riwayat perselisihan sebelumnya. Perlu adanya mediasi dan konseling untuk keduanya. Orang tua kedua siswa berkomitmen untuk membantu proses penyelesaian masalah.</textarea
-                        >
-                      </div>
-
-                      <div bis_skin_checked="1">
-                        <label
-                          for="followUpPlan"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Rencana Tindak Lanjut</label
-                        >
-                        <textarea
-                          id="followUpPlan"
-                          class="form-input textarea"
-                          rows="4"
-                        >
-1. Pertemuan dengan orang tua kedua siswa ✓
-2. Konseling individu untuk masing-masing siswa ✓
-3. Mediasi antara kedua siswa ✓
-4. Program pengawasan selama 2 minggu (sedang berlangsung)
-5. Evaluasi akhir pada tanggal 30 November 2023</textarea
-                        >
-                      </div>
-
-                      <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-4"
-                        bis_skin_checked="1"
-                      >
-                        <div bis_skin_checked="1">
-                          <label
-                            for="followUpDate"
-                            class="block text-sm text-gray-500 mb-1"
-                            >Tanggal Tindak Lanjut</label
-                          >
-                          <input
-                            type="date"
-                            id="followUpDate"
-                            class="form-input"
-                            value="2023-11-30"
-                          />
-                        </div>
-
-                        <div bis_skin_checked="1">
-                          <label
-                            for="handlingParty"
-                            class="block text-sm text-gray-500 mb-1"
-                            >Pihak yang Menangani</label
-                          >
-                          <input
-                            type="text"
-                            id="handlingParty"
-                            class="form-input"
-                            value="Tim BK &amp; Wali Kelas"
-                          />
-                        </div>
-                      </div>
-
-                      <div bis_skin_checked="1">
-                        <label
-                          for="evaluationResult"
-                          class="block text-sm text-gray-500 mb-1"
-                          >Hasil Evaluasi Sementara</label
-                        >
-                        <textarea
-                          id="evaluationResult"
-                          class="form-input textarea"
-                          rows="3"
-                        >
-Kedua siswa menunjukkan perkembangan positif. Mereka telah meminta maaf satu sama lain dan berjanji untuk tidak mengulangi kejadian serupa. Program pengawasan akan terus dilakukan hingga akhir bulan.</textarea
-                        >
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Timeline Aktivitas -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
+                  <svg
+                    class="h-5 w-5 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-clock w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                      Timeline Aktivitas
-                    </h2>
-
-                    <div class="relative pl-6" bis_skin_checked="1">
-                      <div
-                        class="timeline-item relative pl-6 pb-6"
-                        bis_skin_checked="1"
-                      >
-                        <div class="timeline-dot" bis_skin_checked="1"></div>
-                        <div bis_skin_checked="1">
-                          <p class="text-sm font-medium text-gray-800">
-                            Laporan Dibuat
-                          </p>
-                          <p class="text-xs text-gray-500">
-                            15 Nov 2023, 11:15 WIB
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            Budi Santoso membuat laporan kejadian
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="timeline-item relative pl-6 pb-6"
-                        bis_skin_checked="1"
-                      >
-                        <div class="timeline-dot" bis_skin_checked="1"></div>
-                        <div bis_skin_checked="1">
-                          <p class="text-sm font-medium text-gray-800">
-                            Status Diubah
-                          </p>
-                          <p class="text-xs text-gray-500">
-                            15 Nov 2023, 13:20 WIB
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            Status diubah menjadi "Dalam Proses"
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="timeline-item relative pl-6 pb-6"
-                        bis_skin_checked="1"
-                      >
-                        <div class="timeline-dot" bis_skin_checked="1"></div>
-                        <div bis_skin_checked="1">
-                          <p class="text-sm font-medium text-gray-800">
-                            Dokumen Ditambahkan
-                          </p>
-                          <p class="text-xs text-gray-500">
-                            15 Nov 2023, 14:45 WIB
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            Surat Pernyataan.pdf diunggah
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="timeline-item relative pl-6 pb-6"
-                        bis_skin_checked="1"
-                      >
-                        <div class="timeline-dot" bis_skin_checked="1"></div>
-                        <div bis_skin_checked="1">
-                          <p class="text-sm font-medium text-gray-800">
-                            Dokumen Ditambahkan
-                          </p>
-                          <p class="text-xs text-gray-500">
-                            15 Nov 2023, 15:30 WIB
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            Laporan Saksi.docx diunggah
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="timeline-item relative pl-6 pb-6"
-                        bis_skin_checked="1"
-                      >
-                        <div class="timeline-dot" bis_skin_checked="1"></div>
-                        <div bis_skin_checked="1">
-                          <p class="text-sm font-medium text-gray-800">
-                            Tindak Lanjut
-                          </p>
-                          <p class="text-xs text-gray-500">
-                            16 Nov 2023, 09:00 WIB
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            Pertemuan dengan orang tua siswa
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="timeline-item relative pl-6"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="timeline-dot bg-green-500"
-                          bis_skin_checked="1"
-                        ></div>
-                        <div bis_skin_checked="1">
-                          <p class="text-sm font-medium text-gray-800">
-                            Dokumen Ditambahkan
-                          </p>
-                          <p class="text-xs text-gray-500">
-                            16 Nov 2023, 10:15 WIB
-                          </p>
-                          <p class="text-sm text-gray-600 mt-1">
-                            Hasil Mediasi.pdf diunggah
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mt-4 border-t pt-4" bis_skin_checked="1">
-                      <label
-                        for="activityNote"
-                        class="block text-sm text-gray-500 mb-1"
-                        >Tambahkan Catatan Aktivitas</label
-                      >
-                      <div class="flex" bis_skin_checked="1">
-                        <input
-                          type="text"
-                          id="activityNote"
-                          class="form-input rounded-r-none"
-                          placeholder="Masukkan catatan aktivitas..."
-                        />
-                        <button
-                          type="button"
-                          class="bg-indigo-600 text-white px-4 py-2 rounded-r-lg hover:bg-indigo-700 transition"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-plus w-4 h-4"
-                          >
-                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Riwayat Perubahan -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
-                  >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-git-branch w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <line x1="6" y1="3" x2="6" y2="15"></line>
-                        <circle cx="18" cy="6" r="3"></circle>
-                        <circle cx="6" cy="18" r="3"></circle>
-                        <path d="M18 9a9 9 0 0 1-9 9"></path>
-                      </svg>
-                      Riwayat Perubahan
-                    </h2>
-
-                    <div class="space-y-3" bis_skin_checked="1">
-                      <div
-                        class="p-3 bg-gray-50 rounded-lg border border-gray-200"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="flex justify-between items-start"
-                          bis_skin_checked="1"
-                        >
-                          <div bis_skin_checked="1">
-                            <p class="text-sm font-medium text-gray-800">
-                              Budi Santoso
-                            </p>
-                            <p class="text-xs text-gray-500">
-                              16 Nov 2023, 09:45 WIB
-                            </p>
-                          </div>
-                          <span
-                            class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded"
-                            >Perubahan Terbaru</span
-                          >
-                        </div>
-                        <div class="mt-2" bis_skin_checked="1">
-                          <p class="text-sm text-gray-600">
-                            Menambahkan hasil evaluasi sementara dan memperbarui
-                            status tindak lanjut
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="p-3 bg-gray-50 rounded-lg border border-gray-200"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="flex justify-between items-start"
-                          bis_skin_checked="1"
-                        >
-                          <div bis_skin_checked="1">
-                            <p class="text-sm font-medium text-gray-800">
-                              Budi Santoso
-                            </p>
-                            <p class="text-xs text-gray-500">
-                              16 Nov 2023, 09:15 WIB
-                            </p>
-                          </div>
-                        </div>
-                        <div class="mt-2" bis_skin_checked="1">
-                          <p class="text-sm text-gray-600">
-                            Memperbarui deskripsi kejadian dengan informasi
-                            tambahan
-                          </p>
-                        </div>
-                      </div>
-
-                      <div
-                        class="p-3 bg-gray-50 rounded-lg border border-gray-200"
-                        bis_skin_checked="1"
-                      >
-                        <div
-                          class="flex justify-between items-start"
-                          bis_skin_checked="1"
-                        >
-                          <div bis_skin_checked="1">
-                            <p class="text-sm font-medium text-gray-800">
-                              Siti Aminah
-                            </p>
-                            <p class="text-xs text-gray-500">
-                              15 Nov 2023, 16:30 WIB
-                            </p>
-                          </div>
-                        </div>
-                        <div class="mt-2" bis_skin_checked="1">
-                          <p class="text-sm text-gray-600">
-                            Mengunggah dokumen Laporan Saksi.docx
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Action Buttons -->
-                  <div
-                    class="bg-white rounded-xl shadow-md p-6 section-card"
-                    bis_skin_checked="1"
-                  >
-                    <h2
-                      class="text-xl font-semibold text-gray-800 mb-4 flex items-center"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="feather feather-settings w-5 h-5 mr-2 text-indigo-500"
-                      >
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path
-                          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
-                        ></path>
-                      </svg>
-                      Tindakan
-                    </h2>
-
-                    <div class="space-y-3" bis_skin_checked="1">
-                      <button
-                        type="submit"
-                        class="block w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow transition text-center flex items-center justify-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-save w-4 h-4 mr-2"
-                        >
-                          <path
-                            d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
-                          ></path>
-                          <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                          <polyline points="7 3 7 8 15 8"></polyline>
-                        </svg>
-                        Simpan Perubahan
-                      </button>
-
-                      <button
-                        type="button"
-                        id="changeStatusBtn"
-                        class="block w-full py-2 px-4 bg-white border border-indigo-500 text-indigo-600 hover:bg-indigo-50 rounded-lg shadow-sm transition text-center flex items-center justify-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-refresh-cw w-4 h-4 mr-2"
-                        >
-                          <polyline points="23 4 23 10 17 10"></polyline>
-                          <polyline points="1 20 1 14 7 14"></polyline>
-                          <path
-                            d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-                          ></path>
-                        </svg>
-                        Ubah Status
-                      </button>
-
-                      <div class="grid grid-cols-2 gap-3" bis_skin_checked="1">
-                        <button
-                          type="button"
-                          id="printReportBtn"
-                          class="py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg shadow-sm transition text-center flex items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-printer w-4 h-4 mr-2"
-                          >
-                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                            <path
-                              d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
-                            ></path>
-                            <rect x="6" y="14" width="12" height="8"></rect>
-                          </svg>
-                          Cetak
-                        </button>
-
-                        <button
-                          type="button"
-                          id="exportReportBtn"
-                          class="py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg shadow-sm transition text-center flex items-center justify-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-download w-4 h-4 mr-2"
-                          >
-                            <path
-                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-                            ></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                          </svg>
-                          Ekspor
-                        </button>
-                      </div>
-
-                      <a
-                        href="#"
-                        class="block w-full py-2 px-4 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg shadow-sm transition text-center flex items-center justify-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="feather feather-x w-4 h-4 mr-2"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18"></line>
-                          <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
-                        Batal
-                      </a>
-                    </div>
-                  </div>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
                 </div>
               </div>
-            </form>
+            </div>
+
+            <!-- Pengaturan Perizinan Siswa -->
+            <div
+              class="card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer"
+              onclick="navigateTo('perizinan-siswa')"
+              bis_skin_checked="1"
+            >
+              <div class="p-6" bis_skin_checked="1">
+                <div
+                  class="flex items-center justify-between mb-4"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="icon h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <svg
+                      class="h-6 w-6 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <span
+                    class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    >Kehadiran</span
+                  >
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Pengaturan Perizinan Siswa
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Kelola sistem izin, absensi, dan ketidakhadiran siswa
+                </p>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-xs text-gray-400"
+                    >Terakhir diakses: 3 jam lalu</span
+                  >
+                  <svg
+                    class="h-5 w-5 text-purple-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pengaturan Pendidikan Formal -->
+            <div
+              class="card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer"
+              onclick="navigateTo('pendidikan-formal')"
+              bis_skin_checked="1"
+            >
+              <div class="p-6" bis_skin_checked="1">
+                <div
+                  class="flex items-center justify-between mb-4"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="icon h-12 w-12 rounded-full bg-amber-100 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <svg
+                      class="h-6 w-6 text-amber-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      ></path>
+                    </svg>
+                  </div>
+                  <span
+                    class="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    >Sekolah</span
+                  >
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Pengaturan Pendidikan Formal
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Atur kurikulum, jadwal pelajaran, dan kegiatan sekolah
+                </p>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-xs text-gray-400"
+                    >Terakhir diakses: 5 jam lalu</span
+                  >
+                  <svg
+                    class="h-5 w-5 text-amber-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pengaturan Pendidikan Non-Formal -->
+            <div
+              class="card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer"
+              onclick="navigateTo('pendidikan-nonformal')"
+              bis_skin_checked="1"
+            >
+              <div class="p-6" bis_skin_checked="1">
+                <div
+                  class="flex items-center justify-between mb-4"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="icon h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <svg
+                      class="h-6 w-6 text-teal-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      ></path>
+                    </svg>
+                  </div>
+                  <span
+                    class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    >Mengaji</span
+                  >
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Pengaturan Pendidikan Non-Formal
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Kelola program mengaji, jadwal, dan perkembangan siswa
+                </p>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-xs text-gray-400"
+                    >Terakhir diakses: 1 minggu lalu</span
+                  >
+                  <svg
+                    class="h-5 w-5 text-teal-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Log Aktivitas -->
+            <div
+              class="card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer"
+              onclick="navigateTo('log-aktivitas')"
+              bis_skin_checked="1"
+            >
+              <div class="p-6" bis_skin_checked="1">
+                <div
+                  class="flex items-center justify-between mb-4"
+                  bis_skin_checked="1"
+                >
+                  <div
+                    class="icon h-12 w-12 rounded-full bg-rose-100 flex items-center justify-center"
+                    bis_skin_checked="1"
+                  >
+                    <svg
+                      class="h-6 w-6 text-rose-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <span
+                    class="bg-rose-100 text-rose-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                    >Sistem</span
+                  >
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                  Log Aktivitas
+                </h3>
+                <p class="text-gray-500 text-sm mb-4">
+                  Pantau riwayat aktivitas dan perubahan dalam sistem
+                </p>
+                <div
+                  class="flex justify-between items-center"
+                  bis_skin_checked="1"
+                >
+                  <span class="text-xs text-gray-400"
+                    >Terakhir diakses: Baru saja</span
+                  >
+                  <svg
+                    class="h-5 w-5 text-rose-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
       </div>
     </div>
 
-    <script src="js/update_incident.js"></script>
-    <script src="js/all_page.js"></script>
+    <!-- QR Scanner Modal for Penjemputan -->
+    <div
+      id="qrScannerPenjemputan"
+      class="camera-overlay flex items-center justify-center"
+      bis_skin_checked="1"
+      style="display: none"
+    >
+      <div class="camera-container" bis_skin_checked="1">
+        <div class="qr-frame" bis_skin_checked="1">
+          <div class="qr-corners" bis_skin_checked="1"><span></span></div>
+        </div>
+        <div class="scan-line" bis_skin_checked="1"></div>
+        <div
+          class="absolute top-0 left-0 w-full p-4 flex justify-between items-center bg-gradient-to-b from-black/70 to-transparent"
+          bis_skin_checked="1"
+        >
+          <h3 class="text-white font-medium">Scan QR Penjemputan</h3>
+          <button id="closeQrPenjemputan" class="text-white hover:text-red-400">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <div
+          class="absolute bottom-0 left-0 w-full p-4 text-center bg-gradient-to-t from-black/70 to-transparent"
+          bis_skin_checked="1"
+        >
+          <p class="text-white text-sm mb-2">Arahkan kamera ke QR Code siswa</p>
+          <button
+            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+          >
+            Verifikasi
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="settingModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+      bis_skin_checked="1"
+    >
+      <div
+        class="bg-white rounded-lg w-11/12 md:w-3/4 lg:w-1/2 max-h-[80vh] overflow-y-auto"
+        bis_skin_checked="1"
+      >
+        <div
+          class="border-b border-gray-200 px-6 py-4 flex justify-between items-center sticky top-0 bg-white"
+          bis_skin_checked="1"
+        >
+          <h3 id="modalTitle" class="text-xl font-semibold text-gray-800"></h3>
+          <button
+            onclick="closeModal()"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <div id="modalContent" class="p-6" bis_skin_checked="1">
+          <!-- Content will be loaded dynamically -->
+        </div>
+        <div
+          class="border-t border-gray-200 px-6 py-4 flex justify-end"
+          bis_skin_checked="1"
+        >
+          <button
+            onclick="closeModal()"
+            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg mr-2 hover:bg-gray-300 transition duration-300"
+          >
+            Tutup
+          </button>
+          <button
+            onclick="saveSettings()"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300"
+          >
+            Simpan Perubahan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/settings.js"></script>
   </body>
 </html>
