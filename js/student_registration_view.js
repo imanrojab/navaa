@@ -130,37 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
     showToast("Pendaftaran Anda telah dibatalkan!");
   });
 
-  // Edit data functionality
-  const editBtns = ["editDataBtn", "editDataBtnMobile"];
-  editBtns.forEach((btnId) => {
-    const btn = document.getElementById(btnId);
-    if (btn) {
-      btn.addEventListener("click", () => {
-        showToast("Fitur edit data akan segera tersedia!");
-      });
-    }
-  });
-
-  // Share functionality
-  const shareBtn = document.getElementById("shareDataBtn");
-  if (shareBtn) {
-    shareBtn.addEventListener("click", () => {
-      if (navigator.share) {
-        navigator
-          .share({
-            title: "Pendaftaran PPDB Online",
-            text: "Informasi pendaftaran PPDB Online dengan nomor pendaftaran PPDB2025-0001",
-            url: window.location.href,
-          })
-          .catch((err) => {
-            showToast("Fitur berbagi tidak tersedia di perangkat Anda");
-          });
-      } else {
-        showToast("Fitur berbagi tidak tersedia di perangkat Anda");
-      }
-    });
-  }
-
   // Toast notification
   function showToast(message) {
     // Create toast element
