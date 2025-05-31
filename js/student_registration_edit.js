@@ -300,3 +300,37 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 });
+
+// Wali logic
+const hasWali = document.getElementById("has_wali");
+const waliContainer = document.getElementById("wali_container");
+const waUtamaWaliContainer = document.getElementById("wa_utama_wali_container");
+
+hasWali.addEventListener("change", function () {
+  if (this.checked) {
+    waliContainer.classList.remove("hidden");
+    waUtamaWaliContainer.classList.remove("hidden");
+
+    // Make wali fields required
+    document.getElementById("nama_wali").setAttribute("required", "required");
+    document
+      .getElementById("hubungan_wali")
+      .setAttribute("required", "required");
+    document.getElementById("no_hp_wali").setAttribute("required", "required");
+    document.getElementById("alamat_wali").setAttribute("required", "required");
+  } else {
+    waliContainer.classList.add("hidden");
+    waUtamaWaliContainer.classList.add("hidden");
+
+    // Remove required from wali fields
+    document.getElementById("nama_wali").removeAttribute("required");
+    document.getElementById("hubungan_wali").removeAttribute("required");
+    document.getElementById("no_hp_wali").removeAttribute("required");
+    document.getElementById("alamat_wali").removeAttribute("required");
+
+    // Uncheck wali radio if selected
+    if (document.getElementById("wa_utama_wali").checked) {
+      document.getElementById("wa_utama_wali").checked = false;
+    }
+  }
+});
